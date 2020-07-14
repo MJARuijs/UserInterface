@@ -1,4 +1,4 @@
-package userinterface.items
+package userinterface.items.backgrounds
 
 import graphics.samplers.ClampMode
 import graphics.samplers.SampleFilter
@@ -6,10 +6,16 @@ import graphics.samplers.Sampler
 import graphics.shaders.ShaderProgram
 import graphics.textures.TextureMap
 import math.Color
+import userinterface.effects.Effect
+import userinterface.items.backgrounds.Background
 
-class TexturedBackground(private val textureMap: TextureMap, var overlayColor: Color? = null, var backgroundColor: Color? = null) : Background {
+class TexturedBackground(val textureMap: TextureMap, var backgroundColor: Color? = null, var overlayColor: Color? = null) : Background {
 
     private val sampler = Sampler(0, SampleFilter.LINEAR, SampleFilter.NEAREST, ClampMode.EDGE, true)
+
+    override fun applyEffects(effects: ArrayList<Effect>) {
+
+    }
 
     override fun setProperties(shaderProgram: ShaderProgram) {
         if (backgroundColor != null) {
@@ -28,5 +34,4 @@ class TexturedBackground(private val textureMap: TextureMap, var overlayColor: C
         shaderProgram.set("sampler", sampler.index)
         sampler.bind(textureMap)
     }
-
 }

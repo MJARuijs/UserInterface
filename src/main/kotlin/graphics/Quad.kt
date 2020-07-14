@@ -1,3 +1,5 @@
+package graphics
+
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL20

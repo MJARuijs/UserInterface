@@ -11,7 +11,6 @@ class UserInterface(private val aspectRatio: Float) {
 
     private val shaderProgram = ShaderProgram.load("shaders/ui.vert", "shaders/ui.frag")
     private val items = ArrayList<Item>()
-    private val itemMap = HashMap<String, Item>()
 
     fun init() {
         items.forEach { item -> item.init(Vector2(), Vector2(aspectRatio, 1.0f), items) }
@@ -23,10 +22,6 @@ class UserInterface(private val aspectRatio: Float) {
         } else {
             items += newItem
         }
-    }
-
-    fun findItem(id: String): Item? {
-        return items.find { item -> item.id == id }
     }
 
     fun draw() {

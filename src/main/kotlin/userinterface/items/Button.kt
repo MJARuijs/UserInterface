@@ -1,7 +1,11 @@
 package userinterface.items
 
 import devices.Mouse
+import math.Color
 import userinterface.constraints.ConstraintSet
+import userinterface.effects.Effect
+import userinterface.items.backgrounds.Background
+import userinterface.items.backgrounds.ColoredBackground
 
 class Button(id: String, constraintSet: ConstraintSet, background: Background) : Item(id, constraintSet, background) {
 
@@ -10,22 +14,9 @@ class Button(id: String, constraintSet: ConstraintSet, background: Background) :
 
     }
 
-    private fun isMouseOnButton(mouse: Mouse, aspectRatio: Float): Boolean {
-        val minX = (translation.x - scale.x)/aspectRatio
-        val maxX = (translation.x + scale.x)/aspectRatio
-        val minY = translation.y - scale.y
-        val maxY = translation.y + scale.y
+//    private fun isClicked(mouse: Mouse, aspectRatio: Float): Boolean {
+//        if ()
+//    }
 
-        val scaledMouseX = mouse.x * 2.0f
-        val scaledMouseY = mouse.y * 2.0f
-
-        if (scaledMouseX < minX || scaledMouseX > maxX) {
-            return false
-        }
-        if (scaledMouseY < minY || scaledMouseY > maxY) {
-            return false
-        }
-        return true
-    }
 
 }

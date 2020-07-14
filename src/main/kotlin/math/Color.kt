@@ -14,11 +14,27 @@ data class Color(var r: Float = 0.0f, var g: Float = 0.0f, var b: Float = 0.0f, 
 
     operator fun plus(other: Color) = Color(r + other.r, g + other.g, b + other.b, a + other.b)
 
+    operator fun minus(other: Color) = Color(r - other.r, g - other.g, b - other.b, a - other.b)
+
     operator fun times(other: Color) = Color(r * other.r, g * other.g, b * other.b, a * other.b)
 
     operator fun times(factor: Float) = Color(r * factor, g * factor, b * factor, a * factor)
 
     operator fun div(factor: Float) = Color(r / factor, g / factor, b / factor, a / factor)
+
+    operator fun plusAssign(other: Color) {
+        r += other.r
+        g += other.g
+        b += other.b
+        a += other.a
+    }
+
+    operator fun minusAssign(other: Color) {
+        r -= other.r
+        g -= other.g
+        b -= other.b
+        a -= other.a
+    }
 
     fun toArray(): FloatArray = floatArrayOf(r, g, b, a)
 

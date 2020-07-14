@@ -1,6 +1,6 @@
-package graphics.sky
+package environment.sky
 
-import Quad
+import graphics.Quad
 import resources.images.ImageCache
 import graphics.GraphicsContext
 import graphics.GraphicsOption

@@ -10,4 +10,8 @@ abstract class Constraint {
 
     abstract fun apply(translation: Vector2, scale: Vector2, parentTranslation: Vector2, parentScale: Vector2, siblings: ArrayList<Item>): ItemPosition
 
+    fun toLeftOf(id: String) {
+
+    }
+
 }

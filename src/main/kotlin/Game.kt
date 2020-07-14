@@ -10,7 +10,7 @@ import graphics.Camera
 import graphics.GraphicsContext
 import graphics.lights.AmbientLight
 import graphics.lights.DirectionalLight
-import graphics.sky.Sky
+import environment.sky.Sky
 import graphics.textures.ImageMap
 import math.matrices.Matrix4
 import math.vectors.Vector3
@@ -18,7 +18,10 @@ import org.lwjgl.opengl.GL11.*
 import resources.images.ImageCache
 import userinterface.UserInterface
 import userinterface.constraints.*
+import userinterface.effects.ColorEffect
 import userinterface.items.*
+import userinterface.items.backgrounds.ColoredBackground
+import userinterface.items.backgrounds.TexturedBackground
 
 fun main() {
     val window = Window("Game", ::onWindowResized)
@@ -63,29 +66,20 @@ fun main() {
         AspectRatioConstraint(1.0f, ConstraintDirection.HORIZONTAL)
     )
 
-    val constraintSet4 = ConstraintSet(
-        PixelConstraint(0.0f, ConstraintDirection.TO_TOP),
-        PixelConstraint(0.0f, ConstraintDirection.TO_LEFT, "closeButton"),
-        RelativeConstraint(1.0f, ConstraintDirection.VERTICAL),
-        AspectRatioConstraint(1.0f, ConstraintDirection.HORIZONTAL)
-    )
-
-    val closeButtonTexture = ImageMap(ImageCache.get("textures/userinterface/close-icon-47.png"))
+    val closeButtonTexture = ImageMap(ImageCache.get("textures/userinterface/close_button.png"))
 
     val windowBackground = ColoredBackground(Color(0.5f, 0.5f, 0.5f, 0.5f))
     val titleBarBackground = ColoredBackground(Color(0.25f, 0.25f, 0.25f, 0.75f))
-    val closeButtonBackground = TexturedBackground(closeButtonTexture, Color(1.0f, 1.0f, 1.0f, 1.0f))
-//    val redBackground = ColoredBackground(Color(1.0f, 0.0f, 0.0f, 1.0f))
-    val textureBackground2 = TexturedBackground(closeButtonTexture, Color(1.0f, 1.0f, 1.0f, 1.0f))
+    val closeButtonBackground = TexturedBackground(closeButtonTexture, overlayColor = Color(1.0f, 1.0f, 1.0f, 1.0f))
 
     val uiWindow = Item("uiWindow", constraintSet, windowBackground)
     val titleBar = Item("titleBar", constraintSet2, titleBarBackground)
     val closeButton = Button("closeButton", constraintSet3, closeButtonBackground)
-    val closeButton2 = Button("closeButton2", constraintSet4, textureBackground2)
+
+    closeButton.addHoverEffect(ColorEffect(Color(0.0f, 0.0f, 0.0f, 0.0f), Color(0.5f, 0.5f, 0.5f)))
 
     userInterface.add(uiWindow)
     titleBar.add(closeButton)
-    titleBar.add(closeButton2)
     uiWindow.add(titleBar)
 
     userInterface.init()
@@ -118,7 +112,6 @@ fun main() {
 
         EntityRenderer.render(camera, entities, ambientLight, directionalLight)
 
-
         if (mouse.captured) {
             camera.update(window.keyboard, window.mouse, timer.getDelta())
         } else {
@@ -128,12 +121,9 @@ fun main() {
             } else {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
             }
-            if (keyboard.isPressed(Key.B)) {
-                userInterface.update(mouse)
-            }
+            userInterface.update(mouse)
             userInterface.draw()
         }
-
 
         window.synchronize()
         window.poll()
