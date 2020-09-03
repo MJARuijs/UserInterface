@@ -71,4 +71,9 @@ data class Vector4(var x: Float = 0.0f, var y: Float = 0.0f, var z: Float = 0.0f
 
     override fun toArray() = floatArrayOf(x, y, z, w)
 
+    fun fromString(string: String, delimiter: String = ","): Vector4 {
+        val values = string.split(delimiter)
+        return Vector4(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values[3].toFloat())
+    }
+
 }

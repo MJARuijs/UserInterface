@@ -7,12 +7,13 @@ uniform vec2 scale;
 
 uniform float aspectRatio;
 
+out vec2 position;
 out vec2 passTexCoords;
 
 void main() {
     passTexCoords = (inPosition + 1.0) / 2.0;
 
-    vec2 position = translation + scale * inPosition.xy;
+    position = translation + scale * inPosition.xy;
     position.x /= aspectRatio;
 
     gl_Position = vec4(position, 0, 1);

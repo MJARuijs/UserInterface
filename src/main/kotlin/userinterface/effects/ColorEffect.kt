@@ -6,19 +6,27 @@ import userinterface.items.Item
 import userinterface.items.ItemData
 import userinterface.items.backgrounds.TexturedBackground
 
-class ColorEffect(val backgroundColor: Color, val overlayColor: Color = Color(0.0f, 0.0f, 0.0f, 0.0f)) : Effect {
+class ColorEffect(private val backgroundColor: Color, private val overlayColor: Color = Color(0.0f, 0.0f, 0.0f, 0.0f)) : Effect {
 
-    override fun applyOn(item: Item): ItemData {
-
-        val itemData = ItemData(item.baseTranslation, item.baseScale, item.background)
+    override fun applyOn(item: Item) {
         if (item.background is ColoredBackground) {
-            itemData.background = ColoredBackground((item.background as ColoredBackground).color + backgroundColor)
+            val background = item.baseBackground as ColoredBackground
+            item.background = ColoredBackground(background.color + backgroundColor)
         } else if (item.background is TexturedBackground) {
             val background = item.baseBackground as TexturedBackground
-            itemData.background = TexturedBackground(background.textureMap, backgroundColor, overlayColor)
+            item.background = TexturedBackground(background.textureMap, backgroundColor, overlayColor)
         }
+    }
 
-        return itemData
+    override fun removeFrom(item: Item) {
+        item.background = item.baseBackground
+//        if (item.background is ColoredBackground) {
+//            val background = item.baseBackground as ColoredBackground
+//            item.background = item.baseBackground
+//        } else if (item.background is TexturedBackground) {
+//            val background = item.baseBackground as TexturedBackground
+//            item.background = TexturedBackground(background.textureMap, backgroundColor, overlayColor)
+//        }
     }
 
 }

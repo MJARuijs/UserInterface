@@ -1,10 +1,11 @@
 package userinterface.effects
 
 import userinterface.items.Item
-import userinterface.items.ItemData
 
 interface Effect {
 
-    fun applyOn(item: Item): ItemData
+    fun applyOn(item: Item)
+
+    fun removeFrom(item: Item)
 
 }

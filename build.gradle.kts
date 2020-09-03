@@ -12,6 +12,7 @@ val lwjglNatives = when (org.gradle.internal.os.OperatingSystem.current()) {
     org.gradle.internal.os.OperatingSystem.WINDOWS -> "natives-windows"
     else -> throw Error("Unrecognized or unsupported Operating system. Please set \"lwjglNatives\" manually")
 }
+val gdxVersion = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -34,6 +35,10 @@ dependencies {
     runtimeOnly("org.lwjgl", "lwjgl-openal", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
+//    compile("com.badlogicgames.gdx:gdx:$gdxVersion")
+//    compile("com.badlogicgames.gdx:gdx-freetype:$gdxVersion")
+//    compile("com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop")
+
 }
 
 tasks {

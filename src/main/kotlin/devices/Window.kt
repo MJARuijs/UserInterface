@@ -97,6 +97,14 @@ class Window(title: String, private val onWindowResized: (Int, Int) -> Unit) {
         glfwSetWindowSize(handle, width, height)
     }
 
+    fun close() {
+        glfwSetWindowShouldClose(handle, true)
+    }
+
+    fun isClosed(): Boolean {
+        return glfwWindowShouldClose(handle)
+    }
+
     fun destroy() {
         glfwDestroyWindow(handle)
         glfwTerminate()

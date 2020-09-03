@@ -4,7 +4,9 @@ import math.vectors.Vector2
 import userinterface.items.Item
 import userinterface.items.ItemPosition
 
-class AspectRatioConstraint(private val aspectRatio: Float, private val direction: ConstraintDirection) : Constraint() {
+class AspectRatioConstraint(direction: ConstraintDirection, private val aspectRatio: Float) : Constraint(direction) {
+
+    override fun type() = ConstraintType.ASPECT_RATIO
 
     override fun apply(translation: Vector2, scale: Vector2, parentTranslation: Vector2, parentScale: Vector2, siblings: ArrayList<Item>): ItemPosition {
 

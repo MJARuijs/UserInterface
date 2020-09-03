@@ -16,29 +16,21 @@ class ConstraintSet(private val constraints: ArrayList<Constraint> = ArrayList()
     var scale = Vector2()
         private set
 
-    private lateinit var xConstraint: Constraint
-    private lateinit var yConstraint: Constraint
-    private lateinit var widthConstraint: Constraint
-    private lateinit var heightConstraint: Constraint
+    fun findConstraint(type: ConstraintType, direction: ConstraintDirection): Constraint? {
+        return constraints.find { constraint ->
+            val isCorrectType = when (type) {
+                ConstraintType.CENTER -> constraint is CenterConstraint
+                ConstraintType.PIXEL -> constraint is PixelConstraint
+                ConstraintType.ASPECT_RATIO -> constraint is AspectRatioConstraint
+                ConstraintType.RELATIVE -> constraint is RelativeConstraint
+            }
+
+            isCorrectType && constraint.direction == direction
+        }
+    }
 
     operator fun plusAssign(constraint: Constraint) {
         constraints += constraint
-    }
-
-    fun setX(constraint: Constraint) {
-        xConstraint = constraint
-    }
-
-    fun setY(constraint: Constraint) {
-        yConstraint = constraint
-    }
-
-    fun setWidth(constraint: Constraint) {
-        widthConstraint = constraint
-    }
-
-    fun setHeight(constraint: Constraint) {
-        heightConstraint = constraint
     }
 
     fun apply(parentTranslation: Vector2, parentScale: Vector2, siblings: ArrayList<Item>): ItemPosition {

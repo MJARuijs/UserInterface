@@ -13,7 +13,7 @@ class UserInterface(private val aspectRatio: Float) {
     private val items = ArrayList<Item>()
 
     fun init() {
-        items.forEach { item -> item.init(Vector2(), Vector2(aspectRatio, 1.0f), items) }
+        items.forEach { item -> item.init(Vector2(), Vector2(1.0f, 1.0f), items) }
     }
 
     fun add(newItem: Item) {
@@ -24,11 +24,12 @@ class UserInterface(private val aspectRatio: Float) {
         }
     }
 
-    fun draw() {
+    fun draw(windowWidth: Int, windowHeight: Int) {
         GraphicsContext.disable(GraphicsOption.DEPTH_TESTING)
         GraphicsContext.enable(GraphicsOption.ALPHA_BLENDING)
         shaderProgram.start()
         shaderProgram.set("aspectRatio", aspectRatio)
+        shaderProgram.set("viewPort", Vector2(windowWidth, windowHeight))
         items.forEach { item -> item.draw(shaderProgram) }
         shaderProgram.stop()
         GraphicsContext.enable(GraphicsOption.DEPTH_TESTING)

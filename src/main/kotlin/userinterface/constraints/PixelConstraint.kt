@@ -4,7 +4,9 @@ import math.vectors.Vector2
 import userinterface.items.Item
 import userinterface.items.ItemPosition
 
-class PixelConstraint(private val offset: Float, private val direction: ConstraintDirection, private val anchorId: String = "parent") : Constraint() {
+class PixelConstraint(direction: ConstraintDirection, private val offset: Float, private val anchorId: String = "parent") : Constraint(direction) {
+
+    override fun type() = ConstraintType.PIXEL
 
     override fun apply(translation: Vector2, scale: Vector2, parentTranslation: Vector2, parentScale: Vector2, siblings: ArrayList<Item>): ItemPosition {
 
@@ -16,9 +18,10 @@ class PixelConstraint(private val offset: Float, private val direction: Constrai
             referenceScale = siblings.findLast { item -> item.id == anchorId }?.scale ?: referenceScale
         }
 
-        if (direction == ConstraintDirection.HORIZONTAL) {
-            translation.x = referenceTranslation.x + offset
+        if (direction == ConstraintDirection.HORIZONTAL || direction == ConstraintDirection.VERTICAL) {
+            println("Invalid direction given for PixelConstraint!")
         }
+
         if (direction == ConstraintDirection.TO_TOP) {
             val parentTop = referenceScale.y + referenceTranslation.y
             if (anchorId == "parent") {

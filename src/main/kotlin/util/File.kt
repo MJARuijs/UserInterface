@@ -1,5 +1,8 @@
 package util
 
+import java.io.File
+import java.io.FileWriter
+import java.net.URI
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.Files
@@ -13,9 +16,9 @@ import java.nio.file.Paths
  * @throws Exception the file could not be found or accessed.
  * @constructor
  */
-class File(location: String, private val charset: Charset = UTF_8) {
+class File(location: String, createIfAbsent: Boolean = false, private val charset: Charset = UTF_8) {
 
-    private val path: Path
+    private var path: Path
 
     init {
         try {
@@ -24,7 +27,19 @@ class File(location: String, private val charset: Charset = UTF_8) {
             val uri = url.toURI()
             path = Paths.get(uri)
         } catch (exception: Exception) {
-            throw Exception("Could not retrieve file: $location", exception)
+            if (createIfAbsent) {
+                println(location)
+//                File("resources/$location").createNewFile()
+                val uriTest = Thread.currentThread().contextClassLoader.getDefinedPackage("fonts/arial.fnt")
+                println(uriTest.name)
+//                File(uriTest).createNewFile()
+                val loader = ClassLoader.getSystemClassLoader()
+                val url = loader.getResource(location) ?: throw Exception("Could not find file: $location")
+                val uri = url.toURI()
+                path = Paths.get(uri)
+            } else {
+                throw Exception("Could not retrieve file: $location", exception)
+            }
         }
     }
 
@@ -54,10 +69,20 @@ class File(location: String, private val charset: Charset = UTF_8) {
     fun getContent() = String(getBytes(), charset)
 
     /**
-     * Read all text lines from the file.
+     * Read all userinterface.text lines from the file.
      * @return the lines read from the file.
      * @throws Exception the file could not be accessed or read.
      */
     fun getLines() = Files.readAllLines(path, charset) ?: throw Exception("Could not read all bytes")
 
+    fun write(lines: ArrayList<String>) {
+        val writer = FileWriter(path.toFile())
+        writer.write(lines.joinToString("\n"))
+        writer.close()
+    }
+
+    fun createIfAbsent(): util.File {
+        File(path.toString()).createNewFile()
+        return this
+    }
 }

@@ -5,49 +5,60 @@ import devices.Mouse
 import graphics.shaders.ShaderProgram
 import math.vectors.Vector2
 import userinterface.constraints.ConstraintSet
-import userinterface.effects.Effect
 import userinterface.items.backgrounds.Background
+import userinterface.items.backgrounds.ColoredBackground
+import userinterface.window.TitleBar
+import userinterface.window.UIWindow
 
-open class Item(val id: String, private val constraintSet: ConstraintSet, var background: Background) {
+open class Item(val id: String, val constraints: ConstraintSet, var background: Background) {
 
     private val children = ArrayList<Item>()
     private var quad = Quad()
 
-    val hoverEffects = ArrayList<Effect>()
-
     var baseBackground = background
 
-    var baseTranslation = Vector2()
-        private set
-
-    var baseScale = Vector2()
-        private set
-
     var translation = Vector2()
-        private set
 
     var scale = Vector2()
-        private set
 
-    fun init(parentTranslation: Vector2 = Vector2(), parentScale: Vector2, parentChildren: ArrayList<Item>) {
-        val data = constraintSet.apply(parentTranslation, parentScale, parentChildren)
-        baseTranslation = data.translation
-        baseScale = data.scale
+    open fun init(parentTranslation: Vector2 = Vector2(), parentScale: Vector2, parentChildren: ArrayList<Item>) {
+        val data = constraints.apply(parentTranslation, parentScale, parentChildren)
         translation = data.translation
         scale = data.scale
+        println("$id $scale")
+        if (this is UIWindow && this.hasTitleBar()) {
+            val titleBarHeight = this.getTitleBar().height
 
-        children.forEach { child -> child.init(translation, scale, children) }
+            val childScale = Vector2(scale.x, scale.y)
+            childScale.y -= titleBarHeight * scale.y
+
+            val childTranslation = Vector2(translation.x, translation.y)
+            childTranslation.y -= titleBarHeight * scale.y
+
+            children.forEach { child ->
+                if (child is TitleBar) {
+                    child.init(translation, scale, children)
+                } else {
+                    child.init(childTranslation, childScale, children)
+                }
+            }
+        } else {
+            children.forEach { child -> child.init(translation, scale, children) }
+        }
     }
 
     fun add(item: Item) {
         children += item
     }
 
-    fun addHoverEffect(effect: Effect) {
-        hoverEffects += effect
+    fun findById(id: String): Item? {
+        return children.find { item -> item.id == id }
     }
 
-    fun draw(shaderProgram: ShaderProgram) {
+    open fun draw(shaderProgram: ShaderProgram) {
+        if (id == "testButton1") {
+//            println("$translation, $scale")
+        }
         shaderProgram.set("translation", translation)
         shaderProgram.set("scale", scale)
         background.setProperties(shaderProgram)
@@ -56,47 +67,10 @@ open class Item(val id: String, private val constraintSet: ConstraintSet, var ba
     }
 
     open fun update(mouse: Mouse, aspectRatio: Float) {
-        if (isHovered(mouse, aspectRatio)) {
-            hoverEffects.forEach { effect ->
-                val itemData = effect.applyOn(this)
-                translation = itemData.translation
-                scale = itemData.scale
-                background = itemData.background
-            }
-        } else {
-            translation = baseTranslation
-            scale = baseScale
-            background = baseBackground
-        }
-
         children.forEach { child -> child.update(mouse, aspectRatio) }
-    }
-
-    fun isHovered(mouse: Mouse, aspectRatio: Float): Boolean {
-        return isMouseOnButton(mouse, aspectRatio)
-    }
-
-    fun isMouseOnButton(mouse: Mouse, aspectRatio: Float): Boolean {
-        val minX = (translation.x - scale.x)/aspectRatio
-        val maxX = (translation.x + scale.x)/aspectRatio
-        val minY = translation.y - scale.y
-        val maxY = translation.y + scale.y
-
-        val scaledMouseX = mouse.x * 2.0f
-        val scaledMouseY = mouse.y * 2.0f
-
-        if (scaledMouseX < minX || scaledMouseX > maxX) {
-            return false
-        }
-        if (scaledMouseY < minY || scaledMouseY > maxY) {
-
-            return false
-        }
-        return true
     }
 
     fun destroy() {
         quad.destroy()
     }
-
 }

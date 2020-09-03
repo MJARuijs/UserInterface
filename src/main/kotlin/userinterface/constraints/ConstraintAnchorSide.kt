@@ -1,9 +1,6 @@
 package userinterface.constraints
 
-enum class ConstraintDirection {
-
-    HORIZONTAL,
-    VERTICAL,
+enum class ConstraintAnchorSide {
 
     TO_BOTTOM,
     TO_TOP,

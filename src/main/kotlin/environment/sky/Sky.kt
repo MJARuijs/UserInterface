@@ -16,7 +16,6 @@ class Sky {
     private val quad = Quad()
 
     fun render() {
-
         GraphicsContext.disable(GraphicsOption.DEPTH_TESTING)
 
         shaderProgram.start()
