@@ -25,7 +25,7 @@ open class Item(val id: String, val constraints: ConstraintSet, var background: 
         val data = constraints.apply(parentTranslation, parentScale, parentChildren)
         translation = data.translation
         scale = data.scale
-        println("$id $scale")
+//        println("$id $scale")
         if (this is UIWindow && this.hasTitleBar()) {
             val titleBarHeight = this.getTitleBar().height
 
@@ -56,9 +56,6 @@ open class Item(val id: String, val constraints: ConstraintSet, var background: 
     }
 
     open fun draw(shaderProgram: ShaderProgram) {
-        if (id == "testButton1") {
-//            println("$translation, $scale")
-        }
         shaderProgram.set("translation", translation)
         shaderProgram.set("scale", scale)
         background.setProperties(shaderProgram)

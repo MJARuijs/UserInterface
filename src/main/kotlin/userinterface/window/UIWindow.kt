@@ -10,7 +10,7 @@ import userinterface.items.Button
 import userinterface.items.Item
 import userinterface.items.backgrounds.Background
 
-class UIWindow(id: String, constraintSet: ConstraintSet, background: Background) : Item(id, constraintSet, background) {
+class UIWindow(id: String, constraintSet: ConstraintSet, background: Background, var shouldShow: Boolean = false) : Item(id, constraintSet, background) {
 
     private var titleBarId = ""
 

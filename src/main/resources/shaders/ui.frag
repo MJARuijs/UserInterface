@@ -1,6 +1,6 @@
 #version 450 core
 
-const float SMOOTH_DISTANCE = 0.001f;
+const float SMOOTH_DISTANCE = 0.002f;
 
 in vec2 position;
 in vec2 passTexCoords;
@@ -25,20 +25,32 @@ uniform vec2 translation;
 
 out vec4 outColor;
 
-vec4 checkCorner(vec2 currentPoint, float x, float y, float scaledCornerRadius, vec4 outColor) {
+void checkCorner(vec2 currentPoint, float x, float y, float scaledCornerRadius) {
     float distance = distance(currentPoint, vec2(x, y));
     float minScale = min(scale.x, scale.y);
     float scaledOutline = outline * 2 * minScale;
 
-    if (distance > scaledCornerRadius) {
-        if (cornerRadius > 0.0f) {
+    if (cornerRadius > 0.0f) {
+        if (distance > scaledCornerRadius) {
             outColor.a = 0.0f;
+        } else if (distance > scaledCornerRadius - scaledOutline) {
+            outColor = outlineColor;
+            if (scaledCornerRadius < scaledOutline) {
+                if (distance - (scaledCornerRadius - scaledOutline) < SMOOTH_DISTANCE) {
+                    float factor = (distance - (scaledCornerRadius - scaledOutline)) / SMOOTH_DISTANCE;
+                    outColor.a = factor;
+                } else if ((scaledCornerRadius-distance) < SMOOTH_DISTANCE) {
+                    outColor.a = (scaledCornerRadius-distance ) / SMOOTH_DISTANCE;
+                }
+            } else {
+                if (distance - (scaledCornerRadius - scaledOutline) < SMOOTH_DISTANCE) {
+                    outColor.a = (distance - (scaledCornerRadius - scaledOutline)) / SMOOTH_DISTANCE;
+                } else if ((scaledCornerRadius-distance) < SMOOTH_DISTANCE) {
+                    outColor.a = (scaledCornerRadius-distance ) / SMOOTH_DISTANCE;
+                }
+            }
         }
-    } else if (distance > scaledCornerRadius - scaledOutline) {
-        outColor = outlineColor;
     }
-
-    return outColor;
 }
 
 void main() {
@@ -71,12 +83,14 @@ void main() {
         currentPoint.x *= aspectRatio;
 
         float minScale = min(scale.x, scale.y);
+        float scaledOutline = outline * 2 * minScale;
+
         float scaledCornerRadius = cornerRadius / 90.0;
         scaledCornerRadius *= minScale;
 
-        float leftBound = (translation.x - scale.x + scaledCornerRadius);
+        float leftBound = translation.x - scale.x + scaledCornerRadius;
         float topBound = translation.y + scale.y - scaledCornerRadius;
-        float rightBound = (translation.x + scale.x - scaledCornerRadius);
+        float rightBound = translation.x + scale.x - scaledCornerRadius;
         float bottomBound = translation.y - scale.y + scaledCornerRadius;
 
         bool outOfLeftBound = false;
@@ -97,48 +111,45 @@ void main() {
             outOfBottomBound = true;
         }
 
-        float scaledOutline = outline *2 * minScale;
-
         if (outOfTopBound) {
             if (outOfLeftBound) {
-                outColor = checkCorner(currentPoint, leftBound, topBound, scaledCornerRadius, outColor);
+                checkCorner(currentPoint, leftBound, topBound, scaledCornerRadius);
             } else if (outOfRightBound) {
-                outColor = checkCorner(currentPoint, rightBound, topBound, scaledCornerRadius, outColor);
+                checkCorner(currentPoint, rightBound, topBound, scaledCornerRadius);
             }
         }
 
         if (outOfBottomBound) {
             if (outOfLeftBound) {
-                outColor = checkCorner(currentPoint, leftBound, bottomBound, scaledCornerRadius, outColor);
+                checkCorner(currentPoint, leftBound, bottomBound, scaledCornerRadius);
             } else if (outOfRightBound) {
-                outColor = checkCorner(currentPoint, rightBound, bottomBound, scaledCornerRadius, outColor);
+                checkCorner(currentPoint, rightBound, bottomBound, scaledCornerRadius);
             }
         }
 
         if (outline > 0.0f) {
-            float scaledOutline = outline * 2 * minScale;
-
             if (outOfRightBound && !outOfTopBound && !outOfBottomBound) {
                 if (currentPoint.x > translation.x + scale.x - scaledOutline) {
-                    outColor = outlineColor;
+                    checkCorner(vec2(currentPoint.x, 0.0), rightBound, 0.0, scaledCornerRadius);
+//                    outColor = outlineColor;
                 }
             }
 
             if (outOfLeftBound && !outOfTopBound && !outOfBottomBound) {
                 if (currentPoint.x < translation.x - scale.x + scaledOutline) {
-                    outColor = outlineColor;
+                    checkCorner(vec2(currentPoint.x, 0.0), leftBound, 0.0, scaledCornerRadius);
                 }
             }
 
             if (outOfTopBound && !outOfLeftBound && !outOfRightBound) {
                 if (currentPoint.y > translation.y + scale.y - scaledOutline) {
-                    outColor = outlineColor;
+                    checkCorner(vec2(0.0, currentPoint.y), 0.0, topBound, scaledCornerRadius);
                 }
             }
 
             if (outOfBottomBound && !outOfLeftBound && !outOfRightBound) {
                 if (currentPoint.y < translation.y - scale.y + scaledOutline) {
-                    outColor = outlineColor;
+                    checkCorner(vec2(0.0, currentPoint.y), 0.0, bottomBound, scaledCornerRadius);
                 }
             }
         }

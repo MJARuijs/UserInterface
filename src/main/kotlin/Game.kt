@@ -17,9 +17,11 @@ import math.vectors.Vector2
 import math.vectors.Vector3
 import org.lwjgl.opengl.GL11.*
 import userinterface.UserInterface
+import userinterface.animation.TransitionAnimation
 import userinterface.constraints.*
 import userinterface.effects.ColorEffect
 import userinterface.items.Button
+import userinterface.items.Switch
 import userinterface.items.backgrounds.ColoredBackground
 import userinterface.text.Text
 import userinterface.text.font.FontLoader
@@ -56,34 +58,39 @@ fun main() {
     optionsWindow.addButtonHoverEffects("close_button", ColorEffect(Color(0.0f, 0.0f, 0.0f, 0.0f), Color(0.5f, 0.5f, 0.5f)))
     optionsWindow.addButtonOnClickEffects("close_button", ColorEffect(Color(0.0f, 0.0f, 0.0f, 0.0f), Color(0.0f, 0.1f, 0.5f)))
 
-    val buttonBackground = ColoredBackground(Color(0.0f, 0.0f, 0.5f), 10f, 0.02f, Color(1f, 1.0f, 1.0f))
-    val buttonBackground2 = ColoredBackground(Color(0.0f, 0.5f, 0.0f), 0f)
-    val buttonBackground3 = ColoredBackground(Color(0.5f, 0.0f, 0.0f), 10f)
+    val buttonBackground = ColoredBackground(Color(0.0f, 0.0f, 1.0f), 0f, 0.05f, Color(1f, 1.0f, 1.0f))
+    val buttonBackground3 = ColoredBackground(Color(0.0f, 0.0f, 1.0f), 40f, 0.02f, Color(1f, 1.0f, 1.0f))
+    val buttonBackground2 = ColoredBackground(Color(0.0f, 0.5f, 0.0f, 0.5f), 1.5f, 0.02f, Color(1f, 1.0f, 1.0f, 0.5f))
 
     val testButton = Button("testButton1", ConstraintSet(
-        CenterConstraint(ConstraintDirection.HORIZONTAL),
-//        PixelConstraint(ConstraintDirection.TO_LEFT, 0.0f),
-        CenterConstraint(ConstraintDirection.VERTICAL),
-//        PixelConstraint(ConstraintDirection.TO_TOP, 0.0f),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.9f),
+        PixelConstraint(ConstraintDirection.TO_LEFT, 0f),
+        PixelConstraint(ConstraintDirection.TO_TOP, 0f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
         AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)),
         buttonBackground
     )
 
-//    val switch = Switch("test_switch", ConstraintSet(
-//        CenterConstraint(ConstraintDirection.HORIZONTAL),
-//        CenterConstraint(ConstraintDirection.VERTICAL),
-//        RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f),
-//        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)),
-//        Color(0.75f, 0.75f, 0.75f),
-//        Color(0.0f, 0.0f, 0.75f, 0.25f)
-//    )
+    val testButton2 = Button("testButton2", ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_RIGHT, 0f),
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.4f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)),
+        buttonBackground3
+    )
+
+    val switch = Switch("test_switch", ConstraintSet(
+        CenterConstraint(ConstraintDirection.HORIZONTAL),
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)),
+        ColoredBackground(Color(0.0f, 0.0f, 0.0f, 0.0f), 90.0f, 0.05f, Color(37, 82, 118)),
+        ColoredBackground(Color(0.25f, 0.64f, 0.94f, 0.5f), 90.0f, 0.00f)
+    )
 
     optionsWindow.add(testButton)
-//    optionsWindow.add(testButton2)
 //    optionsWindow.add(switch)
-//    optionsWindow.add(testButton3)
-    userInterface.add(optionsWindow)
+//    optionsWindow.add(testButton2)
+    userInterface += optionsWindow
     userInterface.init()
 
     val textProgram = ShaderProgram.load("shaders/text.vert", "shaders/text.frag")
@@ -97,6 +104,7 @@ fun main() {
     var enableWireFrame = false
 
     var increasingRadius = false
+    userInterface.showWindow("options_menu")
 
     while (!window.isClosed()) {
         if (keyboard.isPressed(Key.ESCAPE)) {
@@ -111,15 +119,19 @@ fun main() {
             enableWireFrame = !enableWireFrame
         }
 
+        if (keyboard.isPressed(Key.A)) {
+            userInterface += TransitionAnimation(1.0f, Vector2(1.0f, 0.0f), testButton)
+        }
+
         if (increasingRadius) {
-//            buttonBackground2.cornerRadius += timer.getDelta() * 50f
+//            buttonBackground2.cornerRadius += timer.getDelta() * 25f
 //            buttonBackground.cornerRadius = buttonBackground2.cornerRadius
 //            buttonBackground3.cornerRadius = buttonBackground2.cornerRadius
             if (buttonBackground2.cornerRadius >= 90.0f) {
                 increasingRadius = false
             }
         } else {
-//            buttonBackground2.cornerRadius -= timer.getDelta() * 50f
+//            buttonBackground2.cornerRadius -= timer.getDelta() * 25f
 //            buttonBackground.cornerRadius = buttonBackground2.cornerRadius
 //            buttonBackground3.cornerRadius = buttonBackground2.cornerRadius
             if (buttonBackground2.cornerRadius <= 0.0f) {
@@ -141,7 +153,7 @@ fun main() {
             } else {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
             }
-            userInterface.update(mouse)
+            userInterface.update(mouse, timer.getDelta())
             userInterface.draw(window.width, window.height)
         }
 //        text.render(textProgram)
