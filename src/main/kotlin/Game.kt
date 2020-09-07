@@ -58,8 +58,6 @@ fun main() {
     optionsWindow.addButtonOnClickEffects("close_button", ColorEffect(Color(0.0f, 0.0f, 0.0f, 0.0f), Color(0.0f, 0.1f, 0.5f)))
 
     val buttonBackground = ColoredBackground(Color(0.0f, 0.0f, 1.0f), 0f, 0.05f, Color(1f, 1.0f, 1.0f))
-    val buttonBackground2 = ColoredBackground(Color(0.0f, 0.0f, 1.0f, 0f), 0.5f, 0.02f, Color(1f, 1.0f, 1.0f, 0.5f))
-    val buttonBackground3 = ColoredBackground(Color(0.0f, 0.0f, 1.0f), 40f, 0.02f, Color(1f, 1.0f, 1.0f))
 
     val testButton = Button("testButton1",
         ConstraintSet(
@@ -112,6 +110,7 @@ fun main() {
             println("TestButton4 Clicked")
         }
     )
+
     val switch = Switch("test_switch",
         ConstraintSet(
             CenterConstraint(ConstraintDirection.HORIZONTAL),
@@ -123,15 +122,12 @@ fun main() {
         ColoredBackground(Color(0.25f, 0.64f, 0.94f, 0.5f), 90.0f, 0.00f)
     )
 
-
-    optionsWindow += testButton2
     optionsWindow += testButton4
-
     optionsWindow += testButton3
-
+    optionsWindow += testButton2
     optionsWindow += testButton
+
     userInterface += optionsWindow
-    userInterface.init()
 
     val textProgram = ShaderProgram.load("shaders/text.vert", "shaders/text.frag")
     val arialFont = FontLoader(window.aspectRatio).load("fonts/arial.png")
@@ -140,67 +136,43 @@ fun main() {
     timer.reset()
 
     mouse.release()
-    val uiProgram = ShaderProgram.load("shaders/ui.vert", "shaders/ui.frag")
 
-    var enableWireFrame = false
-
-    var increasingRadius = false
     userInterface.showWindow("options_menu")
-//    testButton.init(Vector2(), Vector2(0.5f, 0.5f))
 
     while (!window.isClosed()) {
         if (keyboard.isPressed(Key.ESCAPE)) {
             mouse.toggle()
+            if (userInterface.isShowing()) {
+                userInterface.hideWindows()
+            } else {
+                userInterface.showWindow("options_menu")
+            }
         }
 
         if (keyboard.isPressed(Key.F1)) {
             window.close()
         }
 
-        if (keyboard.isPressed(Key.F)) {
-            enableWireFrame = !enableWireFrame
-        }
-
         if (keyboard.isPressed(Key.A)) {
             userInterface += TransitionAnimation(1.0f, Vector2(1.0f, 0.0f), testButton)
-        }
-
-        if (increasingRadius) {
-//            buttonBackground2.cornerRadius += timer.getDelta() * 25f
-//            buttonBackground.cornerRadius = buttonBackground2.cornerRadius
-//            buttonBackground3.cornerRadius = buttonBackground2.cornerRadius
-            if (buttonBackground2.cornerRadius >= 90.0f) {
-                increasingRadius = false
-            }
-        } else {
-//            buttonBackground2.cornerRadius -= timer.getDelta() * 25f
-//            buttonBackground.cornerRadius = buttonBackground2.cornerRadius
-//            buttonBackground3.cornerRadius = buttonBackground2.cornerRadius
-            if (buttonBackground2.cornerRadius <= 0.0f) {
-                increasingRadius = true
-            }
         }
 
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         sky.render()
 
         EntityRenderer.render(camera, entities, ambientLight, directionalLight)
-//        testButton.update(mouse, window.aspectRatio)
-//        testButton.draw(uiProgram)
-        if (mouse.captured) {
-            camera.update(window.keyboard, window.mouse, timer.getDelta())
-        } else {
-            if (enableWireFrame) {
-                glLineWidth(5.0f)
-                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-            } else {
-                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
-            }
+
+        if (userInterface.isShowing()) {
             userInterface.update(mouse, timer.getDelta())
             userInterface.draw(window.width, window.height)
+//        } else {
+//            mouse.toggle()
+        }
+
+        if (mouse.captured) {
+            camera.update(window.keyboard, window.mouse, timer.getDelta())
         }
 //        text.render(textProgram)
-
 
         window.synchronize()
         window.poll()

@@ -31,8 +31,6 @@ open class Item(val id: String, val constraints: ConstraintSet, var background: 
         children += item
     }
 
-    fun hasDependencies() = requiredIds.isNotEmpty()
-
     fun findById(id: String): Item? {
         return children.find { item -> item.id == id }
     }

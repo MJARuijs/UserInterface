@@ -41,10 +41,6 @@ class ConstraintSet(vararg val constraints: Constraint) {
         }
     }
 
-//    operator fun plusAssign(constraint: Constraint) {
-//        constraints += constraint
-//    }
-
     fun apply(parentTranslation: Vector2, parentScale: Vector2, siblings: ArrayList<Item> = ArrayList()): ItemPosition {
         val parentPosition = ItemPosition(parentTranslation, parentScale)
 

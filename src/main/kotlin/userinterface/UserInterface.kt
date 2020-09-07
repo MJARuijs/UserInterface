@@ -15,12 +15,7 @@ class UserInterface(private val aspectRatio: Float) {
     private val pages = ArrayList<UIPage>()
     private val windows = ArrayList<UIWindow>()
 
-    private var start = 0L
-
-    fun init() {
-//        items.forEach { item -> item.init(Vector2(), Vector2(1.0f, 1.0f), items) }
-        windows.forEach { window -> window.init(Vector2(), Vector2(1.0f, 1.0f), ArrayList()) }
-    }
+    private var showingId = ""
 
     operator fun plusAssign(page: UIPage) {
         pages += page
@@ -39,18 +34,27 @@ class UserInterface(private val aspectRatio: Float) {
     }
 
     fun showWindow(name: String) {
-        windows.forEach { window ->
-            window.shouldShow = window.id == name
-            println("Should show window")
+        if (windows.any { window -> window.id == name }) {
+            windows.forEach { window ->
+                window.shouldShow = window.id == name
+            }
+            showingId = name
         }
     }
 
-    fun hideWindow(name: String) {
+    fun hideWindows() {
         windows.forEach { window ->
-            if (window.id == name) {
-                window.shouldShow = false
+            window.shouldShow = false
+        }
+    }
+
+    fun isShowing(): Boolean {
+        for (window in windows) {
+            if (window.shouldShow) {
+                return true
             }
         }
+        return false
     }
 
     fun draw(windowWidth: Int, windowHeight: Int) {
@@ -75,11 +79,20 @@ class UserInterface(private val aspectRatio: Float) {
                 window.update(mouse, aspectRatio)
             }
         }
+
+        if (showingId.isNotBlank()) {
+            windows.forEach { window ->
+                if (window.id == showingId && !window.shouldShow) {
+                    showingId = ""
+                    mouse.capture()
+                }
+            }
+        }
+
         val removableAnimations = ArrayList<Animation>()
 
         animations.forEach { animation ->
             if (animation.apply(deltaTime)) {
-                println(System.currentTimeMillis() - start)
                 removableAnimations += animation
             }
         }

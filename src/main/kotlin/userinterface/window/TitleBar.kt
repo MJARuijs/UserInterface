@@ -9,9 +9,9 @@ import userinterface.items.Item
 import userinterface.items.backgrounds.Background
 import userinterface.items.backgrounds.TexturedBackground
 
-class TitleBar(id: String = "TitleBar", constraintSet: ConstraintSet, background: Background, closeButtonAlignment: ButtonAlignment) : Item(id, constraintSet, background) {
+class TitleBar(id: String = "TitleBar", constraintSet: ConstraintSet, background: Background, closeButtonAlignment: ButtonAlignment, onClick: () -> Unit = {}) : Item(id, constraintSet, background) {
 
-    constructor(id: String, height: Float, background: Background, closeButtonAlignment: ButtonAlignment) : this(
+    constructor(id: String, height: Float, background: Background, closeButtonAlignment: ButtonAlignment, onClick: () -> Unit = {}) : this(
         id,
         ConstraintSet(
             CenterConstraint(ConstraintDirection.VERTICAL),
@@ -20,8 +20,11 @@ class TitleBar(id: String = "TitleBar", constraintSet: ConstraintSet, background
             RelativeConstraint(ConstraintDirection.VERTICAL, height)
         ),
         background,
-        closeButtonAlignment
+        closeButtonAlignment,
+        onClick
     )
+
+    constructor(id: String, titleBarData: TitleBarData, onClick: () -> Unit = {}) : this(id, titleBarData.height, titleBarData.background, titleBarData.closeButtonAlignment, onClick)
 
     private var closeButton: Button? = null
 
@@ -43,7 +46,7 @@ class TitleBar(id: String = "TitleBar", constraintSet: ConstraintSet, background
                     AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
                 )
 
-                closeButton = Button("close_button", constraints, closeButtonBackground)
+                closeButton = Button("close_button", constraints, closeButtonBackground, onClick)
             } else if (closeButtonAlignment == ButtonAlignment.LEFT) {
                 val constraints = ConstraintSet(
                     PixelConstraint(ConstraintDirection.TO_TOP, 0.0f),
@@ -52,7 +55,7 @@ class TitleBar(id: String = "TitleBar", constraintSet: ConstraintSet, background
                     AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
                 )
 
-                closeButton = Button("close_button", constraints, closeButtonBackground)
+                closeButton = Button("close_button", constraints, closeButtonBackground, onClick)
             }
 
             add(closeButton!!)
