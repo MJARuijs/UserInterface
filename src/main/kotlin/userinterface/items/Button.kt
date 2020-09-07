@@ -24,12 +24,13 @@ class Button(id: String, constraintSet: ConstraintSet, background: Background, p
 
         val isHovered = isHovered(mouse, aspectRatio)
 
-        if (isHovered && (mouse.isDown(Button.LEFT) || mouse.isPressed(Button.LEFT))) {
+        if (isHovered && (mouse.isPressed(Button.LEFT) || mouse.isPressed(Button.LEFT))) {
+            onClick()
             isClicked = true
             onClickEffects.forEach { effect ->
                 effect.applyOn(this)
             }
-            onClick()
+
         } else if (isHovered) {
             hoverEffects.forEach { effect ->
                 effect.applyOn(this)
@@ -48,11 +49,6 @@ class Button(id: String, constraintSet: ConstraintSet, background: Background, p
         }
     }
 
-    override fun draw(shaderProgram: ShaderProgram) {
-        super.draw(shaderProgram)
-
-    }
-
     fun addHoverEffect(effect: Effect) {
         hoverEffects += effect
     }
@@ -66,8 +62,9 @@ class Button(id: String, constraintSet: ConstraintSet, background: Background, p
     }
 
     private fun isMouseOnButton(mouse: Mouse, aspectRatio: Float): Boolean {
-        val minX = (translation.x - scale.x)/aspectRatio
-        val maxX = (translation.x + scale.x)/aspectRatio
+
+        val minX = (translation.x - scale.x) / aspectRatio
+        val maxX = (translation.x + scale.x) / aspectRatio
         val minY = translation.y - scale.y
         val maxY = translation.y + scale.y
 
@@ -82,5 +79,4 @@ class Button(id: String, constraintSet: ConstraintSet, background: Background, p
         }
         return true
     }
-
 }

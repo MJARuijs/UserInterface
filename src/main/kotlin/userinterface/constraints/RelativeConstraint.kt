@@ -4,7 +4,7 @@ import math.vectors.Vector2
 import userinterface.items.Item
 import userinterface.items.ItemPosition
 
-class RelativeConstraint(direction: ConstraintDirection, val percentage: Float, private val anchorId: String = "parent") : Constraint(direction) {
+class RelativeConstraint(direction: ConstraintDirection, val percentage: Float, val anchorId: String = "parent") : Constraint(direction) {
 
     override fun type() = ConstraintType.RELATIVE
 

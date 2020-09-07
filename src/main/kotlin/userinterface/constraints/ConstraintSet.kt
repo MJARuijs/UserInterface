@@ -4,10 +4,22 @@ import math.vectors.Vector2
 import userinterface.items.Item
 import userinterface.items.ItemPosition
 
-class ConstraintSet(private val constraints: ArrayList<Constraint> = ArrayList()) {
+class ConstraintSet(vararg val constraints: Constraint) {
 
-    constructor(vararg constraints: Constraint) : this() {
-        this.constraints += constraints
+    val requiredIds = ArrayList<String>()
+
+    init {
+        for (constraint in constraints) {
+            if (constraint is PixelConstraint) {
+                if (constraint.anchorId != "parent") {
+                    requiredIds += constraint.anchorId
+                }
+            } else if (constraint is RelativeConstraint) {
+                if (constraint.anchorId != "parent") {
+                    requiredIds += constraint.anchorId
+                }
+            }
+        }
     }
 
     var translation = Vector2()
@@ -29,11 +41,11 @@ class ConstraintSet(private val constraints: ArrayList<Constraint> = ArrayList()
         }
     }
 
-    operator fun plusAssign(constraint: Constraint) {
-        constraints += constraint
-    }
+//    operator fun plusAssign(constraint: Constraint) {
+//        constraints += constraint
+//    }
 
-    fun apply(parentTranslation: Vector2, parentScale: Vector2, siblings: ArrayList<Item>): ItemPosition {
+    fun apply(parentTranslation: Vector2, parentScale: Vector2, siblings: ArrayList<Item> = ArrayList()): ItemPosition {
         val parentPosition = ItemPosition(parentTranslation, parentScale)
 
         var currentPosition = ItemPosition(translation, scale)

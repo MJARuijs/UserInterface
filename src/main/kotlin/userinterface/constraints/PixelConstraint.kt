@@ -4,7 +4,7 @@ import math.vectors.Vector2
 import userinterface.items.Item
 import userinterface.items.ItemPosition
 
-class PixelConstraint(direction: ConstraintDirection, private val offset: Float, private val anchorId: String = "parent") : Constraint(direction) {
+class PixelConstraint(direction: ConstraintDirection, private val offset: Float, val anchorId: String = "parent") : Constraint(direction) {
 
     override fun type() = ConstraintType.PIXEL
 

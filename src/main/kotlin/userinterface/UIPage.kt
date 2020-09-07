@@ -9,4 +9,8 @@ class UIPage(private val name: String, private val items: ArrayList<Item> = Arra
 
     }
 
+    fun destroy() {
+        items.forEach { item -> item.destroy() }
+    }
+
 }
