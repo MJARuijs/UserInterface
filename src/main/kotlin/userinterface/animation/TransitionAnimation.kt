@@ -4,34 +4,52 @@ import math.vectors.Vector2
 import userinterface.items.Item
 import kotlin.math.abs
 
-class TransitionAnimation(duration: Float, transitionTo: Vector2, val item: Item) : Animation() {
+class TransitionAnimation(duration: Float, translation: Vector2, val item: Item) : Animation() {
 
-    private val xSpeed = (transitionTo.x) / duration
-    private val ySpeed = (transitionTo.y) / duration
+    private val xSpeed = (translation.x) / duration
+    private val ySpeed = (translation.y) / duration
 
-    private val endTranslation = item.translation + transitionTo
+    private val endTranslation = item.translation + translation
+
+    private var xCompleted = false
+    private var yCompleted = false
+
+    init {
+        if (xSpeed == 0.0f) {
+            xCompleted = true
+        }
+        if (ySpeed == 0.0f) {
+            yCompleted = true
+        }
+    }
 
     override fun apply(deltaTime: Float): Boolean {
-        val currentTranslation = item.translation
+        val currentTranslation = Vector2()
 
         val xIncrease = deltaTime * xSpeed
         val yIncrease = deltaTime * ySpeed
 
-        if (abs(currentTranslation.x - endTranslation.x) < xIncrease) {
-            currentTranslation.x = endTranslation.x
-        } else {
-            currentTranslation.x += xIncrease
+        if (!xCompleted) {
+            if (abs(item.translation.x - endTranslation.x) < xIncrease) {
+                currentTranslation.x = abs(item.translation.x - endTranslation.x)
+                xCompleted = true
+            } else {
+                currentTranslation.x += xIncrease
+            }
         }
 
-        if (abs(currentTranslation.y - endTranslation.y) < yIncrease) {
-            currentTranslation.y = endTranslation.y
-        } else {
-            currentTranslation.y += yIncrease
+        if (!yCompleted) {
+            if (abs(item.translation.y - endTranslation.y) < abs(yIncrease)) {
+                currentTranslation.y = abs(item.translation.y - endTranslation.y)
+                yCompleted = true
+            } else {
+                currentTranslation.y += yIncrease
+            }
         }
 
-        item.translation = currentTranslation
+        item.translate(currentTranslation)
 
-        if (currentTranslation == endTranslation) {
+        if (xCompleted && yCompleted) {
             return true
         }
 

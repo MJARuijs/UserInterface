@@ -8,8 +8,8 @@ abstract class Constraint(val direction: ConstraintDirection) {
 
     fun apply(itemPosition: ItemPosition, parentPosition: ItemPosition, siblings: ArrayList<Item>) = apply(itemPosition.translation, itemPosition.scale, parentPosition.translation, parentPosition.scale, siblings)
 
-    abstract fun type(): ConstraintType
-
     abstract fun apply(translation: Vector2, scale: Vector2, parentTranslation: Vector2, parentScale: Vector2, siblings: ArrayList<Item>): ItemPosition
+
+    abstract fun type(): ConstraintType
 
 }

@@ -43,7 +43,6 @@ class ConstraintSet(vararg val constraints: Constraint) {
 
     fun apply(parentTranslation: Vector2, parentScale: Vector2, siblings: ArrayList<Item> = ArrayList()): ItemPosition {
         val parentPosition = ItemPosition(parentTranslation, parentScale)
-
         var currentPosition = ItemPosition(translation, scale)
 
         constraints.sortWith(compareBy {

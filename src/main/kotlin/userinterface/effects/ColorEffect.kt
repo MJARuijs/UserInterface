@@ -4,6 +4,7 @@ import math.Color
 import userinterface.items.backgrounds.ColoredBackground
 import userinterface.items.Item
 import userinterface.items.ItemData
+import userinterface.items.backgrounds.Background
 import userinterface.items.backgrounds.TexturedBackground
 
 class ColorEffect(private val backgroundColor: Color, private val overlayColor: Color = Color(0.0f, 0.0f, 0.0f, 0.0f)) : Effect {

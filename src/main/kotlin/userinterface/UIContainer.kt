@@ -7,14 +7,19 @@ import java.util.concurrent.ConcurrentHashMap
 
 open class UIContainer {
 
-    val children = ArrayList<Item>()
     private val postPonedItems = ConcurrentHashMap<Item, ArrayList<String>>()
 
-    fun add(item: Item, requiredIds: ArrayList<String>) {
+    val children = ArrayList<Item>()
+
+    operator fun plusAssign(item: Item) {
+        add(item, item.requiredIds)
+    }
+
+    private fun add(item: Item, requiredIds: ArrayList<String>) {
         if (requiredIds.isNotEmpty()) {
             addItemWithDependencies(item, requiredIds)
         } else {
-            addItem(item)
+            add(item)
         }
     }
 
@@ -26,26 +31,22 @@ open class UIContainer {
         }
         if (requiredIds.isEmpty()) {
             postPonedItems.remove(item)
-            addItem(item)
+            add(item)
         } else {
             postPonedItems[item] = requiredIds
         }
     }
 
-    private fun addItem(item: Item) {
-        initChild(item)
+    protected fun add(item: Item) {
+        positionChild(item)
 
         for (postPonedItem in postPonedItems) {
             addItemWithDependencies(postPonedItem.key, postPonedItem.value)
         }
     }
 
-    open fun initChild(item: Item, translation: Vector2 = Vector2(), scale: Vector2 = Vector2(), children: ArrayList<Item> = ArrayList()) {
-        if (children.any { child -> child.id == item.id }) {
-            return
-        }
-
-        item.init(translation, scale, children)
+    open fun positionChild(item: Item, translation: Vector2 = Vector2(), scale: Vector2 = Vector2(), childItems: ArrayList<Item> = ArrayList()) {
+        item.position(translation, scale, ArrayList())
         children += item
     }
 

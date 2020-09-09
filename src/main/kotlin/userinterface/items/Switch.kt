@@ -42,8 +42,8 @@ class Switch(id: String, constraints: ConstraintSet, trackBackground: ColoredBac
 //        add(thumb)
     }
 
-    override fun init(parentTranslation: Vector2, parentScale: Vector2, parentChildren: ArrayList<Item>) {
-        super.init(parentTranslation, parentScale, parentChildren)
+    override fun position(parentTranslation: Vector2, parentScale: Vector2, parentChildren: ArrayList<Item>) {
+        super.position(parentTranslation, parentScale, parentChildren)
 
         println(scale.x)
 
@@ -55,7 +55,7 @@ class Switch(id: String, constraints: ConstraintSet, trackBackground: ColoredBac
         )
 
         thumb = Item("${id}_thumb", thumbConstraints, thumbBackground)
-        thumb.init(translation, scale, parentChildren)
+        thumb.position(translation, scale, parentChildren)
         println(thumb.translation)
         add(thumb)
     }

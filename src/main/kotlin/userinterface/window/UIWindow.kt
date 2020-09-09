@@ -56,13 +56,15 @@ class UIWindow(val id: String, val constraints: ConstraintSet, val background: B
             childTranslation = Vector2(translation.x, translation.y)
             childTranslation.y -= titleBarData.height * scale.y
 
-            titleBar!!.init(translation, scale, children)
+            titleBar!!.position(translation, scale, children)
 
             children.forEach { child ->
-                child.init(childTranslation, childScale, children)
+                child.position(childTranslation, childScale, children)
             }
         } else {
-            children.forEach { child -> child.init(translation, scale, children) }
+            children.forEach { child ->
+                child.position(translation, scale, children)
+            }
         }
     }
 
@@ -89,8 +91,8 @@ class UIWindow(val id: String, val constraints: ConstraintSet, val background: B
         (closeButton as Button).addOnClickEffect(effect)
     }
 
-    override fun initChild(item: Item, translation: Vector2, scale: Vector2, children: ArrayList<Item>) {
-        super.initChild(item, childTranslation, childScale, this.children)
+    override fun positionChild(item: Item, translation: Vector2, scale: Vector2, childItems: ArrayList<Item>) {
+        super.positionChild(item, childTranslation, childScale, children)
     }
 
     override fun update(mouse: Mouse, aspectRatio: Float) {
@@ -98,10 +100,6 @@ class UIWindow(val id: String, val constraints: ConstraintSet, val background: B
         if (hasTitleBar()) {
             titleBar!!.update(mouse, aspectRatio)
         }
-    }
-
-    operator fun plusAssign(item: Item) {
-        add(item, item.requiredIds)
     }
 
     fun destroy() {

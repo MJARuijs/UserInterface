@@ -1,15 +1,14 @@
 package userinterface.items
 
 import graphics.Quad
-import devices.Mouse
 import graphics.shaders.ShaderProgram
 import math.vectors.Vector2
+import userinterface.UIContainer
 import userinterface.constraints.ConstraintSet
 import userinterface.items.backgrounds.Background
 
-open class Item(val id: String, val constraints: ConstraintSet, var background: Background) {
+open class Item(val id: String, val constraints: ConstraintSet, var background: Background) : UIContainer() {
 
-    private val children = ArrayList<Item>()
     private val quad = Quad()
 
     var baseBackground = background
@@ -19,16 +18,23 @@ open class Item(val id: String, val constraints: ConstraintSet, var background: 
 
     var requiredIds = constraints.requiredIds
 
-    open fun init(parentTranslation: Vector2 = Vector2(), parentScale: Vector2, parentChildren: ArrayList<Item> = ArrayList()) {
-        val data = constraints.apply(parentTranslation, parentScale, parentChildren)
-        translation = data.translation
-        scale = data.scale
+    fun getPositionData() = ItemPosition(translation, scale)
 
-        children.forEach { child -> child.init(translation, scale, children) }
+    open fun position(parentTranslation: Vector2 = Vector2(), parentScale: Vector2, parentChildren: ArrayList<Item> = ArrayList()) {
+        val itemPosition = constraints.apply(parentTranslation, parentScale, parentChildren)
+        translation = itemPosition.translation
+        scale = itemPosition.scale
+
+        children.forEach { child ->
+            child.position(translation, scale, children)
+        }
     }
 
-    fun add(item: Item) {
-        children += item
+    fun translate(translation: Vector2) {
+        this.translation += translation
+        children.forEach { child ->
+            child.translate(translation)
+        }
     }
 
     fun findById(id: String): Item? {
@@ -40,11 +46,9 @@ open class Item(val id: String, val constraints: ConstraintSet, var background: 
         shaderProgram.set("scale", scale)
         background.setProperties(shaderProgram)
         quad.draw()
-        children.forEach { child -> child.draw(shaderProgram) }
-    }
-
-    open fun update(mouse: Mouse, aspectRatio: Float) {
-        children.forEach { child -> child.update(mouse, aspectRatio) }
+        children.forEach { child ->
+            child.draw(shaderProgram)
+        }
     }
 
     fun destroy() {

@@ -2,7 +2,6 @@ package userinterface.items
 
 import devices.Button
 import devices.Mouse
-import graphics.shaders.ShaderProgram
 import userinterface.constraints.ConstraintSet
 import userinterface.effects.Effect
 import userinterface.items.backgrounds.Background
@@ -30,7 +29,6 @@ class Button(id: String, constraintSet: ConstraintSet, background: Background, p
             onClickEffects.forEach { effect ->
                 effect.applyOn(this)
             }
-
         } else if (isHovered) {
             hoverEffects.forEach { effect ->
                 effect.applyOn(this)
@@ -41,7 +39,7 @@ class Button(id: String, constraintSet: ConstraintSet, background: Background, p
             }
         }
 
-        if (isClicked && mouse.isReleased(Button.RIGHT)) {
+        if (isClicked && (mouse.isReleased(Button.RIGHT) || mouse.isReleased(Button.LEFT))) {
             isClicked = false
             onClickEffects.forEach { effect ->
                 effect.removeFrom(this)
@@ -62,7 +60,6 @@ class Button(id: String, constraintSet: ConstraintSet, background: Background, p
     }
 
     private fun isMouseOnButton(mouse: Mouse, aspectRatio: Float): Boolean {
-
         val minX = (translation.x - scale.x) / aspectRatio
         val maxX = (translation.x + scale.x) / aspectRatio
         val minY = translation.y - scale.y

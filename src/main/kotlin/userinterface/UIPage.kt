@@ -11,17 +11,13 @@ class UIPage(private val name: String, private val background: Background, priva
     private var quad = Quad()
 
     init {
-        children.forEach { child -> child.init(Vector2(), Vector2(1.0f, 1.0f), children) }
+        children.forEach { child -> child.position(Vector2(), Vector2(1.0f, 1.0f), children) }
     }
 
     fun draw(shaderProgram: ShaderProgram) {
         background.setProperties(shaderProgram)
         quad.draw()
         children.forEach { child -> child.draw(shaderProgram) }
-    }
-
-    operator fun plusAssign(item: Item) {
-        add(item, item.requiredIds)
     }
 
     fun destroy() {

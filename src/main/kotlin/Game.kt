@@ -53,30 +53,33 @@ fun main() {
     val windowBackground = ColoredBackground(Color(0.5f, 0.5f, 0.5f, 0.5f))
     val titleBarBackground = ColoredBackground(Color(0.25f, 0.25f, 0.25f, 0.75f))
 
-    val optionsWindow = UIWindow("options_menu", Vector2(0.9f * window.aspectRatio, 0.9f), windowBackground, 0.05f, titleBarBackground, ButtonAlignment.RIGHT)
+    val optionsWindow = UIWindow("options_menu", Vector2(1f * window.aspectRatio, 0.9f), windowBackground, 0.05f, titleBarBackground, ButtonAlignment.RIGHT)
     optionsWindow.addButtonHoverEffects("close_button", ColorEffect(Color(0.0f, 0.0f, 0.0f, 0.0f), Color(0.5f, 0.5f, 0.5f)))
     optionsWindow.addButtonOnClickEffects("close_button", ColorEffect(Color(0.0f, 0.0f, 0.0f, 0.0f), Color(0.0f, 0.1f, 0.5f)))
 
     val buttonBackground = ColoredBackground(Color(0.0f, 0.0f, 1.0f), 0f, 0.05f, Color(1f, 1.0f, 1.0f))
+    val buttonBackground2 = ColoredBackground(Color(0.0f, 1.0f, 0.0f), 0f, 0.05f, Color(1f, 1.0f, 1.0f))
+    val onClickBackground = ColoredBackground(Color(0.0f, 0.0f, 0.75f), 0f, 0.05f, Color(1f, 1.0f, 1.0f))
 
     val testButton = Button("testButton1",
         ConstraintSet(
             PixelConstraint(ConstraintDirection.TO_LEFT, 0f),
             PixelConstraint(ConstraintDirection.TO_TOP, 0f),
-            RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
-            AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 3f)
+            RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f),
+            AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.3f)
         ),
         buttonBackground,
         {
             println("TestButton1 Clicked")
         }
     )
+    testButton.addOnClickEffect(ColorEffect(Color(0.0f, 0.0f, 0.75f)))
 
     val testButton2 = Button("testButton2",
         ConstraintSet(
             PixelConstraint(ConstraintDirection.TO_LEFT, 0f),
-            PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.2f, "testButton1"),
-            RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
+            PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f, "testButton3"),
+            RelativeConstraint(ConstraintDirection.VERTICAL, 0.3f),
             AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)
         ),
         buttonBackground,
@@ -88,8 +91,8 @@ fun main() {
     val testButton3 = Button("testButton3",
         ConstraintSet(
             PixelConstraint(ConstraintDirection.TO_LEFT, 0f),
-            PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.2f, "testButton2"),
-            RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
+            PixelConstraint(ConstraintDirection.TO_TOP, 0f),
+            RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
             AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)
         ),
         buttonBackground,
@@ -100,14 +103,14 @@ fun main() {
 
     val testButton4 = Button("testButton4",
         ConstraintSet(
-            PixelConstraint(ConstraintDirection.TO_RIGHT, 0.2f, "testButton1"),
-            PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.2f, "testButton2"),
-            RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
+            PixelConstraint(ConstraintDirection.TO_RIGHT, 0.0f),
+            PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f),
+            RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
             AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)
         ),
-        buttonBackground,
+        buttonBackground2,
         {
-            println("TestButton4 Clicked")
+            println("Hoi")
         }
     )
 
@@ -122,9 +125,9 @@ fun main() {
         ColoredBackground(Color(0.25f, 0.64f, 0.94f, 0.5f), 90.0f, 0.00f)
     )
 
-    optionsWindow += testButton4
-    optionsWindow += testButton3
-    optionsWindow += testButton2
+    testButton4 += testButton3
+    testButton4 += testButton2
+    testButton += testButton4
     optionsWindow += testButton
 
     userInterface += optionsWindow
@@ -138,6 +141,13 @@ fun main() {
     mouse.release()
 
     userInterface.showWindow("options_menu")
+
+//    val buttonRightSideData = testButton.getPositionData().computeItemPosition(ConstraintSet(
+//        PixelConstraint(ConstraintDirection.TO_RIGHT, 0f),
+//        PixelConstraint(ConstraintDirection.TO_TOP, 0f),
+//        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f),
+//        AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.3f)
+//    ))
 
     while (!window.isClosed()) {
         if (keyboard.isPressed(Key.ESCAPE)) {
@@ -154,7 +164,7 @@ fun main() {
         }
 
         if (keyboard.isPressed(Key.A)) {
-            userInterface += TransitionAnimation(1.0f, Vector2(1.0f, 0.0f), testButton)
+//            userInterface += TransitionAnimation(0.5f, Vector2(-buttonRightSideData.translation.x), testButton)
         }
 
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
@@ -165,8 +175,6 @@ fun main() {
         if (userInterface.isShowing()) {
             userInterface.update(mouse, timer.getDelta())
             userInterface.draw(window.width, window.height)
-//        } else {
-//            mouse.toggle()
         }
 
         if (mouse.captured) {
