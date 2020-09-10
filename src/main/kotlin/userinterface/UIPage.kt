@@ -2,16 +2,16 @@ package userinterface
 
 import graphics.Quad
 import graphics.shaders.ShaderProgram
-import math.vectors.Vector2
 import userinterface.items.Item
+import userinterface.items.ItemDimensions
 import userinterface.items.backgrounds.Background
 
-class UIPage(private val name: String, private val background: Background, private val items: ArrayList<Item> = ArrayList()) : UIContainer() {
+class UIPage(id: String, private val background: Background) : UIContainer(id) {
 
     private var quad = Quad()
 
     init {
-        children.forEach { child -> child.position(Vector2(), Vector2(1.0f, 1.0f), children) }
+        children.forEach { child -> child.position() }
     }
 
     fun draw(shaderProgram: ShaderProgram) {
@@ -22,7 +22,7 @@ class UIPage(private val name: String, private val background: Background, priva
 
     fun destroy() {
         quad.destroy()
-        items.forEach { item -> item.destroy() }
+        children.forEach { item -> item.destroy() }
     }
 
 }

@@ -1,16 +1,20 @@
 package userinterface
 
 import devices.Mouse
-import math.vectors.Vector2
 import userinterface.items.Item
+import userinterface.items.ItemDimensions
 import java.util.concurrent.ConcurrentHashMap
 
-open class UIContainer {
+open class UIContainer(val id: String) {
 
     private val postPonedItems = ConcurrentHashMap<Item, ArrayList<String>>()
 
     val children = ArrayList<Item>()
-
+    
+    fun findById(id: String): Item? {
+        return children.find { item -> item.id == id }
+    }
+    
     operator fun plusAssign(item: Item) {
         add(item, item.requiredIds)
     }
@@ -45,12 +49,17 @@ open class UIContainer {
         }
     }
 
-    open fun positionChild(item: Item, translation: Vector2 = Vector2(), scale: Vector2 = Vector2(), childItems: ArrayList<Item> = ArrayList()) {
-        item.position(translation, scale, ArrayList())
+    open fun positionChild(item: Item) {
+        item.position()
         children += item
     }
 
-    open fun update(mouse: Mouse, aspectRatio: Float) {
-        children.forEach { child -> child.update(mouse, aspectRatio) }
+    open fun update(mouse: Mouse, aspectRatio: Float): Boolean {
+        children.forEach { child ->
+            if (child.update(mouse, aspectRatio)) {
+                return true
+            }
+        }
+        return false
     }
 }

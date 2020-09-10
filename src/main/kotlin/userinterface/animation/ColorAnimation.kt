@@ -5,7 +5,7 @@ import userinterface.items.Item
 import userinterface.items.backgrounds.ColoredBackground
 import kotlin.math.abs
 
-class ColorAnimation(duration: Float, private val changeToColor: Color, val item: Item) : Animation() {
+class ColorAnimation(duration: Float, private val changeToColor: Color, item: Item) : Animation(item) {
 
     private val rSpeed: Float
     private val gSpeed: Float

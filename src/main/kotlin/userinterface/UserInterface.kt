@@ -92,7 +92,9 @@ class UserInterface(private val aspectRatio: Float) {
         val removableAnimations = ArrayList<Animation>()
 
         animations.forEach { animation ->
+            animation.item.isAnimating = true
             if (animation.apply(deltaTime)) {
+                animation.item.isAnimating = false
                 removableAnimations += animation
             }
         }

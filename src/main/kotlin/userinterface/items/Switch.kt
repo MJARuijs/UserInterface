@@ -3,6 +3,10 @@ package userinterface.items
 import math.Color
 import math.vectors.Vector2
 import userinterface.constraints.*
+import userinterface.constraints.constrainttypes.AspectRatioConstraint
+import userinterface.constraints.constrainttypes.CenterConstraint
+import userinterface.constraints.constrainttypes.PixelConstraint
+import userinterface.constraints.constrainttypes.RelativeConstraint
 import userinterface.items.backgrounds.ColoredBackground
 
 class Switch(id: String, constraints: ConstraintSet, trackBackground: ColoredBackground, private val thumbBackground: ColoredBackground) : Item(id, constraints, trackBackground) {
@@ -42,21 +46,31 @@ class Switch(id: String, constraints: ConstraintSet, trackBackground: ColoredBac
 //        add(thumb)
     }
 
-    override fun position(parentTranslation: Vector2, parentScale: Vector2, parentChildren: ArrayList<Item>) {
-        super.position(parentTranslation, parentScale, parentChildren)
+    /*override fun position(parentDimensions: ItemDimensions, parentChildren: ArrayList<Item>) {
+        super.position(parentDimensions, parentChildren)
 
-        println(scale.x)
+//        println(scale.x)
 
         val thumbConstraints = ConstraintSet(
             CenterConstraint(ConstraintDirection.VERTICAL),
-            PixelConstraint(ConstraintDirection.TO_RIGHT, -scale.x, id),
-            RelativeConstraint(ConstraintDirection.VERTICAL, 1.5f),
-            AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
+            PixelConstraint(
+                ConstraintDirection.TO_RIGHT,
+                -constraints.scale().x,
+                id
+            ),
+            RelativeConstraint(
+                ConstraintDirection.VERTICAL,
+                1.5f
+            ),
+            AspectRatioConstraint(
+                ConstraintDirection.HORIZONTAL,
+                1.0f
+            )
         )
 
         thumb = Item("${id}_thumb", thumbConstraints, thumbBackground)
-        thumb.position(translation, scale, parentChildren)
-        println(thumb.translation)
+        thumb.position(constraints, parentChildren)
+//        println(thumb.translation)
         add(thumb)
-    }
+    }*/
 }

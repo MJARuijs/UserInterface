@@ -1,8 +1,9 @@
 package userinterface.constraints
 
 import math.vectors.Vector2
-import userinterface.items.Item
-import userinterface.items.ItemPosition
+import userinterface.MovableUIContainer
+import userinterface.constraints.constrainttypes.*
+import userinterface.items.ItemDimensions
 
 class ConstraintSet(vararg val constraints: Constraint) {
 
@@ -22,11 +23,19 @@ class ConstraintSet(vararg val constraints: Constraint) {
         }
     }
 
-    var translation = Vector2()
-        private set
+    var dimensions = ItemDimensions()
 
-    var scale = Vector2()
-        private set
+    fun translation() = dimensions.translation
+
+    fun scale() = dimensions.scale
+
+    fun translate(translation: Vector2) {
+        dimensions.translation += translation
+    }
+    
+    fun place(placement: Vector2) {
+        dimensions.translation = placement
+    }
 
     fun findConstraint(type: ConstraintType, direction: ConstraintDirection): Constraint? {
         return constraints.find { constraint ->
@@ -40,23 +49,35 @@ class ConstraintSet(vararg val constraints: Constraint) {
             isCorrectType && constraint.direction == direction
         }
     }
-
-    fun apply(parentTranslation: Vector2, parentScale: Vector2, siblings: ArrayList<Item> = ArrayList()): ItemPosition {
-        val parentPosition = ItemPosition(parentTranslation, parentScale)
-        var currentPosition = ItemPosition(translation, scale)
-
+    
+    fun apply(parent: MovableUIContainer? = null) {
+//        var result = ItemDimensions()
+        
         constraints.sortWith(compareBy {
             return@compareBy when (it) {
                 is PixelConstraint -> 1
                 else -> -1
             }
         })
-
+    
         for (constraint in constraints) {
-           currentPosition = constraint.apply(currentPosition, parentPosition, siblings)
+            constraint.apply(dimensions, parent)
         }
-
-        return ItemPosition(currentPosition.translation, currentPosition.scale)
+    }
+    
+    fun computeResult(parent: MovableUIContainer? = null): ItemDimensions {
+        constraints.sortWith(compareBy {
+            return@compareBy when (it) {
+                is PixelConstraint -> 1
+                else -> -1
+            }
+        })
+    
+        val result = ItemDimensions()
+        for (constraint in constraints) {
+            constraint.apply(result, parent)
+        }
+        return result
     }
 
 }

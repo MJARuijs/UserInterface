@@ -6,11 +6,12 @@ import userinterface.constraints.ConstraintSet
 import userinterface.effects.Effect
 import userinterface.items.backgrounds.Background
 
-class Button(id: String, constraintSet: ConstraintSet, background: Background, private val onClick: () -> Unit = {}, private val text: String = "") : Item(id, constraintSet, background) {
+class UIButton(id: String, constraintSet: ConstraintSet, background: Background, private val onClick: () -> Unit = {}, private val text: String = "") : Item(id, constraintSet, background) {
 
     private val hoverEffects = ArrayList<Effect>()
     private val onClickEffects = ArrayList<Effect>()
     private var isClicked = false
+    private var isHovered = false
 
     init {
         if (text.isNotBlank()) {
@@ -18,10 +19,12 @@ class Button(id: String, constraintSet: ConstraintSet, background: Background, p
         }
     }
 
-    override fun update(mouse: Mouse, aspectRatio: Float) {
-        super.update(mouse, aspectRatio)
+    override fun update(mouse: Mouse, aspectRatio: Float): Boolean {
+        if (super.update(mouse, aspectRatio)) {
+            return true
+        }
 
-        val isHovered = isHovered(mouse, aspectRatio)
+        isHovered = isHovered(mouse, aspectRatio)
 
         if (isHovered && (mouse.isPressed(Button.LEFT) || mouse.isPressed(Button.LEFT))) {
             onClick()
@@ -45,6 +48,11 @@ class Button(id: String, constraintSet: ConstraintSet, background: Background, p
                 effect.removeFrom(this)
             }
         }
+
+        if (isHovered || isClicked) {
+            return true
+        }
+        return false
     }
 
     fun addHoverEffect(effect: Effect) {
@@ -60,10 +68,10 @@ class Button(id: String, constraintSet: ConstraintSet, background: Background, p
     }
 
     private fun isMouseOnButton(mouse: Mouse, aspectRatio: Float): Boolean {
-        val minX = (translation.x - scale.x) / aspectRatio
-        val maxX = (translation.x + scale.x) / aspectRatio
-        val minY = translation.y - scale.y
-        val maxY = translation.y + scale.y
+        val minX = (getTranslation().x - getScale().x) / aspectRatio
+        val maxX = (getTranslation().x + getScale().x) / aspectRatio
+        val minY = getTranslation().y - getScale().y
+        val maxY = getTranslation().y + getScale().y
 
         val scaledMouseX = mouse.x * 2.0f
         val scaledMouseY = mouse.y * 2.0f
