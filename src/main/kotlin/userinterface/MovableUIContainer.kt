@@ -3,7 +3,6 @@ package userinterface
 import devices.Mouse
 import math.vectors.Vector2
 import userinterface.animation.*
-import userinterface.items.Item
 import userinterface.items.ItemDimensions
 import userinterface.items.backgrounds.Background
 import userinterface.layout.UILayout
@@ -56,20 +55,16 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
         constraints.setScale(scale)
     }
     
-    override fun apply(layout: UILayout, duration: Float, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
+    override fun apply(layout: UILayout, duration: Float, parentDimensions: ItemDimensions?) {
         postPonedChildren.clear()
         computedChildren.clear()
   
         for (child in children) {
-            if (parentDimensions == null) {
-                applyChild(child, layout, duration, getGoalDimensions())
-            } else {
-                applyChild(child, layout, duration, parentDimensions)
-            }
+            applyChild(child, layout, duration)
         }
     }
     
-    private fun applyChild(child: MovableUIContainer, layout: UILayout, duration: Float, parentDimensions: ItemDimensions?) {
+    private fun applyChild(child: MovableUIContainer, layout: UILayout, duration: Float) {
         val childConstraints = layout.getConstraint(child.id)
         if (childConstraints != null) {
             val requiredIds = childConstraints.determineRequiredIds()
@@ -84,50 +79,17 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
                     postPonedChildren.remove(child.id)
                 }
                 for (postPonedChild in postPonedChildren) {
-                    applyChild(postPonedChild.value, layout, duration, constraints.dimensions)
+                    applyChild(postPonedChild.value, layout, duration)
                 }
                 child.animateLayoutTransition(duration, child.getGoalDimensions())
             } else {
                 postPonedChildren[child.id] = child
             }
         }
-        child.apply(layout, duration, getGoalDimensions(), this)
+        child.apply(layout, duration, getGoalDimensions())
     }
     
-    private fun computeChildren(childrenToBeComputed: ArrayList<Item>, layout: UILayout, duration: Float, calculatedChildren: ArrayList<String>) {
-        val postPonedChildren = ArrayList<Item>()
-    
-        var childFound = false
-    
-        for (child in childrenToBeComputed) {
-            if (layout.containsConstraintForItem(child.id)) {
-                val newChildConstraint = layout.getConstraint(child.id)!!
-                
-                if (calculatedChildren.containsAll(newChildConstraint.requiredIds)) {
-                    println("$id: All required children found ${child.id}")
-                    child.apply(layout, duration, constraints.dimensions, this)
-                    calculatedChildren += child.id
-                } else {
-                    postPonedChildren += child
-                }
-                childFound = true
-            }
-        }
-    
-        if (!childFound) {
-            for (child in children) {
-                println("$id no child found, resuming with ${child.id}")
-    
-                child.apply(layout, duration, constraints.dimensions, this)
-            }
-        }
-        
-        if (postPonedChildren.isNotEmpty()) {
-            computeChildren(postPonedChildren, layout, duration, calculatedChildren)
-        }
-    }
-    
-    fun animateLayoutTransition(duration: Float, newDimensions: ItemDimensions) {
+    private fun animateLayoutTransition(duration: Float, newDimensions: ItemDimensions) {
         if (newDimensions.translation.x != getTranslation().x) {
             animations += XTransitionAnimation(duration, newDimensions.translation.x, this, TransitionType.PLACEMENT)
         }

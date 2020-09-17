@@ -54,7 +54,7 @@ fun main() {
     
     val userInterface = UserInterface(window.aspectRatio)
     
-    val windowBackground = ColoredBackground(Color(1.5f, 0.5f, 0.5f, 0.5f))
+    val windowBackground = ColoredBackground(Color(0.5f, 0.5f, 0.5f, 0.5f))
     val titleBarBackground = ColoredBackground(Color(0.25f, 0.25f, 0.25f, 0.25f))
     
     val optionsWindow = UIWindow(
