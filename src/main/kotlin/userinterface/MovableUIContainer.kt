@@ -14,20 +14,17 @@ import kotlin.collections.ArrayList
 open class MovableUIContainer(id: String, var constraints: ConstraintSet, var background: Background) : UIContainer(id) {
     
     private val animations = ArrayList<Animation>()
-    
-//    private var goalDimensions = ItemDimensions(getTranslation(), getScale())
+    private val postPonedChildren = ConcurrentHashMap<String, MovableUIContainer>()
+    private val computedChildren = ArrayList<String>()
     
     private var goalTranslation: Vector2? = null
     private var goalScale: Vector2? = null
     
     fun requiredIds() = constraints.requiredIds
-    var requiredIds = constraints.requiredIds
     
     fun getTranslation() = constraints.translation()
     
     fun getScale() = constraints.scale()
-
-//    fun getGoalDimensions() = goalDimensions
 
     fun getGoalDimensions(): ItemDimensions {
         val translation = goalTranslation ?: getTranslation()
@@ -59,26 +56,16 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
         constraints.setScale(scale)
     }
     
-    private val postPonedChildren = ConcurrentHashMap<String, MovableUIContainer>()
-    private val computedChildren = ArrayList<String>()
-    
     override fun apply(layout: UILayout, duration: Float, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
         postPonedChildren.clear()
         computedChildren.clear()
   
         for (child in children) {
             if (parentDimensions == null) {
-                if (id == "options_menu") {
-                    println("Giving child: ${getTranslation()} ${getGoalDimensions().scale}")
-                }
                 applyChild(child, layout, duration, getGoalDimensions())
             } else {
                 applyChild(child, layout, duration, parentDimensions)
             }
-        }
-        
-        if (id == "testButton1") {
-            println(getTranslation().y + getScale().y)
         }
     }
     
@@ -87,7 +74,6 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
         if (childConstraints != null) {
             val requiredIds = childConstraints.determineRequiredIds()
             if (computedChildren.containsAll(requiredIds)) {
-                println("Contains all to compute child ${child.id}")
                 val childDimensions = childConstraints.computeResult(getGoalDimensions(), this)
                 child.goalTranslation = childDimensions.translation
                 child.goalScale = childDimensions.scale
@@ -98,16 +84,13 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
                     postPonedChildren.remove(child.id)
                 }
                 for (postPonedChild in postPonedChildren) {
-                    println("Trying again for ${postPonedChild.key}")
                     applyChild(postPonedChild.value, layout, duration, constraints.dimensions)
                 }
                 child.animateLayoutTransition(duration, child.getGoalDimensions())
             } else {
-                println("Postponing child ${child.id}")
                 postPonedChildren[child.id] = child
             }
         }
-        println("$id ${getGoalDimensions().translation} ${getGoalDimensions().scale} :: ${child.id}")
         child.apply(layout, duration, getGoalDimensions(), this)
     }
     

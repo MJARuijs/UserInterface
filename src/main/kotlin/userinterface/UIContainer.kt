@@ -73,21 +73,12 @@ abstract class UIContainer(val id: String, private val layouts: ArrayList<UILayo
         return false
     }
     
-    fun printChildren() {
-        children.forEach { child ->
-            println("$id has child: ${child.id}")
-            child.printChildren()
-        }
-    }
-    
     fun applyLayout(id: String, duration: Float) {
         val layout = layouts.find { layout -> layout.id == id }
         if (layout == null) {
             println("No layout with id: $id was found for UIContainer with id: ${this.id}..")
             return
         }
-        
-//        printChildren()
         
         apply(layout, duration)
     }

@@ -26,17 +26,5 @@ class CenterConstraint(direction: ConstraintDirection) : Constraint(direction) {
         if (direction == ConstraintDirection.VERTICAL) {
             itemDimensions.translation.y = referenceTranslation.y
         }
-//        apply(itemDimensions, ItemDimensions(parent.getTranslation(), parent.getScale()), parent)
     }
-    
-//    override fun apply(itemDimensions: ItemDimensions, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
-//        val parentTranslation = parentDimensions?.translation ?: Vector2(0f, 0f)
-//
-//        if (direction == ConstraintDirection.HORIZONTAL) {
-//            itemDimensions.translation.x = parentTranslation.x
-//        }
-//        if (direction == ConstraintDirection.VERTICAL) {
-//            itemDimensions.translation.y = parentTranslation.y
-//        }
-//    }
 }

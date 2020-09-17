@@ -20,8 +20,6 @@ class AspectRatioConstraint(direction: ConstraintDirection, private val aspectRa
             referenceScale = parent.getScale()
         }
         
-//        val parentScale = parentDimensions.scale
-    
         if (direction == ConstraintDirection.VERTICAL) {
             itemDimensions.scale.y = itemDimensions.scale.x * aspectRatio
         
@@ -38,27 +36,5 @@ class AspectRatioConstraint(direction: ConstraintDirection, private val aspectRa
                 itemDimensions.scale.x = referenceScale.x
             }
         }
-//        apply(itemDimensions, ItemDimensions(parent.getTranslation(), parent.getScale()), parent)
     }
-    
-//    override fun apply(itemDimensions: ItemDimensions, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
-//        val parentScale = parentDimensions?.scale ?: Vector2(1.0f, 1.0f)
-//
-//        if (direction == ConstraintDirection.VERTICAL) {
-//            itemDimensions.scale.y = itemDimensions.scale.x * aspectRatio
-//
-//            if (itemDimensions.scale.y > parentScale.y) {
-//                println("UI Item tried to go out of bounds of parent!")
-//                itemDimensions.scale.y = parentScale.y
-//            }
-//        }
-//        if (direction == ConstraintDirection.HORIZONTAL) {
-//            itemDimensions.scale.x = itemDimensions.scale.y * aspectRatio
-//
-//            if (itemDimensions.scale.x > parentScale.x) {
-//                println("UI Item tried to go out of bounds of parent!")
-//                itemDimensions.scale.x = parentScale.x
-//            }
-//        }
-//    }
 }

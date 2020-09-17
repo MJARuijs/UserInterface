@@ -31,22 +31,5 @@ class RelativeConstraint(direction: ConstraintDirection, private val percentage:
         if (direction == ConstraintDirection.VERTICAL) {
             itemDimensions.scale.y = referenceScale.y * percentage
         }
-//        apply(itemDimensions, ItemDimensions(Vector2(), referenceScale), parent)
     }
-    
-//    override fun apply(itemDimensions: ItemDimensions, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
-//        if (parentDimensions == null) {
-//            return
-//        }
-//
-//        val referenceScale = parentDimensions.scale
-//
-//        if (direction == ConstraintDirection.HORIZONTAL) {
-//            itemDimensions.scale.x = referenceScale.x * percentage
-//        }
-//
-//        if (direction == ConstraintDirection.VERTICAL) {
-//            itemDimensions.scale.y = referenceScale.y * percentage
-//        }
-//    }
 }
