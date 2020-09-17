@@ -55,7 +55,7 @@ fun main() {
     val userInterface = UserInterface(window.aspectRatio)
     
     val windowBackground = ColoredBackground(Color(1.5f, 0.5f, 0.5f, 0.5f))
-    val titleBarBackground = ColoredBackground(Color(0.25f, 0.25f, 0.25f, 0.025f))
+    val titleBarBackground = ColoredBackground(Color(0.25f, 0.25f, 0.25f, 0.25f))
     
     val optionsWindow = UIWindow(
         "options_menu",
@@ -83,8 +83,8 @@ fun main() {
     val button1Constraints = ConstraintSet(
         PixelConstraint(ConstraintDirection.TO_LEFT, 0f),
         PixelConstraint(ConstraintDirection.TO_TOP, 0f),
-        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.8f),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.8f)
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 1.0f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 1.0f)
     )
     
     val button2Constraints = ConstraintSet(
@@ -118,8 +118,8 @@ fun main() {
     val button1Constraints2 = ConstraintSet(
         CenterConstraint(ConstraintDirection.VERTICAL),
         CenterConstraint(ConstraintDirection.HORIZONTAL),
-        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.75f),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.75f)
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f)
     )
     
     val button2Constraints2 = ConstraintSet(
@@ -190,10 +190,10 @@ fun main() {
         println("Button 5 clicked!")
     })
     
-//    testButton5 += testButton4
-//    testButton5 += testButton3
-//    testButton5 += testButton2
-//    testButton += testButton5
+    testButton5 += testButton4
+    testButton5 += testButton3
+    testButton5 += testButton2
+    testButton += testButton5
     optionsWindow += testButton
     
     userInterface += optionsWindow
@@ -207,16 +207,16 @@ fun main() {
 //    val thirdLayout = UILayout("third_layout")
 
     standardLayout += Pair(testButton.id, button1Constraints)
-//    standardLayout += Pair(testButton2.id, button2Constraints)
-//    standardLayout += Pair(testButton3.id, button3Constraints)
-//    standardLayout += Pair(testButton4.id, button4Constraints)
-//    standardLayout += Pair(testButton5.id, button5Constraints)
+    standardLayout += Pair(testButton2.id, button2Constraints)
+    standardLayout += Pair(testButton3.id, button3Constraints)
+    standardLayout += Pair(testButton4.id, button4Constraints)
+    standardLayout += Pair(testButton5.id, button5Constraints)
     
     animatedLayout += Pair(testButton.id, button1Constraints2)
-//    animatedLayout += Pair(testButton2.id, button2Constraints2)
-//    animatedLayout += Pair(testButton3.id, button3Constraints2)
-//    animatedLayout += Pair(testButton4.id, button4Constraints2)
-//    animatedLayout += Pair(testButton5.id, button5Constraints2)
+    animatedLayout += Pair(testButton2.id, button2Constraints2)
+    animatedLayout += Pair(testButton3.id, button3Constraints2)
+    animatedLayout += Pair(testButton4.id, button4Constraints2)
+    animatedLayout += Pair(testButton5.id, button5Constraints2)
 
 
 

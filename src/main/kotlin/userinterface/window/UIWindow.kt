@@ -40,6 +40,7 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
             }
             add(titleBar!!)
             
+            
             constraints.translate(Vector2(0f, -titleBar!!.getScale().y))
             constraints.addToScale(Vector2(0f, -titleBar!!.getScale().y))
             
