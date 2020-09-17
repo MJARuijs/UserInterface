@@ -5,17 +5,16 @@ import graphics.Quad
 import graphics.shaders.ShaderProgram
 import math.vectors.Vector2
 import userinterface.MovableUIContainer
-import userinterface.constraints.ConstraintDirection
-import userinterface.constraints.ConstraintSet
-import userinterface.constraints.constrainttypes.CenterConstraint
-import userinterface.constraints.constrainttypes.PixelConstraint
-import userinterface.constraints.constrainttypes.RelativeConstraint
+import userinterface.layout.constraints.ConstraintDirection
+import userinterface.layout.constraints.ConstraintSet
+import userinterface.layout.constraints.constrainttypes.CenterConstraint
+import userinterface.layout.constraints.constrainttypes.RelativeConstraint
 import userinterface.effects.Effect
 import userinterface.items.Item
 import userinterface.items.UIButton
 import userinterface.items.backgrounds.Background
 
-class UIWindow(id: String, constraints: ConstraintSet, val background: Background, var shouldShow: Boolean = false, titleBarData: TitleBarData) : MovableUIContainer(id, constraints) {
+class UIWindow(id: String, constraints: ConstraintSet, background: Background, var shouldShow: Boolean = false, titleBarData: TitleBarData) : MovableUIContainer(id, constraints, background) {
 
     private var titleBar: TitleBar? = null
     private var quad = Quad()
@@ -35,12 +34,16 @@ class UIWindow(id: String, constraints: ConstraintSet, val background: Backgroun
 
     init {
         constraints.apply(this)
-        
         if (titleBarData.height > 0.0f) {
             titleBar = TitleBar("${id}_title_bar", titleBarData) {
                 shouldShow = false
             }
             add(titleBar!!)
+            
+            constraints.translate(Vector2(0f, -titleBar!!.getScale().y))
+            constraints.addToScale(Vector2(0f, -titleBar!!.getScale().y))
+            
+            println(getTranslation().y + getScale().y)
         }
     }
 
@@ -68,23 +71,15 @@ class UIWindow(id: String, constraints: ConstraintSet, val background: Backgroun
     }
 
     override fun positionChild(item: Item) {
-        if (hasTitleBar() && item.id != titleBar!!.id) {
-            for (constraint in item.constraints.constraints) {
-                if (constraint is PixelConstraint && constraint.direction == ConstraintDirection.TO_TOP && constraint.anchorId == "parent") {
-                    constraint.anchorId = titleBar!!.id
-                    constraint.direction = ConstraintDirection.TO_BOTTOM
-                }
-            }
-        }
         item.position(this)
         children += item
     }
 
-    override fun update(mouse: Mouse, aspectRatio: Float): Boolean {
+    override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
         if (hasTitleBar()) {
-            titleBar!!.update(mouse, aspectRatio)
+            titleBar!!.update(mouse, aspectRatio, deltaTime)
         }
-        return super.update(mouse, aspectRatio)
+        return super.update(mouse, aspectRatio, deltaTime)
     }
 
     fun destroy() {

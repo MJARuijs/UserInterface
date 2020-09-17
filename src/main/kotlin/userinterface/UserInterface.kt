@@ -16,7 +16,7 @@ class UserInterface(private val aspectRatio: Float) {
     private val windows = ArrayList<UIWindow>()
 
     private var showingId = ""
-
+    
     operator fun plusAssign(page: UIPage) {
         pages += page
     }
@@ -28,7 +28,7 @@ class UserInterface(private val aspectRatio: Float) {
     operator fun plusAssign(animation: Animation) {
         animations += animation
     }
-
+    
     fun showPage(name: String) {
 
     }
@@ -76,7 +76,7 @@ class UserInterface(private val aspectRatio: Float) {
     fun update(mouse: Mouse, deltaTime: Float) {
         windows.forEach { window ->
             if (window.shouldShow) {
-                window.update(mouse, aspectRatio)
+                window.update(mouse, aspectRatio, deltaTime)
             }
         }
 
@@ -89,17 +89,22 @@ class UserInterface(private val aspectRatio: Float) {
             }
         }
 
-        val removableAnimations = ArrayList<Animation>()
-
-        animations.forEach { animation ->
-            animation.item.isAnimating = true
-            if (animation.apply(deltaTime)) {
-                animation.item.isAnimating = false
-                removableAnimations += animation
-            }
-        }
-
-        animations.removeAll(removableAnimations)
+//        val removableAnimations = ArrayList<Animation>()
+//
+//        animations.forEach { animation ->
+//            if (!animation.started) {
+//                animation.start()
+//            }
+//            animation.item.isAnimating = true
+//            if (animation.apply(deltaTime)) {
+//                animation.stop()
+//                animation.item.isAnimating = false
+//                removableAnimations += animation
+//            }
+//            animation.item.animateChildren()
+//        }
+//
+//        animations.removeAll(removableAnimations)
     }
 
     fun destroy() {

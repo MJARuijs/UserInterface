@@ -1,4 +1,4 @@
-package userinterface.constraints.constrainttypes
+package userinterface.layout.constraints.constrainttypes
 
 enum class ConstraintType {
 

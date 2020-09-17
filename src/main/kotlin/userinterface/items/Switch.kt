@@ -2,12 +2,8 @@ package userinterface.items
 
 import math.Color
 import math.vectors.Vector2
-import userinterface.constraints.*
-import userinterface.constraints.constrainttypes.AspectRatioConstraint
-import userinterface.constraints.constrainttypes.CenterConstraint
-import userinterface.constraints.constrainttypes.PixelConstraint
-import userinterface.constraints.constrainttypes.RelativeConstraint
 import userinterface.items.backgrounds.ColoredBackground
+import userinterface.layout.constraints.ConstraintSet
 
 class Switch(id: String, constraints: ConstraintSet, trackBackground: ColoredBackground, private val thumbBackground: ColoredBackground) : Item(id, constraints, trackBackground) {
 

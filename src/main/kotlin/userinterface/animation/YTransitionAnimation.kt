@@ -1,10 +1,11 @@
 package userinterface.animation
 
 import math.vectors.Vector2
+import userinterface.MovableUIContainer
 import userinterface.items.Item
 import kotlin.math.abs
 
-class YTransitionAnimation(duration: Float, translation: Float, item: Item, transitionType: TransitionType) : Animation(item) {
+class YTransitionAnimation(duration: Float, translation: Float, item: MovableUIContainer, transitionType: TransitionType) : Animation(item) {
     
     private val speed: Float
     private val finalPoint: Float
@@ -14,7 +15,7 @@ class YTransitionAnimation(duration: Float, translation: Float, item: Item, tran
             speed = translation / duration
             finalPoint = item.getTranslation().y + translation
         } else {
-            speed = (translation - item.getTranslation().y) / duration
+            speed = (translation - item.getTranslation().y) / (duration)
             finalPoint = translation
         }
     }

@@ -1,4 +1,4 @@
-package userinterface.constraints
+package userinterface.layout.constraints
 
 enum class ConstraintAnchorSide {
 

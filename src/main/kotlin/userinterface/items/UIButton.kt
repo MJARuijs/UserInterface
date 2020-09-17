@@ -2,7 +2,7 @@ package userinterface.items
 
 import devices.Button
 import devices.Mouse
-import userinterface.constraints.ConstraintSet
+import userinterface.layout.constraints.ConstraintSet
 import userinterface.effects.Effect
 import userinterface.items.backgrounds.Background
 
@@ -19,8 +19,8 @@ class UIButton(id: String, constraintSet: ConstraintSet, background: Background,
         }
     }
 
-    override fun update(mouse: Mouse, aspectRatio: Float): Boolean {
-        if (super.update(mouse, aspectRatio)) {
+    override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
+        if (super.update(mouse, aspectRatio, deltaTime)) {
             return true
         }
 
@@ -55,12 +55,14 @@ class UIButton(id: String, constraintSet: ConstraintSet, background: Background,
         return false
     }
 
-    fun addHoverEffect(effect: Effect) {
+    fun addHoverEffect(effect: Effect): UIButton {
         hoverEffects += effect
+        return this
     }
 
-    fun addOnClickEffect(effect: Effect) {
+    fun addOnClickEffect(effect: Effect): UIButton {
         onClickEffects += effect
+        return this
     }
 
     private fun isHovered(mouse: Mouse, aspectRatio: Float): Boolean {

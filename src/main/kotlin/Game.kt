@@ -17,18 +17,16 @@ import math.vectors.Vector2
 import math.vectors.Vector3
 import org.lwjgl.opengl.GL11.*
 import userinterface.UserInterface
-import userinterface.animation.TransitionType
-import userinterface.animation.XTransitionAnimation
-import userinterface.constraints.ConstraintDirection
-import userinterface.constraints.ConstraintSet
-import userinterface.constraints.constrainttypes.AspectRatioConstraint
-import userinterface.constraints.constrainttypes.CenterConstraint
-import userinterface.constraints.constrainttypes.PixelConstraint
-import userinterface.constraints.constrainttypes.RelativeConstraint
+import userinterface.layout.constraints.ConstraintDirection
+import userinterface.layout.constraints.ConstraintSet
+import userinterface.layout.constraints.constrainttypes.AspectRatioConstraint
+import userinterface.layout.constraints.constrainttypes.PixelConstraint
+import userinterface.layout.constraints.constrainttypes.RelativeConstraint
 import userinterface.effects.ColorEffect
-import userinterface.items.Switch
 import userinterface.items.UIButton
 import userinterface.items.backgrounds.ColoredBackground
+import userinterface.layout.UILayout
+import userinterface.layout.constraints.constrainttypes.CenterConstraint
 import userinterface.text.Text
 import userinterface.text.font.FontLoader
 import userinterface.window.ButtonAlignment
@@ -56,8 +54,8 @@ fun main() {
     
     val userInterface = UserInterface(window.aspectRatio)
     
-    val windowBackground = ColoredBackground(Color(0.5f, 0.5f, 0.5f, 0.5f))
-    val titleBarBackground = ColoredBackground(Color(0.25f, 0.25f, 0.25f, 0.75f))
+    val windowBackground = ColoredBackground(Color(1.5f, 0.5f, 0.5f, 0.5f))
+    val titleBarBackground = ColoredBackground(Color(0.25f, 0.25f, 0.25f, 0.025f))
     
     val optionsWindow = UIWindow(
         "options_menu",
@@ -76,81 +74,126 @@ fun main() {
         ColorEffect(Color(0.0f, 0.0f, 0.0f, 0.0f), Color(0.0f, 0.1f, 0.5f))
     )
     
-    val buttonBackground = ColoredBackground(Color(0.0f, 0.0f, 1.0f), 0f, 0.05f, Color(1f, 1.0f, 1.0f))
-    val buttonBackground2 = ColoredBackground(Color(0.0f, 1.0f, 0.0f), 0f, 0.05f, Color(1f, 1.0f, 1.0f))
-    val buttonBackground3 = ColoredBackground(Color(1.0f, 0.0f, 0.0f), 0f, 0.05f, Color(1f, 1.0f, 1.0f))
-    val buttonBackground4 = ColoredBackground(Color(1.0f, 1.0f, 0.0f), 0f, 0.05f, Color(1f, 1.0f, 1.0f))
-    val onClickBackground = ColoredBackground(Color(0.0f, 0.0f, 0.75f), 0f, 0.05f, Color(1f, 1.0f, 1.0f))
+    val buttonBackground = ColoredBackground(Color(0.0f, 0.0f, 1.0f), 0f, 0.00f, Color(1f, 1.0f, 1.0f))
+    val buttonBackground2 = ColoredBackground(Color(1.0f, 1.0f, 0.0f), 0f, 0.00f, Color(1f, 1.0f, 1.0f))
+    val buttonBackground3 = ColoredBackground(Color(0.0f, 1.0f, 0.0f), 0f, 0.00f, Color(1f, 1.0f, 1.0f))
+    val buttonBackground4 = ColoredBackground(Color(1.0f, 0.0f, 0.0f), 0f, 0.00f, Color(1f, 1.0f, 1.0f))
+    val buttonBackground5 = ColoredBackground(Color(1.0f, 0.0f, 1.0f), 0f, 0.00f, Color(1f, 1.0f, 1.0f))
     
     val button1Constraints = ConstraintSet(
         PixelConstraint(ConstraintDirection.TO_LEFT, 0f),
         PixelConstraint(ConstraintDirection.TO_TOP, 0f),
-        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f),
-        AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.3f)
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.8f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.8f)
     )
     
-    val testButton = UIButton("testButton1",
-                              button1Constraints,
-                              buttonBackground,
-                              {
-                                  println("TestButton1 Clicked")
-                              }
-    )
-    testButton.addOnClickEffect(ColorEffect(Color(0.0f, 0.0f, 0.75f)))
-    
-    val testButton2 = UIButton("testButton2",
-                               ConstraintSet(
-                                   PixelConstraint(ConstraintDirection.TO_LEFT, 0f),
-                                   PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f, "testButton3"),
-                                   RelativeConstraint(ConstraintDirection.VERTICAL, 0.3f),
-                                   AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)
-                               ),
-                               buttonBackground2,
-                               {
-                                   println("TestButton2 Clicked")
-                               }
+    val button2Constraints = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_LEFT, 0.0f),
+        PixelConstraint(ConstraintDirection.TO_TOP, 0.0f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1f)
     )
     
-    val testButton3 = UIButton("testButton3",
-                               ConstraintSet(
-                                   PixelConstraint(ConstraintDirection.TO_LEFT, 0f),
-                                   PixelConstraint(ConstraintDirection.TO_TOP, 0f),
-                                   RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
-                                   AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)
-                               ),
-                               buttonBackground3,
-                               {
-                                   println("TestButton3 Clicked")
-                               }
+    val button3Constraints = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.0f, "testButton2"),
+        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 0.5f)
     )
     
-    val testButton4 = UIButton("testButton4",
-                               ConstraintSet(
-                                   PixelConstraint(ConstraintDirection.TO_LEFT, 0.0f),
-                                   PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f),
-                                   RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
-                                   AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)
-                               ), buttonBackground4,
-                               {
-                                   println("Hoi")
-                               }
+    val button4Constraints = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.0f, "testButton3"),
+        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 0.5f)
     )
     
-    val switch = Switch(
-        "test_switch",
-        ConstraintSet(
-            CenterConstraint(ConstraintDirection.HORIZONTAL),
-            CenterConstraint(ConstraintDirection.VERTICAL),
-            RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f),
-            AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)
-        ),
-        ColoredBackground(Color(0.0f, 0.0f, 0.0f, 0.0f), 90.0f, 0.05f, Color(37, 82, 118)),
-        ColoredBackground(Color(0.25f, 0.64f, 0.94f, 0.5f), 90.0f, 0.00f)
+    val button5Constraints = ConstraintSet(
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        CenterConstraint(ConstraintDirection.HORIZONTAL),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.95f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.95f)
     )
     
-//    testButton4 += testButton3
-//    testButton4 += testButton2
-    testButton += testButton4
+    val button1Constraints2 = ConstraintSet(
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        CenterConstraint(ConstraintDirection.HORIZONTAL),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.75f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.75f)
+    )
+    
+    val button2Constraints2 = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.0f, "testButton3"),
+        PixelConstraint(ConstraintDirection.TO_TOP, 0.0f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.6f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1f)
+    )
+    
+    val button3Constraints2 = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.0f, "testButton4"),
+        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 0.5f)
+    )
+    
+    val button4Constraints2 = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_LEFT, 0.0f),
+        PixelConstraint(ConstraintDirection.TO_TOP, 0.0f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 0.5f)
+    )
+    
+    val button5Constraints2 = ConstraintSet(
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        PixelConstraint(ConstraintDirection.TO_RIGHT),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.7f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.95f)
+    )
+//    val button1Constraints3 = ConstraintSet(
+//        PixelConstraint(ConstraintDirection.TO_RIGHT),
+//        PixelConstraint(ConstraintDirection.TO_BOTTOM),
+//        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
+//        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
+//    )
+//
+//    val button2Constraints3 = ConstraintSet(
+//        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.0f),
+//        PixelConstraint(ConstraintDirection.TO_TOP, 0.0f),
+//        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
+//        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1f)
+//    )
+//
+//    val button3Constraints3 = ConstraintSet(
+//        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.0f),
+//        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f),
+//        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
+//        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 0.5f)
+//    )
+    
+    val testButton = UIButton("testButton1", button1Constraints, buttonBackground, {
+        println("Button 1 Clicked")
+    }).addOnClickEffect(ColorEffect(Color(0.0f, 0.0f, 0.75f)))
+    
+    val testButton2 = UIButton("testButton2", button2Constraints, buttonBackground2, {
+        println("Button 2 clicked!")
+    })
+    
+    val testButton3 = UIButton("testButton3", button3Constraints, buttonBackground3, {
+        println("Button 3 clicked!")
+    })
+    
+    val testButton4 = UIButton("testButton4", button4Constraints, buttonBackground4, {
+        println("Button 4 clicked!")
+    })
+    
+    val testButton5 = UIButton("testButton5", button5Constraints, buttonBackground5, {
+        println("Button 5 clicked!")
+    })
+    
+//    testButton5 += testButton4
+//    testButton5 += testButton3
+//    testButton5 += testButton2
+//    testButton += testButton5
     optionsWindow += testButton
     
     userInterface += optionsWindow
@@ -159,48 +202,36 @@ fun main() {
     val arialFont = FontLoader(window.aspectRatio).load("fonts/arial.png")
     val text = Text("Hoi lieverd :)", 5.0f, arialFont)
     
-    timer.reset()
+    val standardLayout = UILayout("standard_layout")
+    val animatedLayout = UILayout("animated_layout")
+//    val thirdLayout = UILayout("third_layout")
+
+    standardLayout += Pair(testButton.id, button1Constraints)
+//    standardLayout += Pair(testButton2.id, button2Constraints)
+//    standardLayout += Pair(testButton3.id, button3Constraints)
+//    standardLayout += Pair(testButton4.id, button4Constraints)
+//    standardLayout += Pair(testButton5.id, button5Constraints)
     
-    mouse.release()
+    animatedLayout += Pair(testButton.id, button1Constraints2)
+//    animatedLayout += Pair(testButton2.id, button2Constraints2)
+//    animatedLayout += Pair(testButton3.id, button3Constraints2)
+//    animatedLayout += Pair(testButton4.id, button4Constraints2)
+//    animatedLayout += Pair(testButton5.id, button5Constraints2)
+
+
+
+//    thirdLayout += Pair(testButton.id, button1Constraints3)
+//    thirdLayout += Pair(testButton2.id, button2Constraints3)
+//    thirdLayout += Pair(testButton3.id, button3Constraints3)
+    
+    optionsWindow += standardLayout
+    optionsWindow += animatedLayout
+//    optionsWindow += thirdLayout
     
     userInterface.showWindow("options_menu")
-    
-//    val button1Constraints2 = ConstraintSet(
-//        PixelConstraint(ConstraintDirection.TO_RIGHT, 0f),
-//        PixelConstraint(ConstraintDirection.TO_TOP, 0f),
-//        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f),
-//        AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.3f)
-//    )
-    
-    val button1Constraints2 = ConstraintSet(
-        PixelConstraint(ConstraintDirection.TO_RIGHT, 0f),
-        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0f),
-        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f),
-        AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.3f)
-    )
-    
-    val button4Constraints = ConstraintSet(
-        PixelConstraint(ConstraintDirection.TO_LEFT, 0.0f),
-        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
-        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)
-    )
-    
-    val button4Constraints2 = ConstraintSet(
-        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.0f),
-        PixelConstraint(ConstraintDirection.TO_TOP, 0.0f),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
-        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)
-    )
-    
-    val c1 = button1Constraints.computeResult(optionsWindow)
-    val c2 = button1Constraints2.computeResult(optionsWindow)
-    
-    val c3 = button4Constraints.computeResult(testButton)
-    val c4 = button4Constraints2.computeResult(testButton)
-    
-    val button1Animation1 = XTransitionAnimation(0.5f, c2.translation.x, testButton, TransitionType.PLACEMENT)
-    
+    timer.reset()
+    mouse.release()
+
     while (!window.isClosed()) {
         if (keyboard.isPressed(Key.ESCAPE)) {
             mouse.toggle()
@@ -216,17 +247,15 @@ fun main() {
         }
         
         if (keyboard.isPressed(Key.A)) {
-            button1Animation1.changeGoal(c2.translation.x)
-            userInterface += button1Animation1
-//            userInterface += XTransitionAnimation(1.5f, c2.translation.x, testButton, TransitionType.PLACEMENT)
-//            userInterface += YTransitionAnimation(0.5f, c2.translation.y, testButton, TransitionType.PLACEMENT)
+            optionsWindow.applyLayout("animated_layout", 0.5f)
         }
     
         if (keyboard.isPressed(Key.S)) {
-            button1Animation1.changeGoal(c1.translation.x)
-//            userInterface += XTransitionAnimation(0.5f, c1.translation.x, testButton, TransitionType.PLACEMENT)
-//            userInterface += XTransitionAnimation(0.5f, c3.translation.x, testButton4, TransitionType.PLACEMENT)
-//            userInterface += YTransitionAnimation(0.5f, c1.translation.y, testButton, TransitionType.PLACEMENT)
+            optionsWindow.applyLayout("standard_layout", 0.5f)
+        }
+    
+        if (keyboard.isPressed(Key.D)) {
+            optionsWindow.applyLayout("third_layout", 0.5f)
         }
         
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)

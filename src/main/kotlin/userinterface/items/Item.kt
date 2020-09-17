@@ -3,17 +3,20 @@ package userinterface.items
 import graphics.Quad
 import graphics.shaders.ShaderProgram
 import userinterface.MovableUIContainer
-import userinterface.constraints.ConstraintSet
+import userinterface.layout.constraints.ConstraintSet
 import userinterface.items.backgrounds.Background
 
-open class Item(id: String, constraints: ConstraintSet, var background: Background) : MovableUIContainer(id, constraints) {
+open class Item(id: String, constraints: ConstraintSet, background: Background) : MovableUIContainer(id, constraints, background) {
 
     private val quad = Quad()
-    var isAnimating = false
 
     var baseBackground = background
-
-    var requiredIds = constraints.requiredIds
+    
+    init {
+        if (requiredIds().contains(id)) {
+            println("UI ERROR: item with id: $id is dependent of itself")
+        }
+    }
 
     open fun draw(shaderProgram: ShaderProgram) {
         shaderProgram.set("translation", constraints.translation())

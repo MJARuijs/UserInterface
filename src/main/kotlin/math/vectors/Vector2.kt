@@ -4,6 +4,8 @@ import kotlin.math.abs
 
 data class Vector2(var x: Float = 0.0f, var y: Float = 0.0f): Vector<Vector2> {
 
+    constructor(vector2: Vector2) : this(vector2.x, vector2.y)
+    
     constructor(x: Int, y: Int): this(x.toFloat(), y.toFloat())
 
     override operator fun get(index: Int) = when (index) {

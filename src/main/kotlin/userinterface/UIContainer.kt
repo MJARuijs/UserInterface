@@ -3,12 +3,13 @@ package userinterface
 import devices.Mouse
 import userinterface.items.Item
 import userinterface.items.ItemDimensions
+import userinterface.layout.UILayout
 import java.util.concurrent.ConcurrentHashMap
 
-open class UIContainer(val id: String) {
+abstract class UIContainer(val id: String, private val layouts: ArrayList<UILayout> = ArrayList()) {
 
     private val postPonedItems = ConcurrentHashMap<Item, ArrayList<String>>()
-
+    
     val children = ArrayList<Item>()
     
     fun findById(id: String): Item? {
@@ -16,7 +17,11 @@ open class UIContainer(val id: String) {
     }
     
     operator fun plusAssign(item: Item) {
-        add(item, item.requiredIds)
+        add(item, item.requiredIds())
+    }
+    
+    operator fun plusAssign(layout: UILayout) {
+        layouts += layout
     }
 
     private fun add(item: Item, requiredIds: ArrayList<String>) {
@@ -42,6 +47,10 @@ open class UIContainer(val id: String) {
     }
 
     protected fun add(item: Item) {
+        if (children.any { child -> child.id == item.id }) {
+            return
+        }
+        
         positionChild(item)
 
         for (postPonedItem in postPonedItems) {
@@ -54,12 +63,35 @@ open class UIContainer(val id: String) {
         children += item
     }
 
-    open fun update(mouse: Mouse, aspectRatio: Float): Boolean {
+    open fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
         children.forEach { child ->
-            if (child.update(mouse, aspectRatio)) {
-                return true
-            }
+            child.update(mouse, aspectRatio, deltaTime)
+//            if (child.update(mouse, aspectRatio, deltaTime)) {
+//                return true
+//            }
         }
         return false
     }
+    
+    fun printChildren() {
+        children.forEach { child ->
+            println("$id has child: ${child.id}")
+            child.printChildren()
+        }
+    }
+    
+    fun applyLayout(id: String, duration: Float) {
+        val layout = layouts.find { layout -> layout.id == id }
+        if (layout == null) {
+            println("No layout with id: $id was found for UIContainer with id: ${this.id}..")
+            return
+        }
+        
+//        printChildren()
+        
+        apply(layout, duration)
+    }
+    
+    open fun apply(layout: UILayout, duration: Float, parentDimensions: ItemDimensions? = null, parent: MovableUIContainer? = null) {}
+
 }
