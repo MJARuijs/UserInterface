@@ -6,7 +6,7 @@ import userinterface.layout.constraints.ConstraintSet
 import userinterface.effects.Effect
 import userinterface.items.backgrounds.Background
 
-class UIButton(id: String, constraintSet: ConstraintSet, background: Background, private val onClick: () -> Unit = {}, private val text: String = "") : Item(id, constraintSet, background) {
+class UIButton(id: String, constraints: ConstraintSet, background: Background, private val onClick: () -> Unit = {}, private val text: String = "") : Item(id, constraints, background) {
 
     private val hoverEffects = ArrayList<Effect>()
     private val onClickEffects = ArrayList<Effect>()

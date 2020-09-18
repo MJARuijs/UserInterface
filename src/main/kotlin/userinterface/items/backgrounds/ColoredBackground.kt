@@ -7,7 +7,7 @@ import userinterface.effects.Effect
 
 class ColoredBackground(var color: Color, cornerRadius: Float = 0.0f, outline: Float = 0.0f, outlineColor: Color = Color()) : Background(cornerRadius, outline, outlineColor) {
 
-    constructor(color: UIColor, cornerRadius: Float = 0.0f, outline: Float = 0.0f, outlineColor: Color = Color()) : this(color.color, cornerRadius, outline, outlineColor)
+    constructor(color: UIColor, cornerRadius: Float = 0.0f, outline: Float = 0.0f, outlineColor: Color = Color()) : this(Color(color.color), cornerRadius, outline, outlineColor)
 
     constructor(color: UIColor, cornerRadius: Float = 0.0f, outline: Float = 0.0f, outlineColor: UIColor) : this(color.color, cornerRadius, outline, outlineColor.color)
 

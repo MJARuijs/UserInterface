@@ -1,9 +1,12 @@
 package userinterface.animation
 
+import math.Color
 import userinterface.MovableUIContainer
 import userinterface.items.Item
 import userinterface.items.ItemDimensions
+import userinterface.items.Switch
 import userinterface.layout.UILayout
+import userinterface.layout.constraints.ConstraintSet
 import java.util.concurrent.ConcurrentHashMap
 
 class Animator {
@@ -11,6 +14,19 @@ class Animator {
     private val animations = ArrayList<Animation>()
     private val postPonedChildren = ConcurrentHashMap<String, MovableUIContainer>()
     private val computedChildren = ArrayList<String>()
+
+    operator fun plusAssign(animation: Animation) {
+        animations.add(animation)
+    }
+
+//    fun test(item: MovableUIContainer) {
+//        animations.add(ColorAnimation(0.5f, Color(0.4f, 0.3f, 0.2f, 1.0f), item))
+//    }
+
+    fun apply(item: MovableUIContainer, parent: MovableUIContainer, constraints: ConstraintSet, duration: Float) {
+        val newDimensions = constraints.computeResult(parent.getGoalDimensions(), parent)
+        animateLayoutTransition(item, duration, newDimensions)
+    }
 
     fun apply(item: MovableUIContainer, children: ArrayList<Item>, layout: UILayout, duration: Float) {
         postPonedChildren.clear()
@@ -50,16 +66,18 @@ class Animator {
         child.apply(layout, duration)
     }
 
-    fun update(deltaTime: Float) {
+    fun update(deltaTime: Float): Int {
         val removableAnimations = ArrayList<Animation>()
 
         animations.forEach { animation ->
             if (animation.apply(deltaTime)) {
+                animation.onFinish()
                 removableAnimations += animation
             }
         }
 
         animations.removeAll(removableAnimations)
+        return animations.size
     }
 
     private fun animateLayoutTransition(item: MovableUIContainer, duration: Float, newDimensions: ItemDimensions) {

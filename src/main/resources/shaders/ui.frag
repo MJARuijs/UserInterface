@@ -44,9 +44,15 @@ void checkCorner(vec2 currentPoint, float x, float y, float scaledCornerRadius) 
                 }
             } else {
                 if (distance - (scaledCornerRadius - scaledOutline) < SMOOTH_DISTANCE) {
-                    outColor.a = (distance - (scaledCornerRadius - scaledOutline)) / SMOOTH_DISTANCE;
+
+                    float mixFactor = (distance - (scaledCornerRadius - scaledOutline)) / SMOOTH_DISTANCE;
+                    outColor = mix(outlineColor, outColor, mixFactor);
+
+                    outColor.a = mixFactor;
                 } else if ((scaledCornerRadius-distance) < SMOOTH_DISTANCE) {
-                    outColor.a = (scaledCornerRadius-distance ) / SMOOTH_DISTANCE;
+                    float mixFactor = (scaledCornerRadius-distance ) / SMOOTH_DISTANCE;
+                    outColor = mix(outColor, outlineColor, mixFactor);
+                    outColor.a = mixFactor;
                 }
             }
         }

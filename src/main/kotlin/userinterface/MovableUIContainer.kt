@@ -12,11 +12,10 @@ import kotlin.collections.ArrayList
 
 open class MovableUIContainer(id: String, var constraints: ConstraintSet, var background: Background) : UIContainer(id) {
     
-    private val animations = ArrayList<Animation>()
     private val postPonedChildren = ConcurrentHashMap<String, MovableUIContainer>()
     private val computedChildren = ArrayList<String>()
 
-    private val animator = Animator()
+    val animator = Animator()
     
     var goalTranslation: Vector2? = null
     var goalScale: Vector2? = null
@@ -64,6 +63,7 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
     }
 
     override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
+//        println("$id ${animator.update(deltaTime)}")
         animator.update(deltaTime)
         return super.update(mouse, aspectRatio, deltaTime)
     }

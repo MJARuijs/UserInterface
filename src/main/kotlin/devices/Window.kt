@@ -9,7 +9,7 @@ class Window(title: String, private val onWindowResized: (Int, Int) -> Unit) {
 
     internal val handle: Long
 
-    private val xOffset = 1920 + 2560/8
+    private val xOffset = 0
 
     var running = true
         private set

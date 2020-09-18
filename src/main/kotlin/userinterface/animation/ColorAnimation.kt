@@ -1,12 +1,14 @@
 package userinterface.animation
 
 import math.Color
+import math.vectors.Vector4
 import userinterface.MovableUIContainer
+import userinterface.UniversalParameters
 import userinterface.items.Item
 import userinterface.items.backgrounds.ColoredBackground
 import kotlin.math.abs
 
-class ColorAnimation(duration: Float, private val changeToColor: Color, item: MovableUIContainer) : Animation(item) {
+class ColorAnimation(val duration: Float, val changeToColor: Color, item: MovableUIContainer, onFinish: () -> Unit = {}) : Animation(item, onFinish) {
 
     private val rSpeed: Float
     private val gSpeed: Float
@@ -14,6 +16,7 @@ class ColorAnimation(duration: Float, private val changeToColor: Color, item: Mo
     private val aSpeed: Float
 
     init {
+        println("Change to: ${changeToColor}")
         val currentColor = (item.background as ColoredBackground).color
         rSpeed = (changeToColor.r - currentColor.r) / duration
         gSpeed = (changeToColor.g - currentColor.g) / duration
@@ -23,43 +26,35 @@ class ColorAnimation(duration: Float, private val changeToColor: Color, item: Mo
 
     override fun apply(deltaTime: Float): Boolean {
         if (item.background is ColoredBackground) {
-            val currentColor = (item.background as ColoredBackground).color
+            val currentColor = Color((item.background as ColoredBackground).color)
 
-            val rIncrease = deltaTime * rSpeed
-            val gIncrease = deltaTime * gSpeed
-            val bIncrease = deltaTime * bSpeed
-            val aIncrease = deltaTime * aSpeed
-
-            if (abs(currentColor.r - changeToColor.r) < rIncrease) {
-                currentColor.r = changeToColor.r
-            } else {
-                currentColor.r += rIncrease
-            }
-
-            if (abs(currentColor.g - changeToColor.g) < gIncrease) {
-                currentColor.g = changeToColor.g
-            } else {
-                currentColor.g += gIncrease
-            }
-
-            if (abs(currentColor.b - changeToColor.b) < gIncrease) {
-                currentColor.b = changeToColor.b
-            } else {
-                currentColor.b += bIncrease
-            }
-
-            if (abs(currentColor.a - changeToColor.a) < gIncrease) {
-                currentColor.a = changeToColor.a
-            } else {
-                currentColor.a += aIncrease
-            }
-
-            (item.background as ColoredBackground).color = currentColor
-            if (currentColor == changeToColor) {
+            (item.background as ColoredBackground).color = increaseValues(currentColor, deltaTime)
+            println("CHECK: ${UniversalParameters.SWITCH_THUMB_OFF_BACKGROUND.color}")
+            if ((item.background as ColoredBackground).color == changeToColor) {
+                println("DONE")
                 return true
             }
             return false
         }
         throw IllegalArgumentException("Couldn't animate background color, as the background is a texture!")
+    }
+
+    private fun increaseValues(currentColor: Color, deltaTime: Float): Color {
+        val resultColor = Color()
+        val increaseValues = Vector4(
+            deltaTime * rSpeed,
+            deltaTime * gSpeed,
+            deltaTime * bSpeed,
+            deltaTime * aSpeed
+        )
+
+        for (i in 0 until 4) {
+            if (abs(currentColor[i] - changeToColor[i]) < abs(increaseValues[i])) {
+                resultColor[i] = changeToColor[i]
+            } else {
+                resultColor[i] = currentColor[i] + increaseValues[i]
+            }
+        }
+        return resultColor
     }
 }

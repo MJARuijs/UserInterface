@@ -3,7 +3,7 @@ package userinterface.animation
 import userinterface.MovableUIContainer
 import userinterface.items.Item
 
-abstract class Animation(val item: MovableUIContainer) {
+abstract class Animation(val item: MovableUIContainer, val onFinish: () -> Unit = {}) {
 
     var startTime = 0L
     var started = false

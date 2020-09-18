@@ -40,7 +40,9 @@ enum class UIColor(val color: Color) {
     PURPLE_BRIGHT(0.0f, 1.0f, 1.0f, 1.0f),
     PURPLE_LIGHT(PURPLE_BRIGHT.rgb() * 0.75f, 1.0f),
     PURPLE(PURPLE_BRIGHT.rgb() * 0.5f, 1.0f),
-    PURPLE_DARK(PURPLE_BRIGHT.rgb() * 0.25f, 1.0f)
+    PURPLE_DARK(PURPLE_BRIGHT.rgb() * 0.25f, 1.0f),
+
+    TRANSPARENT(0f, 0f, 0f, 0f)
 
 
     ;

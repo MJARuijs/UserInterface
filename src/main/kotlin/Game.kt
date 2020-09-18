@@ -24,6 +24,7 @@ import userinterface.layout.constraints.constrainttypes.AspectRatioConstraint
 import userinterface.layout.constraints.constrainttypes.PixelConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
 import userinterface.effects.ColorEffect
+import userinterface.items.Switch
 import userinterface.items.UIButton
 import userinterface.items.backgrounds.ColoredBackground
 import userinterface.layout.UILayout
@@ -56,7 +57,7 @@ fun main() {
     val userInterface = UserInterface(window.aspectRatio)
     
     val windowBackground = ColoredBackground(Color(0.5f, 0.5f, 0.5f, 0.5f))
-    val titleBarBackground = ColoredBackground(Color(0.25f, 0.25f, 0.25f, 0.25f))
+    val titleBarBackground = ColoredBackground(Color(0.25f, 0.25f, 0.25f, 0.75f))
     
     val optionsWindow = UIWindow(
         "options_menu",
@@ -80,7 +81,14 @@ fun main() {
     val buttonBackground3 = ColoredBackground(UIColor.GREEN, 0f, 0.00f, Color(1f, 1.0f, 1.0f))
     val buttonBackground4 = ColoredBackground(UIColor.RED, 0f, 0.00f, Color(1f, 1.0f, 1.0f))
     val buttonBackground5 = ColoredBackground(UIColor.YELLOW_LIGHT, 0f, 0.00f, Color(1f, 1.0f, 1.0f))
-    
+//    val switchOnTrackBackground = ColoredBackground(UIColor.TRANSPARENT, 90f, 0.09f, Color(33, 73, 107))
+//    val switchOnThumbBackground = ColoredBackground(Color(65, 162, 239), 90f)
+//    val switchOnThumbBackground = ColoredBackground(UIColor.BLUE_BRIGHT, 90f)
+
+//    val switchOffTrackBackground = ColoredBackground(UIColor.TRANSPARENT, 90f, 0.09f, Color(74, 74, 74))
+//    val switchOffThumbBackground = ColoredBackground(Color(185, 185, 185), 90f)
+//    val switchOffThumbBackground = ColoredBackground(UIColor.WHITE, 90f)
+
     val button1Constraints = ConstraintSet(
         PixelConstraint(ConstraintDirection.TO_LEFT, 0f),
         PixelConstraint(ConstraintDirection.TO_TOP, 0f),
@@ -170,6 +178,13 @@ fun main() {
 //        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
 //        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 0.5f)
 //    )
+
+    val switchConstraint = ConstraintSet(
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        CenterConstraint(ConstraintDirection.HORIZONTAL),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.15f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 3.0f)
+    )
     
     val testButton = UIButton("testButton1", button1Constraints, buttonBackground, {
         println("Button 1 Clicked")
@@ -190,13 +205,15 @@ fun main() {
     val testButton5 = UIButton("testButton5", button5Constraints, buttonBackground5, {
         println("Button 5 clicked!")
     })
+
+    val switch = Switch("switch", switchConstraint)
     
-    testButton5 += testButton4
-    testButton5 += testButton3
-    testButton5 += testButton2
-    testButton += testButton5
-    optionsWindow += testButton
-    
+//    testButton5 += testButton4
+//    testButton5 += testButton3
+//    testButton5 += testButton2
+//    testButton += testButton5
+//    optionsWindow += testButton
+    optionsWindow += switch
     userInterface += optionsWindow
 
     val textProgram = ShaderProgram.load("shaders/text.vert", "shaders/text.frag")
@@ -217,8 +234,6 @@ fun main() {
     animatedLayout += Pair(testButton3.id, button3Constraints2)
     animatedLayout += Pair(testButton4.id, button4Constraints2)
     animatedLayout += Pair(testButton5.id, button5Constraints2)
-
-
 
 //    thirdLayout += Pair(testButton.id, button1Constraints3)
 //    thirdLayout += Pair(testButton2.id, button2Constraints3)

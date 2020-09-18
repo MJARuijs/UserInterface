@@ -12,6 +12,8 @@ import math.vectors.Vector3
  */
 data class Color(var r: Float = 0.0f, var g: Float = 0.0f, var b: Float = 0.0f, var a: Float = 1.0f) {
 
+    constructor(color: Color) : this(color.r, color.g, color.b, color.a)
+
     constructor(r: Int, g: Int, b: Int, a: Int = 255): this(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f)
 
     constructor(rgb: Vector3, a: Float) : this(rgb[0], rgb[1], rgb[2], a)
@@ -26,7 +28,25 @@ data class Color(var r: Float = 0.0f, var g: Float = 0.0f, var b: Float = 0.0f, 
 
     operator fun div(factor: Float) = Color(r / factor, g / factor, b / factor, a / factor)
 
-    fun rgb() = Vector3(r, g, b)
+    operator fun get(i: Int): Float {
+        return when(i) {
+            0 -> r
+            1 -> g
+            2 -> b
+            3 -> a
+            else -> throw IndexOutOfBoundsException("Tried to access element at position $i, which doesn't exist in a Color..")
+        }
+    }
+
+    operator fun set(i: Int, value: Float) {
+        when(i) {
+            0 -> r = value
+            1 -> g = value
+            2 -> b = value
+            3 -> a = value
+            else -> throw IndexOutOfBoundsException("Tried to set element at position $i, which doesn't exist in a Color..")
+        }
+    }
 
     operator fun plusAssign(other: Color) {
         r += other.r
@@ -43,6 +63,8 @@ data class Color(var r: Float = 0.0f, var g: Float = 0.0f, var b: Float = 0.0f, 
     }
 
     fun toArray(): FloatArray = floatArrayOf(r, g, b, a)
+
+    fun rgb() = Vector3(r, g, b)
 
     companion object {
 

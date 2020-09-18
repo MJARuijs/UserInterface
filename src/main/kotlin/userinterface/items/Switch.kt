@@ -1,72 +1,82 @@
 package userinterface.items
 
-import math.Color
-import math.vectors.Vector2
+import userinterface.UniversalParameters
+import userinterface.animation.ColorAnimation
+import userinterface.animation.TransitionType
+import userinterface.animation.XTransitionAnimation
 import userinterface.items.backgrounds.ColoredBackground
+import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
+import userinterface.layout.constraints.constrainttypes.AspectRatioConstraint
+import userinterface.layout.constraints.constrainttypes.CenterConstraint
+import userinterface.layout.constraints.constrainttypes.PixelConstraint
+import userinterface.layout.constraints.constrainttypes.RelativeConstraint
 
-class Switch(id: String, constraints: ConstraintSet, trackBackground: ColoredBackground, private val thumbBackground: ColoredBackground) : Item(id, constraints, trackBackground) {
+class Switch(id: String, constraints: ConstraintSet,
+             private val trackOnBackground: ColoredBackground = UniversalParameters.SWITCH_TRACK_ON_BACKGROUND,
+             private val thumbOnBackground: ColoredBackground = UniversalParameters.SWITCH_THUMB_ON_BACKGROUND,
+             private val trackOffBackground: ColoredBackground = UniversalParameters.SWITCH_TRACK_OFF_BACKGROUND,
+             private val thumbOffBackground: ColoredBackground = UniversalParameters.SWITCH_THUMB_OFF_BACKGROUND,
+             private var switchOn: Boolean = false)
+    : Item(id, constraints, trackOnBackground) {
 
-    constructor(id: String, constraints: ConstraintSet, trackColor: Color, thumbColor: Color) : this(id, constraints, ColoredBackground(trackColor, 90.0f), ColoredBackground(thumbColor, 90.0f))
+    private var thumb: Item
 
-    constructor(id: String, position: Vector2, scale: Vector2, trackColor: Color, thumbColor: Color) : this(id, ConstraintSet(
+    private val switchOffConstraints = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_LEFT),
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 1.5f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
+    )
 
-    ), trackColor, thumbColor)
-
-    private lateinit var thumb: Item
+    private val switchOnConstraints = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_RIGHT),
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 1.5f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
+    )
 
     init {
-//        println(constraints.scale.y)
-
-//        val thumbConstraints = ConstraintSet(
-//            CenterConstraint(ConstraintDirection.VERTICAL),
-//            RelativeConstraint(ConstraintDirection.TO_LEFT, -constraints.scale.x / 2.0f),
-//            RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
-//            AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
-//        )
-//
-//        thumb = Item("${id}_thumb", thumbConstraints, thumbBackground)
-//
-//        add(thumb)
-//        println(scale.x)
-////
-//        val thumbConstraints = ConstraintSet(
-//            CenterConstraint(ConstraintDirection.VERTICAL),
-//            PixelConstraint(ConstraintDirection.TO_RIGHT, -scale.x, id),
-//            RelativeConstraint(ConstraintDirection.VERTICAL, 1.5f),
-//            AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
-//        )
-//
-//        thumb = Item("${id}_thumb", thumbConstraints, thumbBackground)
-//        println(thumb.translation)
-//        add(thumb)
+        if (switchOn) {
+            background = trackOnBackground
+            thumb = UIButton("${id}_thumb", switchOnConstraints, UniversalParameters.SWITCH_THUMB_ON_BACKGROUND, { toggle() })
+        } else {
+            background = trackOffBackground
+            thumb = UIButton("${id}_thumb", switchOffConstraints, UniversalParameters.SWITCH_THUMB_OFF_BACKGROUND, { toggle() })
+        }
+        children += thumb
     }
 
-    /*override fun position(parentDimensions: ItemDimensions, parentChildren: ArrayList<Item>) {
-        super.position(parentDimensions, parentChildren)
+    fun turnOn(duration: Float) {
+        switchOn = true
+        println("Tuning on ${thumbOnBackground.color}")
+        animator.apply(thumb, this, switchOnConstraints, duration)
+        thumb.animator += ColorAnimation(duration, UniversalParameters.SWITCH_THUMB_ON_BACKGROUND.color, thumb) {
+            println("RESULT THUMB ON: ${thumbOnBackground.color}")
+            println("RESULT THUMB OFF: ${thumbOffBackground.color}")
+            println("RESULT BACKGROUND: ${(thumb.background as ColoredBackground).color}")
+        }
 
-//        println(scale.x)
+    }
 
-        val thumbConstraints = ConstraintSet(
-            CenterConstraint(ConstraintDirection.VERTICAL),
-            PixelConstraint(
-                ConstraintDirection.TO_RIGHT,
-                -constraints.scale().x,
-                id
-            ),
-            RelativeConstraint(
-                ConstraintDirection.VERTICAL,
-                1.5f
-            ),
-            AspectRatioConstraint(
-                ConstraintDirection.HORIZONTAL,
-                1.0f
-            )
-        )
+    fun turnOff(duration: Float) {
+        switchOn = false
+        println("Tuning off ${ UniversalParameters.SWITCH_THUMB_OFF_BACKGROUND.color}")
 
-        thumb = Item("${id}_thumb", thumbConstraints, thumbBackground)
-        thumb.position(constraints, parentChildren)
-//        println(thumb.translation)
-        add(thumb)
-    }*/
+        animator.apply(thumb, this, switchOffConstraints, duration)
+
+        thumb.animator += ColorAnimation(duration, UniversalParameters.SWITCH_THUMB_OFF_BACKGROUND.color, thumb){
+            println("RESULT THUMB ON: ${thumbOnBackground.color}")
+            println("RESULT THUMB OFF: ${thumbOffBackground.color}")
+            println("RESULT BACKGROUND: ${(thumb.background as ColoredBackground).color}")
+        }
+    }
+
+    fun toggle(duration: Float = 0.1f) {
+        if (switchOn) {
+            turnOff(duration)
+        } else {
+            turnOn(duration)
+        }
+    }
 }
