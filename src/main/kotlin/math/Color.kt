@@ -1,5 +1,7 @@
 package math
 
+import math.vectors.Vector3
+
 /**
  * A color defined by w red, green, and blue color channels and an alpha value.
  * @param r the red color channel's value (default 0.0f)
@@ -12,6 +14,8 @@ data class Color(var r: Float = 0.0f, var g: Float = 0.0f, var b: Float = 0.0f, 
 
     constructor(r: Int, g: Int, b: Int, a: Int = 255): this(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f)
 
+    constructor(rgb: Vector3, a: Float) : this(rgb[0], rgb[1], rgb[2], a)
+
     operator fun plus(other: Color) = Color(r + other.r, g + other.g, b + other.b, a + other.b)
 
     operator fun minus(other: Color) = Color(r - other.r, g - other.g, b - other.b, a - other.b)
@@ -21,6 +25,8 @@ data class Color(var r: Float = 0.0f, var g: Float = 0.0f, var b: Float = 0.0f, 
     operator fun times(factor: Float) = Color(r * factor, g * factor, b * factor, a * factor)
 
     operator fun div(factor: Float) = Color(r / factor, g / factor, b / factor, a / factor)
+
+    fun rgb() = Vector3(r, g, b)
 
     operator fun plusAssign(other: Color) {
         r += other.r

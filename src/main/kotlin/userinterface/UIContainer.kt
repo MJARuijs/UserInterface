@@ -83,6 +83,6 @@ abstract class UIContainer(val id: String, private val layouts: ArrayList<UILayo
         apply(layout, duration)
     }
     
-    open fun apply(layout: UILayout, duration: Float, parentDimensions: ItemDimensions? = null) {}
+    open fun apply(layout: UILayout, duration: Float) {}
 
 }

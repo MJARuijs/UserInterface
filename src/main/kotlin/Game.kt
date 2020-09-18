@@ -16,6 +16,7 @@ import math.matrices.Matrix4
 import math.vectors.Vector2
 import math.vectors.Vector3
 import org.lwjgl.opengl.GL11.*
+import userinterface.UIColor
 import userinterface.UserInterface
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
@@ -74,11 +75,11 @@ fun main() {
         ColorEffect(Color(0.0f, 0.0f, 0.0f, 0.0f), Color(0.0f, 0.1f, 0.5f))
     )
     
-    val buttonBackground = ColoredBackground(Color(0.0f, 0.0f, 1.0f), 0f, 0.00f, Color(1f, 1.0f, 1.0f))
-    val buttonBackground2 = ColoredBackground(Color(1.0f, 1.0f, 0.0f), 0f, 0.00f, Color(1f, 1.0f, 1.0f))
-    val buttonBackground3 = ColoredBackground(Color(0.0f, 1.0f, 0.0f), 0f, 0.00f, Color(1f, 1.0f, 1.0f))
-    val buttonBackground4 = ColoredBackground(Color(1.0f, 0.0f, 0.0f), 0f, 0.00f, Color(1f, 1.0f, 1.0f))
-    val buttonBackground5 = ColoredBackground(Color(1.0f, 0.0f, 1.0f), 0f, 0.00f, Color(1f, 1.0f, 1.0f))
+    val buttonBackground = ColoredBackground(UIColor.BLUE, 0f, 0.00f, Color(1f, 1.0f, 1.0f))
+    val buttonBackground2 = ColoredBackground(UIColor.CYAN, 0f, 0.00f, Color(1f, 1.0f, 1.0f))
+    val buttonBackground3 = ColoredBackground(UIColor.GREEN, 0f, 0.00f, Color(1f, 1.0f, 1.0f))
+    val buttonBackground4 = ColoredBackground(UIColor.RED, 0f, 0.00f, Color(1f, 1.0f, 1.0f))
+    val buttonBackground5 = ColoredBackground(UIColor.YELLOW_LIGHT, 0f, 0.00f, Color(1f, 1.0f, 1.0f))
     
     val button1Constraints = ConstraintSet(
         PixelConstraint(ConstraintDirection.TO_LEFT, 0f),
@@ -206,12 +207,11 @@ fun main() {
     val animatedLayout = UILayout("animated_layout")
 //    val thirdLayout = UILayout("third_layout")
 
-    standardLayout += Pair(testButton.id, button1Constraints)
+    standardLayout += Triple(testButton.id, button1Constraints, UIColor.RED_BRIGHT)
     standardLayout += Pair(testButton2.id, button2Constraints)
     standardLayout += Pair(testButton3.id, button3Constraints)
     standardLayout += Pair(testButton4.id, button4Constraints)
     standardLayout += Pair(testButton5.id, button5Constraints)
-    
     animatedLayout += Pair(testButton.id, button1Constraints2)
     animatedLayout += Pair(testButton2.id, button2Constraints2)
     animatedLayout += Pair(testButton3.id, button3Constraints2)
@@ -242,7 +242,7 @@ fun main() {
             }
         }
         
-        if (keyboard.isPressed(Key.F1)) {
+        if (keyboard.isPressed(Key.F1) || keyboard.isPressed(Key.KP1)) {
             window.close()
         }
         

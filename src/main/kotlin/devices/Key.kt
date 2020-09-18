@@ -99,6 +99,8 @@ enum class Key(private val int: Int) {
     EIGHT(GLFW_KEY_8),
     NINE(GLFW_KEY_9),
 
+    KP1(GLFW_KEY_KP_1),
+
     UNKNOWN(GLFW_KEY_UNKNOWN);
 
     companion object {

@@ -9,6 +9,8 @@ class Window(title: String, private val onWindowResized: (Int, Int) -> Unit) {
 
     internal val handle: Long
 
+    private val xOffset = 1920 + 2560/8
+
     var running = true
         private set
 
@@ -58,7 +60,7 @@ class Window(title: String, private val onWindowResized: (Int, Int) -> Unit) {
             throw RuntimeException("Failed to create GLFW window")
         }
 
-        glfwSetWindowPos(handle, width /4, height / 4)
+        glfwSetWindowPos(handle, width / 4 + xOffset, height / 4)
         glfwSetWindowCloseCallback(handle) {
             running = false
         }

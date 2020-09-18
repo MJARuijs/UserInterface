@@ -26,9 +26,9 @@ class UIPage(id: String, private val background: Background) : UIContainer(id) {
         children.forEach { item -> item.destroy() }
     }
     
-    override fun apply(layout: UILayout, duration: Float, parentDimensions: ItemDimensions?) {
+    override fun apply(layout: UILayout, duration: Float) {
         children.forEach { child ->
-            child.apply(layout, duration, parentDimensions)
+            child.apply(layout, duration)
         }
     }
     

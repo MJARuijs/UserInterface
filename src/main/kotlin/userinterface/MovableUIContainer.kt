@@ -15,9 +15,11 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
     private val animations = ArrayList<Animation>()
     private val postPonedChildren = ConcurrentHashMap<String, MovableUIContainer>()
     private val computedChildren = ArrayList<String>()
+
+    private val animator = Animator()
     
-    private var goalTranslation: Vector2? = null
-    private var goalScale: Vector2? = null
+    var goalTranslation: Vector2? = null
+    var goalScale: Vector2? = null
     
     fun requiredIds() = constraints.requiredIds
     
@@ -42,6 +44,8 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
     fun translate(translation: Vector2) {
         constraints.translate(translation)
     }
+
+    fun setTranslation(translation: Vector2) = place(translation)
     
     fun place(placement: Vector2) {
         constraints.place(placement)
@@ -55,68 +59,12 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
         constraints.setScale(scale)
     }
     
-    override fun apply(layout: UILayout, duration: Float, parentDimensions: ItemDimensions?) {
-        postPonedChildren.clear()
-        computedChildren.clear()
-  
-        for (child in children) {
-            applyChild(child, layout, duration)
-        }
+    override fun apply(layout: UILayout, duration: Float) {
+        animator.apply(this, children, layout, duration)
     }
-    
-    private fun applyChild(child: MovableUIContainer, layout: UILayout, duration: Float) {
-        val childConstraints = layout.getConstraint(child.id)
-        if (childConstraints != null) {
-            val requiredIds = childConstraints.determineRequiredIds()
-            if (computedChildren.containsAll(requiredIds)) {
-                val childDimensions = childConstraints.computeResult(getGoalDimensions(), this)
-                child.goalTranslation = childDimensions.translation
-                child.goalScale = childDimensions.scale
-                
-                computedChildren += child.id
-        
-                if (postPonedChildren.containsKey(child.id)) {
-                    postPonedChildren.remove(child.id)
-                }
-                for (postPonedChild in postPonedChildren) {
-                    applyChild(postPonedChild.value, layout, duration)
-                }
-                child.animateLayoutTransition(duration, child.getGoalDimensions())
-            } else {
-                postPonedChildren[child.id] = child
-            }
-        }
-        child.apply(layout, duration, getGoalDimensions())
-    }
-    
-    private fun animateLayoutTransition(duration: Float, newDimensions: ItemDimensions) {
-        if (newDimensions.translation.x != getTranslation().x) {
-            animations += XTransitionAnimation(duration, newDimensions.translation.x, this, TransitionType.PLACEMENT)
-        }
 
-        if (newDimensions.translation.y != getTranslation().y) {
-            animations += YTransitionAnimation(duration, newDimensions.translation.y, this, TransitionType.PLACEMENT)
-        }
-
-        if (newDimensions.scale.x != getScale().x) {
-            animations += XScaleAnimation(duration, newDimensions.scale.x, this)
-        }
-
-        if (newDimensions.scale.y != getScale().y) {
-            animations += YScaleAnimation(duration, newDimensions.scale.y, this)
-        }
-    }
-    
     override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
-        val removableAnimations = ArrayList<Animation>()
-
-        animations.forEach { animation ->
-            if (animation.apply(deltaTime)) {
-                removableAnimations += animation
-            }
-        }
-
-        animations.removeAll(removableAnimations)
+        animator.update(deltaTime)
         return super.update(mouse, aspectRatio, deltaTime)
     }
 }
