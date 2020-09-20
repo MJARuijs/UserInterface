@@ -4,7 +4,7 @@ import graphics.shaders.ShaderProgram
 import math.Color
 import userinterface.effects.Effect
 
-abstract class Background(var cornerRadius: Float, private var outline: Float = 0.0f, private var outlineColor: Color = Color()) {
+abstract class Background(var cornerRadius: Float, var outline: Float = 0.0f, var outlineColor: Color = Color()) {
 
     init {
         if (cornerRadius < 0.0f) {

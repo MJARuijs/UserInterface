@@ -1,9 +1,11 @@
 package userinterface.items
 
-import userinterface.UniversalParameters
+import userinterface.UniversalParameters.SWITCH_THUMB_OFF_BACKGROUND
+import userinterface.UniversalParameters.SWITCH_THUMB_ON_BACKGROUND
+import userinterface.UniversalParameters.SWITCH_TRACK_OFF_BACKGROUND
+import userinterface.UniversalParameters.SWITCH_TRACK_ON_BACKGROUND
 import userinterface.animation.ColorAnimation
-import userinterface.animation.TransitionType
-import userinterface.animation.XTransitionAnimation
+import userinterface.items.backgrounds.ColorType
 import userinterface.items.backgrounds.ColoredBackground
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
@@ -12,13 +14,12 @@ import userinterface.layout.constraints.constrainttypes.CenterConstraint
 import userinterface.layout.constraints.constrainttypes.PixelConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
 
-class Switch(id: String, constraints: ConstraintSet,
-             private val trackOnBackground: ColoredBackground = UniversalParameters.SWITCH_TRACK_ON_BACKGROUND,
-             private val thumbOnBackground: ColoredBackground = UniversalParameters.SWITCH_THUMB_ON_BACKGROUND,
-             private val trackOffBackground: ColoredBackground = UniversalParameters.SWITCH_TRACK_OFF_BACKGROUND,
-             private val thumbOffBackground: ColoredBackground = UniversalParameters.SWITCH_THUMB_OFF_BACKGROUND,
-             private var switchOn: Boolean = false)
-    : Item(id, constraints, trackOnBackground) {
+class Switch(id: String, constraints: ConstraintSet, private var switchOn: Boolean = false,
+             private val trackOnBackground: ColoredBackground = SWITCH_TRACK_ON_BACKGROUND,
+             private val thumbOnBackground: ColoredBackground = SWITCH_THUMB_ON_BACKGROUND,
+             private val trackOffBackground: ColoredBackground = SWITCH_TRACK_OFF_BACKGROUND,
+             private val thumbOffBackground: ColoredBackground = SWITCH_THUMB_OFF_BACKGROUND)
+    : Item(id, constraints, trackOffBackground) {
 
     private var thumb: Item
 
@@ -38,38 +39,27 @@ class Switch(id: String, constraints: ConstraintSet,
 
     init {
         if (switchOn) {
-            background = trackOnBackground
-            thumb = UIButton("${id}_thumb", switchOnConstraints, UniversalParameters.SWITCH_THUMB_ON_BACKGROUND, { toggle() })
+            background = ColoredBackground(trackOnBackground)
+            thumb = UIButton("${id}_thumb", switchOnConstraints, ColoredBackground(thumbOnBackground), { toggle() })
         } else {
-            background = trackOffBackground
-            thumb = UIButton("${id}_thumb", switchOffConstraints, UniversalParameters.SWITCH_THUMB_OFF_BACKGROUND, { toggle() })
+            background = ColoredBackground(trackOffBackground)
+            thumb = UIButton("${id}_thumb", switchOffConstraints, ColoredBackground(thumbOffBackground), { toggle() })
         }
         children += thumb
     }
 
     fun turnOn(duration: Float) {
         switchOn = true
-        println("Tuning on ${thumbOnBackground.color}")
         animator.apply(thumb, this, switchOnConstraints, duration)
-        thumb.animator += ColorAnimation(duration, UniversalParameters.SWITCH_THUMB_ON_BACKGROUND.color, thumb) {
-            println("RESULT THUMB ON: ${thumbOnBackground.color}")
-            println("RESULT THUMB OFF: ${thumbOffBackground.color}")
-            println("RESULT BACKGROUND: ${(thumb.background as ColoredBackground).color}")
-        }
-
+        animator += ColorAnimation(duration, trackOnBackground.outlineColor, ColorType.OUTLINE_COLOR, this)
+        animator += ColorAnimation(duration, thumbOnBackground.color, ColorType.BACKGROUND_COLOR, thumb)
     }
 
     fun turnOff(duration: Float) {
         switchOn = false
-        println("Tuning off ${ UniversalParameters.SWITCH_THUMB_OFF_BACKGROUND.color}")
-
         animator.apply(thumb, this, switchOffConstraints, duration)
-
-        thumb.animator += ColorAnimation(duration, UniversalParameters.SWITCH_THUMB_OFF_BACKGROUND.color, thumb){
-            println("RESULT THUMB ON: ${thumbOnBackground.color}")
-            println("RESULT THUMB OFF: ${thumbOffBackground.color}")
-            println("RESULT BACKGROUND: ${(thumb.background as ColoredBackground).color}")
-        }
+        animator += ColorAnimation(duration, trackOffBackground.outlineColor, ColorType.OUTLINE_COLOR, this)
+        animator += ColorAnimation(duration, thumbOffBackground.color, ColorType.BACKGROUND_COLOR, thumb)
     }
 
     fun toggle(duration: Float = 0.1f) {

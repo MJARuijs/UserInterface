@@ -13,6 +13,8 @@ class ColoredBackground(var color: Color, cornerRadius: Float = 0.0f, outline: F
 
     constructor(color: Color, cornerRadius: Float = 0.0f, outline: Float = 0.0f, outlineColor: UIColor) : this(color, cornerRadius, outline, outlineColor.color)
 
+    constructor(background: ColoredBackground) : this(background.color, background.cornerRadius, background.outline, background.outlineColor)
+    
     override fun applyEffects(effects: ArrayList<Effect>) {
 
     }

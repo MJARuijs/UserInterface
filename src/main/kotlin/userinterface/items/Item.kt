@@ -5,14 +5,11 @@ import graphics.shaders.ShaderProgram
 import userinterface.MovableUIContainer
 import userinterface.layout.constraints.ConstraintSet
 import userinterface.items.backgrounds.Background
-import userinterface.items.backgrounds.ColoredBackground
 
 open class Item(id: String, constraints: ConstraintSet, background: Background) : MovableUIContainer(id, constraints, background) {
 
     private val quad = Quad()
 
-//    var baseBackground = background
-    
     init {
         if (requiredIds().contains(id)) {
             println("UI ERROR: item with id: $id is dependent of itself")

@@ -1,10 +1,8 @@
 package userinterface.animation
 
-import math.Color
 import userinterface.MovableUIContainer
 import userinterface.items.Item
 import userinterface.items.ItemDimensions
-import userinterface.items.Switch
 import userinterface.layout.UILayout
 import userinterface.layout.constraints.ConstraintSet
 import java.util.concurrent.ConcurrentHashMap
@@ -18,10 +16,6 @@ class Animator {
     operator fun plusAssign(animation: Animation) {
         animations.add(animation)
     }
-
-//    fun test(item: MovableUIContainer) {
-//        animations.add(ColorAnimation(0.5f, Color(0.4f, 0.3f, 0.2f, 1.0f), item))
-//    }
 
     fun apply(item: MovableUIContainer, parent: MovableUIContainer, constraints: ConstraintSet, duration: Float) {
         val newDimensions = constraints.computeResult(parent.getGoalDimensions(), parent)
@@ -37,7 +31,7 @@ class Animator {
         }
         val itemChanges = layout.getColorChange(item.id)
         if (itemChanges != null) {
-            animations += ColorAnimation(duration, itemChanges.color, item)
+            animations += ColorAnimation(duration, itemChanges.first.color, itemChanges.second, item)
         }
     }
 

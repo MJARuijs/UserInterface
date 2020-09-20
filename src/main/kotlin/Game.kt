@@ -26,6 +26,7 @@ import userinterface.layout.constraints.constrainttypes.RelativeConstraint
 import userinterface.effects.ColorEffect
 import userinterface.items.Switch
 import userinterface.items.UIButton
+import userinterface.items.backgrounds.ColorType
 import userinterface.items.backgrounds.ColoredBackground
 import userinterface.layout.UILayout
 import userinterface.layout.constraints.constrainttypes.CenterConstraint
@@ -206,7 +207,7 @@ fun main() {
         println("Button 5 clicked!")
     })
 
-    val switch = Switch("switch", switchConstraint)
+    val switch = Switch("switch", switchConstraint, false)
     
 //    testButton5 += testButton4
 //    testButton5 += testButton3
@@ -224,7 +225,7 @@ fun main() {
     val animatedLayout = UILayout("animated_layout")
 //    val thirdLayout = UILayout("third_layout")
 
-    standardLayout += Triple(testButton.id, button1Constraints, UIColor.RED_BRIGHT)
+    standardLayout += Triple(testButton.id, button1Constraints, Pair(UIColor.RED_BRIGHT, ColorType.BACKGROUND_COLOR))
     standardLayout += Pair(testButton2.id, button2Constraints)
     standardLayout += Pair(testButton3.id, button3Constraints)
     standardLayout += Pair(testButton4.id, button4Constraints)
