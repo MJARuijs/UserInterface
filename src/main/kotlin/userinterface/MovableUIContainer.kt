@@ -63,7 +63,6 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
     }
 
     override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
-//        println("$id ${animator.update(deltaTime)}")
         animator.update(deltaTime)
         return super.update(mouse, aspectRatio, deltaTime)
     }

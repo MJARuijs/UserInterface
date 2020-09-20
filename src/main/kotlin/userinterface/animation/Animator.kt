@@ -36,26 +36,24 @@ class Animator {
     }
 
     private fun applyChild(item: MovableUIContainer, child: MovableUIContainer, layout: UILayout, duration: Float) {
-        val childConstraints = layout.getConstraintsChange(child.id)
-        if (childConstraints != null) {
-            val requiredIds = childConstraints.determineRequiredIds()
-            if (computedChildren.containsAll(requiredIds)) {
-                val childDimensions = childConstraints.computeResult(item.getGoalDimensions(), item)
-                child.goalTranslation = childDimensions.translation
-                child.goalScale = childDimensions.scale
+        val childConstraints = layout.getConstraintsChange(child.id) ?: child.constraints
+        val requiredIds = childConstraints.determineRequiredIds()
+        if (computedChildren.containsAll(requiredIds)) {
+            val childDimensions = childConstraints.computeResult(item.getGoalDimensions(), item)
+            child.goalTranslation = childDimensions.translation
+            child.goalScale = childDimensions.scale
 
-                computedChildren += child.id
+            computedChildren += child.id
 
-                if (postPonedChildren.containsKey(child.id)) {
-                    postPonedChildren.remove(child.id)
-                }
-                for (postPonedChild in postPonedChildren) {
-                    applyChild(item, postPonedChild.value, layout, duration)
-                }
-                animateLayoutTransition(child, duration, child.getGoalDimensions())
-            } else {
-                postPonedChildren[child.id] = child
+            if (postPonedChildren.containsKey(child.id)) {
+                postPonedChildren.remove(child.id)
             }
+            for (postPonedChild in postPonedChildren) {
+                applyChild(item, postPonedChild.value, layout, duration)
+            }
+            animateLayoutTransition(child, duration, child.getGoalDimensions())
+        } else {
+            postPonedChildren[child.id] = child
         }
         child.apply(layout, duration)
     }

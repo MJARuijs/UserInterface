@@ -133,7 +133,7 @@ fun main() {
     )
     
     val button2Constraints2 = ConstraintSet(
-        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.0f, "testButton3"),
+        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.0f),
         PixelConstraint(ConstraintDirection.TO_TOP, 0.0f),
         RelativeConstraint(ConstraintDirection.VERTICAL, 0.6f),
         AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1f)
@@ -159,30 +159,17 @@ fun main() {
         RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.7f),
         RelativeConstraint(ConstraintDirection.VERTICAL, 0.95f)
     )
-//    val button1Constraints3 = ConstraintSet(
-//        PixelConstraint(ConstraintDirection.TO_RIGHT),
-//        PixelConstraint(ConstraintDirection.TO_BOTTOM),
-//        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
-//        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
-//    )
-//
-//    val button2Constraints3 = ConstraintSet(
-//        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.0f),
-//        PixelConstraint(ConstraintDirection.TO_TOP, 0.0f),
-//        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
-//        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1f)
-//    )
-//
-//    val button3Constraints3 = ConstraintSet(
-//        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.0f),
-//        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f),
-//        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
-//        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 0.5f)
-//    )
 
     val switchConstraint = ConstraintSet(
-        CenterConstraint(ConstraintDirection.VERTICAL),
-        CenterConstraint(ConstraintDirection.HORIZONTAL),
+        PixelConstraint(ConstraintDirection.TO_TOP, 0.2f),
+        PixelConstraint(ConstraintDirection.TO_LEFT, 0.2f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.15f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 3.0f)
+    )
+    
+    val switchConstraint2 = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_TOP, 0.2f),
+        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.2f),
         RelativeConstraint(ConstraintDirection.VERTICAL, 0.15f),
         AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 3.0f)
     )
@@ -213,9 +200,9 @@ fun main() {
     
 //    testButton5 += testButton4
 //    testButton5 += testButton3
-//    testButton5 += testButton2
-//    testButton += testButton5
-//    optionsWindow += testButton
+    testButton5 += testButton2
+    testButton += testButton5
+    optionsWindow += testButton
     optionsWindow += switch
     userInterface += optionsWindow
 
@@ -228,15 +215,18 @@ fun main() {
 //    val thirdLayout = UILayout("third_layout")
 
     standardLayout += Triple(testButton.id, button1Constraints, Pair(UIColor.RED_BRIGHT, ColorType.BACKGROUND_COLOR))
-    standardLayout += Pair(testButton2.id, button2Constraints)
+//    standardLayout += Pair(testButton2.id, button2Constraints)
     standardLayout += Pair(testButton3.id, button3Constraints)
     standardLayout += Pair(testButton4.id, button4Constraints)
     standardLayout += Pair(testButton5.id, button5Constraints)
+    standardLayout += Pair(switch.id, switchConstraint)
+    
     animatedLayout += Pair(testButton.id, button1Constraints2)
-    animatedLayout += Pair(testButton2.id, button2Constraints2)
+//    animatedLayout += Pair(testButton2.id, button2Constraints)
     animatedLayout += Pair(testButton3.id, button3Constraints2)
     animatedLayout += Pair(testButton4.id, button4Constraints2)
     animatedLayout += Pair(testButton5.id, button5Constraints2)
+    animatedLayout += Pair(switch.id, switchConstraint2)
 
 //    thirdLayout += Pair(testButton.id, button1Constraints3)
 //    thirdLayout += Pair(testButton2.id, button2Constraints3)
