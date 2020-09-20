@@ -207,7 +207,9 @@ fun main() {
         println("Button 5 clicked!")
     })
 
-    val switch = Switch("switch", switchConstraint, false)
+    val switch = Switch("switch", switchConstraint, false, { newState ->
+        println("State changed to $newState")
+    })
     
 //    testButton5 += testButton4
 //    testButton5 += testButton3
@@ -260,6 +262,10 @@ fun main() {
         
         if (keyboard.isPressed(Key.F1) || keyboard.isPressed(Key.KP1)) {
             window.close()
+        }
+        
+        if (keyboard.isPressed(Key.F)) {
+            switch.turnOn()
         }
         
         if (keyboard.isPressed(Key.A)) {
