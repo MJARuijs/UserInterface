@@ -30,6 +30,7 @@ import userinterface.items.backgrounds.ColorType
 import userinterface.items.backgrounds.ColoredBackground
 import userinterface.layout.UILayout
 import userinterface.layout.constraints.constrainttypes.CenterConstraint
+import userinterface.svg.SVGLoader
 import userinterface.text.Text
 import userinterface.text.font.FontLoader
 import userinterface.window.ButtonAlignment
@@ -236,10 +237,13 @@ fun main() {
     optionsWindow += animatedLayout
 //    optionsWindow += thirdLayout
     
+    val parser = SVGLoader()
+    val svgFile = parser.load("svg/close (1).svg")
+    
     userInterface.showWindow("options_menu")
     timer.reset()
     mouse.release()
-
+    
     while (!window.isClosed()) {
         if (keyboard.isPressed(Key.ESCAPE)) {
             mouse.toggle()
@@ -277,7 +281,8 @@ fun main() {
         
         if (userInterface.isShowing()) {
             userInterface.update(mouse, timer.getDelta())
-            userInterface.draw(window.width, window.height)
+//            userInterface.draw(window.width, window.height)
+            svgFile.svgMesh.draw()
         }
         
         if (mouse.captured) {
