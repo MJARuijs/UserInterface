@@ -238,7 +238,7 @@ fun main() {
 //    optionsWindow += thirdLayout
     
     val parser = SVGLoader()
-    val svgFile = parser.load("svg/close (1).svg")
+    val svgFile = parser.load("svg/test.svg")
     
     userInterface.showWindow("options_menu")
     timer.reset()
@@ -277,7 +277,7 @@ fun main() {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         sky.render()
         
-        EntityRenderer.render(camera, entities, ambientLight, directionalLight)
+//        EntityRenderer.render(camera, entities, ambientLight, directionalLight)
         
         if (userInterface.isShowing()) {
             userInterface.update(mouse, timer.getDelta())

@@ -14,7 +14,7 @@ enum class SVGOperationType(val id: Char) {
     
     companion object {
         fun fromId(char: Char): SVGOperationType {
-            val type = values().find { type -> type.id == char }
+            val type = values().find { type -> type.id.toLowerCase() == char.toLowerCase() }
             return type ?: throw NoSuchSVGOperationType("No SVGOperationType exists for char: $char")
         }
     }
