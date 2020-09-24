@@ -59,7 +59,7 @@ class Mouse(private val window: Window) {
     var moved = false
         internal set
 
-    var captured = true
+    var captured = false
         internal set
 
     fun isPressed(button: Button) = pressed.contains(button)

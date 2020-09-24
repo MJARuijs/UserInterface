@@ -9,65 +9,90 @@ class SVGLoader : Loader<SVGFile> {
     private val operationsPattern = "\\s*(?<operation>[a-zA-Z]\\s*,?\\s*(-|[0-9]|\\.|\\s)*)".toRegex().toPattern()
     private val pointPattern = "(?<x>-?[0-9]+(\\.[0-9]+)?)\\s*,?\\s*(?<y>-?[0-9]+(\\.[0-9]+)?)?\\s*".toRegex().toPattern()
     private val triangulation = Triangulation()
-    
+    private val childVertices = ArrayList<ArrayList<Vector2>>()
     
     override fun load(path: String): SVGFile {
         val file = File(path)
         val content = file.getContent()
-        val points = two(content)
-        val triangulatedPoints = triangulation.process(points) ?: throw IllegalArgumentException("")
+        val pointData = one(content)
+        
+        val verticesToBeTriangulated = pointData.first
+        val triangulatedVertices = pointData.second
+        val triangulatedPoints = triangulation.process(verticesToBeTriangulated) ?: throw IllegalArgumentException("")
     
         var vertices = FloatArray(0)
+    
+//        verticesToBeTriangulated.forEach { point -> vertices += point.toArray() }
         triangulatedPoints.forEach { point -> vertices += point.toArray() }
-//        points.forEach { point -> vertices += point.toArray() }
-
-        return SVGFile(SVGMesh(vertices))
+//        triangulatedVertices.forEach { point -> vertices += point.toArray() }
+        
+        val mesh = SVGMesh(vertices)
+        for (childVertex in childVertices) {
+            mesh += childVertex
+        }
+        
+        return SVGFile(mesh)
     }
     
-    private fun two(content: String): ArrayList<Vector2> {
-        val height = getValueOfAttribute("height", content).removeSuffix("pt").toFloat()
-        val width = getValueOfAttribute("width", content).removeSuffix("pt").toFloat()
-        var pathValues = getValueOfAttribute("path", content)
+    private fun one(content: String): Pair<ArrayList<Vector2>, ArrayList<Vector2>> {
+        val viewBox = getValueOfAttribute("viewBox", content)
+        val viewBoxValues = viewBox.split(' ')
+        val height: Float
+        val width: Float
     
+        if (viewBoxValues.size < 4) {
+            height = getValueOfAttribute("height", content).toFloat()
+            width = getValueOfAttribute("width", content).toFloat()
+        } else {
+            height = viewBoxValues[2].toFloat()
+            width = viewBoxValues[3].toFloat()
+        }
+        
+        var pathValues = getValueOfAttribute("path", content)
+        
         var operationsMatcher = operationsPattern.matcher(pathValues)
         val operations = ArrayList<SVGOperation>()
-    
+        
         while (operationsMatcher.find()) {
             val operation = operationsMatcher.group("operation")
-//            operations += parseOperation(operation, 1f, 1f)
             operations += parseOperation(operation, width, height)
-        
+            
             pathValues = pathValues.removePrefix(operation)
             operationsMatcher = operationsPattern.matcher(pathValues)
         }
-    
-        val vertices = ArrayList<Vector2>()
-    
+        
+        val verticesToBeTriangulated = ArrayList<Vector2>()
+        val triangulatedVertices = ArrayList<Vector2>()
+        
         var currentPoint = Vector2()
         
-        var firstX = Float.MAX_VALUE
-        var firstY = Float.MAX_VALUE
-        
         for (operation in operations) {
-//            println(operation.type)
-            val operationData = operation.computeValues(currentPoint, vertices)
+            val operationData = operation.computeValues(currentPoint, verticesToBeTriangulated)
             currentPoint = operationData.second
             val points = operationData.first
-            
-            for (i in points.indices step 2) {
-                val x = points[i]
-                val y = points[i + 1]
-//                println("(${x * width}, ${-y * height})")
-                vertices += Vector2(x, y)
-                if (firstX == Float.MAX_VALUE) {
-                    firstX = x
+
+            if (operation.type == SVGOperationType.BEZIER_CURVE) {
+                verticesToBeTriangulated += Vector2(currentPoint)
+//                println("Adding $currentPoint")
+                val pointsToBeTriangulated = ArrayList<Vector2>()
+                for (point in points) {
+                    pointsToBeTriangulated += point
                 }
-                if (firstY == Float.MAX_VALUE) {
-                    firstY = y
+                
+                    val triangulatedPoints = triangulation.process(pointsToBeTriangulated) ?: throw IllegalArgumentException("")
+
+                    triangulatedPoints.forEach { point -> triangulatedVertices += point }
+//                childVertices += triangulatedPoints
+//                }
+                
+            } else {
+                for (point in points) {
+                    verticesToBeTriangulated += Vector2(point)
                 }
             }
         }
-        return vertices
+        
+        return Pair(verticesToBeTriangulated, triangulatedVertices)
     }
     
     private fun parseOperation(input: String, width: Float, height: Float): SVGOperation {
@@ -84,9 +109,9 @@ class SVGLoader : Loader<SVGFile> {
             val pointX = pointMatcher.group("x")
             val pointY = pointMatcher.group("y")
             
-            points += (pointX.toFloat() / width / 1.77f)
+            points += (pointX.toFloat())/ width / 1.77f
             if (pointY != null) {
-                points += -pointY.toFloat() / height
+                points += -(pointY.toFloat() ) / height
             }
 //            println("Input: $operationPoints")
 //            println("${pointX}, $pointY")
@@ -108,6 +133,7 @@ class SVGLoader : Loader<SVGFile> {
             }
     
             backup = operationPoints
+//            println("Ending with $operationPoints")
             pointMatcher = pointPattern.matcher(operationPoints)
         }
         

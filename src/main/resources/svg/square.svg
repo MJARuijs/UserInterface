@@ -1,1 +1,1 @@
-<svg width="400" height="110">    <path d="M 10 10 h 80 v 80 h -80 " fill="transparent" stroke="black"/></svg>
+<svg width="400" height="400">    <path d="M 10 10 L 80 0 80 40 " fill="transparent" stroke="black"/></svg>

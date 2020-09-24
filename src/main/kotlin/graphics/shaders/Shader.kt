@@ -16,7 +16,7 @@ class Shader(type: ShaderType, source: String): Resource {
         val compiled = glGetShaderi(handle, GL_COMPILE_STATUS)
         if (compiled != GL_TRUE) {
             val log = glGetShaderInfoLog(handle, glGetShaderi(handle, GL_INFO_LOG_LENGTH))
-            throw IllegalArgumentException("Could not compile shader:\n$log")
+            throw IllegalArgumentException("Could not compile shader: $type\n$log")
         }
     }
 
