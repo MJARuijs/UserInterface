@@ -9,14 +9,14 @@ class SVGLoader : Loader<SVGMesh> {
     private val operationsPattern = "\\s*(?<operation>[a-zA-Z]\\s*,?\\s*(-|[0-9]|\\.|\\s)*)".toRegex().toPattern()
     private val pointPattern = "(?<x>-?[0-9]+(\\.[0-9]+)?)\\s*,?\\s*(?<y>-?[0-9]+(\\.[0-9]+)?)?\\s*".toRegex().toPattern()
     private val triangulation = Triangulation()
-    
+
     private var size = 1.0f
-    
+
     fun load(path: String, size: Float): SVGMesh {
         this.size = size
         return load(path)
     }
-    
+
     override fun load(path: String): SVGMesh {
         val file = File(path)
         val content = file.getContent()
@@ -29,12 +29,47 @@ class SVGLoader : Loader<SVGMesh> {
         }
         
         val triangulatedPoints = triangulation.process(verticesToBeTriangulated) ?: throw IllegalArgumentException("")
-        var vertices = FloatArray(0)
-        
-        triangulatedPoints.forEach { point -> vertices += point.toArray() }
-        test.forEach { point -> vertices += point.toArray() }
-        
-        return SVGMesh(vertices)
+        val vertices = ArrayList<Vector2>()
+        triangulatedPoints.forEach { point ->
+            vertices += point + Vector2(0.0f, 0.5f)
+        }
+
+        test.forEach { point ->
+            vertices += point + Vector2(0.0f, 0.5f)
+        }
+
+        var minX = Float.MAX_VALUE
+        var maxX = Float.MIN_VALUE
+        var minY = Float.MAX_VALUE
+        var maxY = Float.MIN_VALUE
+
+        for (vertex in vertices) {
+            val x = vertex.x
+            val y = vertex.y
+
+            if (x < minX) {
+                minX = x
+            }
+            if (x > maxX) {
+                maxX = x
+            }
+            if ((y) < (minY)) {
+                minY = y
+            }
+            if ((y) > (maxY)) {
+                maxY = y
+            }
+        }
+
+        val xDifference = maxX - (maxX - minX) / 2.0f
+        val yDifference = maxY - (maxY - minY) / 2.0f
+
+        val centeredVertices = ArrayList<Vector2>()
+        vertices.forEach { vertex ->
+            centeredVertices += Vector2(vertex.x - xDifference, vertex.y + yDifference)
+        }
+
+        return SVGMesh(centeredVertices, maxX - xDifference, maxY - yDifference)
     }
     
     private fun one(content: String): Pair<ArrayList<Vector2>, ArrayList<Vector2>> {
@@ -108,9 +143,9 @@ class SVGLoader : Loader<SVGMesh> {
             val pointX = pointMatcher.group("x")
             val pointY = pointMatcher.group("y")
             
-            points += (pointX.toFloat() * size) / width / 1.77f
+            points += (pointX.toFloat() * size / width / 1.77f)
             if (pointY != null) {
-                points += -(pointY.toFloat() * size) / height
+                points += -((pointY.toFloat() * size) / height)
             }
     
             operationPoints = operationPoints.trim().removePrefix(pointX).trim()

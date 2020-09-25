@@ -1,17 +1,24 @@
 package userinterface.svg
 
+import math.vectors.Vector2
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL15.glDeleteBuffers
 import org.lwjgl.opengl.GL15.glGenBuffers
 import org.lwjgl.opengl.GL30.*
 import resources.Resource
 
-class SVGMesh(private val vertices: FloatArray) : Resource {
-    
+class SVGMesh(private var points: ArrayList<Vector2>, val xSize: Float, val ySize: Float) : Resource {
+
     private val vao = glGenVertexArrays()
     private val vbo = glGenBuffers()
     
     init {
+        var vertices = FloatArray(0)
+        points.forEach { point ->
+            vertices += point.toArray()
+        }
+println(xSize)
+println(ySize)
         glBindVertexArray(vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo)
@@ -25,7 +32,8 @@ class SVGMesh(private val vertices: FloatArray) : Resource {
 
     fun draw() {
         glBindVertexArray(vao)
-        glDrawArrays(GL11.GL_TRIANGLES, 0, vertices.size / 2)
+
+        glDrawArrays(GL11.GL_TRIANGLES, 0, points.size)
         glBindVertexArray(0)
     }
 

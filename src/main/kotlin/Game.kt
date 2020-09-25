@@ -7,6 +7,7 @@ import environment.sky.Sky
 import graphics.Camera
 import graphics.GraphicsContext
 import graphics.GraphicsOption
+import graphics.PointMesh
 import graphics.lights.AmbientLight
 import graphics.lights.DirectionalLight
 import graphics.models.ModelCache
@@ -67,7 +68,7 @@ fun main() {
         "options_menu",
         Vector2(0.9f * window.aspectRatio, 0.9f),
         windowBackground,
-        0.05f,
+        0.0f,
         titleBarBackground,
         ButtonAlignment.RIGHT
     )
@@ -102,9 +103,9 @@ fun main() {
     )
 
     val button2Constraints = ConstraintSet(
-        PixelConstraint(ConstraintDirection.TO_LEFT, 0.0f),
-        PixelConstraint(ConstraintDirection.TO_TOP, 0.0f),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
+        CenterConstraint(ConstraintDirection.HORIZONTAL),
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
         AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1f)
     )
 
@@ -201,15 +202,15 @@ fun main() {
     val switch = Switch("switch", switchConstraint, false, { newState ->
         println("State changed to $newState")
     })
+
     val svgLoader = SVGLoader()
     
     val checkIcon = svgLoader.load("svg/tick.svg")
-    
-    testButton.icon = SVGIcon(checkIcon)
+    testButton2.icon = SVGIcon(checkIcon, 0.1f)
     
 //    testButton5 += testButton4
 //    testButton5 += testButton3
-//    testButton5 += testButton2
+    testButton += testButton2
 //    testButton += testButton5
     optionsWindow += testButton
 //    optionsWindow += switch
@@ -242,8 +243,9 @@ fun main() {
 //    optionsWindow += thirdLayout
 
 //    val svgFile = parser.load("svg/check-mark-black-outline.svg")
-    
-    val closeIcon = svgLoader.load("svg/close.svg", 0.1f)
+
+    val pointProgram = ShaderProgram.load("shaders/point.vert", "shaders/point.frag")
+    val point = PointMesh(floatArrayOf(-0.28248626f, -0.36718836f, 0.28248623f, 0.36719373f))
 
     userInterface.showWindow("options_menu")
     timer.reset()
@@ -290,7 +292,12 @@ fun main() {
 //            checkIcon.draw()
 //            closeIcon.draw()
         }
-    
+
+        glPointSize(10f)
+        pointProgram.start()
+        point.draw()
+        pointProgram.stop()
+
         if (mouse.captured) {
             camera.update(window.keyboard, window.mouse, timer.getDelta())
         }
