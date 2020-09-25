@@ -3,10 +3,12 @@ package userinterface.window
 import graphics.textures.ImageMap
 import math.Color
 import resources.images.ImageCache
+import userinterface.UIColor
 import userinterface.layout.constraints.constrainttypes.*
 import userinterface.items.UIButton
 import userinterface.items.Item
 import userinterface.items.backgrounds.Background
+import userinterface.items.backgrounds.SVGBackground
 import userinterface.items.backgrounds.TexturedBackground
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
@@ -34,6 +36,7 @@ class TitleBar(id: String = "TitleBar", constraints: ConstraintSet, background: 
         if (closeButtonAlignment != ButtonAlignment.HIDDEN) {
             val closeButtonTexture = ImageMap(ImageCache.get("textures/userinterface/close_button.png"))
             val closeButtonBackground = TexturedBackground(closeButtonTexture, overlayColor = Color(1.0f, 1.0f, 1.0f, 1.0f))
+//            val closeButtonBackground = SVGBackground("svg/close.svg", 0.1f, UIColor.WHITE.color, 0f, 0f, UIColor.WHITE.color)
 
             if (closeButtonAlignment == ButtonAlignment.RIGHT) {
                 val buttonConstraints = ConstraintSet(

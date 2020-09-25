@@ -7,7 +7,6 @@ import environment.sky.Sky
 import graphics.Camera
 import graphics.GraphicsContext
 import graphics.GraphicsOption
-import graphics.PointMesh
 import graphics.lights.AmbientLight
 import graphics.lights.DirectionalLight
 import graphics.models.ModelCache
@@ -31,6 +30,7 @@ import userinterface.layout.constraints.constrainttypes.AspectRatioConstraint
 import userinterface.layout.constraints.constrainttypes.CenterConstraint
 import userinterface.layout.constraints.constrainttypes.PixelConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
+import userinterface.svg.SVGIcon
 import userinterface.svg.SVGLoader
 import userinterface.text.Text
 import userinterface.text.font.FontLoader
@@ -80,7 +80,8 @@ fun main() {
         ColorEffect(Color(0.0f, 0.0f, 0.0f, 0.0f), Color(0.0f, 0.1f, 0.5f))
     )
 
-    val buttonBackground = ColoredBackground(UIColor.BLUE, 0f, 0.00f, Color(1f, 1.0f, 1.0f))
+//    val buttonBackground = SVGBackground("svg/close.svg", 0.01f, UIColor.WHITE.color, 0f, 0f, UIColor.BLACK.color)
+    val buttonBackground = ColoredBackground(UIColor.GREEN_DARK, 0f, 0.0f, Color(33, 73, 107))
     val buttonBackground2 = ColoredBackground(UIColor.CYAN, 0f, 0.00f, Color(1f, 1.0f, 1.0f))
     val buttonBackground3 = ColoredBackground(UIColor.GREEN, 0f, 0.00f, Color(1f, 1.0f, 1.0f))
     val buttonBackground4 = ColoredBackground(UIColor.RED, 0f, 0.00f, Color(1f, 1.0f, 1.0f))
@@ -200,13 +201,18 @@ fun main() {
     val switch = Switch("switch", switchConstraint, false, { newState ->
         println("State changed to $newState")
     })
-
+    val svgLoader = SVGLoader()
+    
+    val checkIcon = svgLoader.load("svg/tick.svg")
+    
+    testButton.icon = SVGIcon(checkIcon)
+    
 //    testButton5 += testButton4
 //    testButton5 += testButton3
-    testButton5 += testButton2
-    testButton += testButton5
+//    testButton5 += testButton2
+//    testButton += testButton5
     optionsWindow += testButton
-    optionsWindow += switch
+//    optionsWindow += switch
     userInterface += optionsWindow
 
     val textProgram = ShaderProgram.load("shaders/text.vert", "shaders/text.frag")
@@ -231,22 +237,14 @@ fun main() {
     animatedLayout += Pair(testButton5.id, button5Constraints2)
     animatedLayout += Pair(switch.id, switchConstraint2)
 
-//    thirdLayout += Pair(testButton.id, button1Constraints3)
-//    thirdLayout += Pair(testButton2.id, button2Constraints3)
-//    thirdLayout += Pair(testButton3.id, button3Constraints3)
-
     optionsWindow += standardLayout
     optionsWindow += animatedLayout
 //    optionsWindow += thirdLayout
 
-    val parser = SVGLoader()
 //    val svgFile = parser.load("svg/check-mark-black-outline.svg")
-    val svgFile = parser.load("svg/tick.svg")
+    
+    val closeIcon = svgLoader.load("svg/close.svg", 0.1f)
 
-    val pointProgram = ShaderProgram.load("shaders/pnt.vert")
-    
-    val point = PointMesh(floatArrayOf(0.556698f, -0.14745313f))
-    
     userInterface.showWindow("options_menu")
     timer.reset()
     mouse.release()
@@ -285,17 +283,14 @@ fun main() {
         sky.render()
         
 //        EntityRenderer.render(camera, entities, ambientLight, directionalLight)
-        
+    
         if (userInterface.isShowing()) {
             userInterface.update(mouse, timer.getDelta())
-//            userInterface.draw(window.width, window.height)
-            svgFile.svgMesh.draw()
+            userInterface.draw(window.width, window.height)
+//            checkIcon.draw()
+//            closeIcon.draw()
         }
-        
-        pointProgram.start()
-        point.draw()
-//        pointProgram.stop()
-
+    
         if (mouse.captured) {
             camera.update(window.keyboard, window.mouse, timer.getDelta())
         }

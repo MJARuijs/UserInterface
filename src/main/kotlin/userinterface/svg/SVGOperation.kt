@@ -18,50 +18,45 @@ class SVGOperation(val type: SVGOperationType, private val isAbsolute: Boolean, 
         
         if (type == SVGOperationType.CLOSE_PATH) {
             point = computedPoints[0]
-//            println(point)
-            points += Vector2(point)
             return Pair(points, point)
         }
         
         if (type == SVGOperationType.HORIZONTAL_LINE) {
             val delta = values[0]
             point.x += delta
-            points += Vector2(point)
+            points += point
             return Pair(points, point)
         }
         
         if (type == SVGOperationType.VERTICAL_LINE) {
             val delta = values[0]
             point.y -= delta
-            points += Vector2(point)
+            points += point
             return Pair(points, point)
         }
         
         if (type == SVGOperationType.BEZIER_CURVE) {
-            if (false) {
-                var controlPoint1 = Vector2(values[0], values[1]) - startPoint
-                var controlPoint2 = Vector2(values[2], values[3]) - startPoint
-                var endPoint = Vector2(values[4], values[5]) - startPoint
+            if (isAbsolute) {
+                val controlPoint1 = Vector2(values[0], values[1]) - startPoint
+                val controlPoint2 = Vector2(values[2], values[3]) - startPoint
+                val endPoint = Vector2(values[4], values[5]) - startPoint
 
                 for (j in 0 until smoothness) {
                     val smoothness = j.toFloat() / smoothness.toFloat()
-                    val newPoint = (point) * (1 - smoothness).pow(3) +
+                    val newPoint = point * (1 - smoothness).pow(3) +
                             controlPoint1 * 3.0f * (1.0f - smoothness).pow(2) * smoothness +
                             controlPoint2 * 3.0f * (1.0f - smoothness) * smoothness.pow(2) +
                             endPoint * smoothness.pow(3)
 
-                    points += Vector2(startPoint + newPoint)
+                    points += startPoint + newPoint
                 }
 
-                println(endPoint + startPoint)
-                println(startPoint)
-//                points += Vector2(startPoint)
-                points += Vector2(endPoint) + Vector2(startPoint)
-                return Pair(points, Vector2(endPoint) + Vector2(startPoint))
+                points += endPoint + startPoint
+                return Pair(points, endPoint + startPoint)
             } else {
-                var controlPoint1 = Vector2(values[0], values[1]) + point
-                var controlPoint2 = Vector2(values[2], values[3]) + point
-                var endPoint = Vector2(values[4], values[5]) + point
+                val controlPoint1 = Vector2(values[0], values[1]) + point
+                val controlPoint2 = Vector2(values[2], values[3]) + point
+                val endPoint = Vector2(values[4], values[5]) + point
                 
                 for (j in 0 until smoothness) {
                     val smoothness = j.toFloat() / smoothness.toFloat()
@@ -70,10 +65,9 @@ class SVGOperation(val type: SVGOperationType, private val isAbsolute: Boolean, 
                             controlPoint2 * 3.0f * (1.0f - smoothness) * smoothness.pow(2) +
                             endPoint * smoothness.pow(3)
         
-                    points += Vector2(newPoint)
+                    points += newPoint
                 }
-//            points += Vector2(point)
-                points += Vector2(endPoint)
+                points += endPoint
                 return Pair(points, endPoint)
             }
         }
@@ -97,9 +91,6 @@ class SVGOperation(val type: SVGOperationType, private val isAbsolute: Boolean, 
                 SVGOperationType.LINE -> {
                     point.x += x
                     point.y += y
-                    if (isAbsolute) {
-//                        println(point)
-                    }
                     points += Vector2(point)
                 }
             }

@@ -18,7 +18,9 @@ class ShaderLoader: Loader<Shader> {
     override fun load(path: String): Shader {
         val file = File(path)
         val type = getType(file)
-        val source = file.getContent()
+        var source = ""
+
+        file.getLines().forEach { line -> source += "$line\n" }
         return Shader(type, source)
     }
 

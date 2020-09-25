@@ -11,6 +11,8 @@ uniform vec4 overlayColor;
 uniform vec4 outlineColor;
 uniform float outline;
 
+uniform bool isIcon;
+uniform float size;
 uniform bool textured;
 uniform bool hasBackground;
 uniform bool hasOverlay;
@@ -60,6 +62,10 @@ void checkCorner(vec2 currentPoint, float x, float y, float scaledCornerRadius) 
 }
 
 void main() {
+    if (isIcon) {
+        outColor = color;
+        return;
+    }
     if (textured) {
         vec4 textureColor = texture(sampler, passTexCoords);
         outColor = textureColor;

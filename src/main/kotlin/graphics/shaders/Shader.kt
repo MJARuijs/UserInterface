@@ -9,7 +9,6 @@ class Shader(type: ShaderType, source: String): Resource {
     val handle = glCreateShader(type.index)
 
     init {
-
         glShaderSource(handle, source)
 
         glCompileShader(handle)

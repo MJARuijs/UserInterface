@@ -7,6 +7,7 @@ import userinterface.items.ItemDimensions
 import userinterface.items.backgrounds.Background
 import userinterface.layout.UILayout
 import userinterface.layout.constraints.ConstraintSet
+import userinterface.svg.SVGIcon
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.ArrayList
 

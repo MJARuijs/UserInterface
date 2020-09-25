@@ -4,34 +4,37 @@ import math.vectors.Vector2
 import resources.Loader
 import util.File
 
-class SVGLoader : Loader<SVGFile> {
+class SVGLoader : Loader<SVGMesh> {
     
     private val operationsPattern = "\\s*(?<operation>[a-zA-Z]\\s*,?\\s*(-|[0-9]|\\.|\\s)*)".toRegex().toPattern()
     private val pointPattern = "(?<x>-?[0-9]+(\\.[0-9]+)?)\\s*,?\\s*(?<y>-?[0-9]+(\\.[0-9]+)?)?\\s*".toRegex().toPattern()
     private val triangulation = Triangulation()
-    private val childVertices = ArrayList<ArrayList<Vector2>>()
     
-    override fun load(path: String): SVGFile {
+    private var size = 1.0f
+    
+    fun load(path: String, size: Float): SVGMesh {
+        this.size = size
+        return load(path)
+    }
+    
+    override fun load(path: String): SVGMesh {
         val file = File(path)
         val content = file.getContent()
         val pointData = one(content)
         
         val verticesToBeTriangulated = pointData.first
-        val triangulatedVertices = pointData.second
-        val triangulatedPoints = triangulation.process(verticesToBeTriangulated) ?: throw IllegalArgumentException("")
-    
-        var vertices = FloatArray(0)
-    
-//        verticesToBeTriangulated.forEach { point -> vertices += point.toArray() }
-        triangulatedPoints.forEach { point -> vertices += point.toArray() }
-//        triangulatedVertices.forEach { point -> vertices += point.toArray() }
-        
-        val mesh = SVGMesh(vertices)
-        for (childVertex in childVertices) {
-            mesh += childVertex
+        val test = pointData.second
+        if (verticesToBeTriangulated.first() == verticesToBeTriangulated.last()) {
+            verticesToBeTriangulated.removeAt(verticesToBeTriangulated.size - 1)
         }
         
-        return SVGFile(mesh)
+        val triangulatedPoints = triangulation.process(verticesToBeTriangulated) ?: throw IllegalArgumentException("")
+        var vertices = FloatArray(0)
+        
+        triangulatedPoints.forEach { point -> vertices += point.toArray() }
+        test.forEach { point -> vertices += point.toArray() }
+        
+        return SVGMesh(vertices)
     }
     
     private fun one(content: String): Pair<ArrayList<Vector2>, ArrayList<Vector2>> {
@@ -73,18 +76,14 @@ class SVGLoader : Loader<SVGFile> {
 
             if (operation.type == SVGOperationType.BEZIER_CURVE) {
                 verticesToBeTriangulated += Vector2(currentPoint)
-//                println("Adding $currentPoint")
+                
                 val pointsToBeTriangulated = ArrayList<Vector2>()
                 for (point in points) {
                     pointsToBeTriangulated += point
                 }
                 
-                    val triangulatedPoints = triangulation.process(pointsToBeTriangulated) ?: throw IllegalArgumentException("")
-
-                    triangulatedPoints.forEach { point -> triangulatedVertices += point }
-//                childVertices += triangulatedPoints
-//                }
-                
+                val triangulatedPoints = triangulation.process(pointsToBeTriangulated) ?: throw IllegalArgumentException("")
+                triangulatedVertices += triangulatedPoints
             } else {
                 for (point in points) {
                     verticesToBeTriangulated += Vector2(point)
@@ -109,35 +108,28 @@ class SVGLoader : Loader<SVGFile> {
             val pointX = pointMatcher.group("x")
             val pointY = pointMatcher.group("y")
             
-            points += (pointX.toFloat())/ width / 1.77f
+            points += (pointX.toFloat() * size) / width / 1.77f
             if (pointY != null) {
-                points += -(pointY.toFloat() ) / height
+                points += -(pointY.toFloat() * size) / height
             }
-//            println("Input: $operationPoints")
-//            println("${pointX}, $pointY")
     
             operationPoints = operationPoints.trim().removePrefix(pointX).trim()
-//            println("Input 2: $operationPoints")
 
             if (pointY != null) {
                 operationPoints = operationPoints.trim().removePrefix(pointY).trim()
             }
-//            println("Input 3: $operationPoints")
     
             operationPoints = operationPoints.trim()
 
-//            println("Remaining: $operationPoints")
             if (operationPoints == backup) {
                 println("Breaking: $operationPoints")
                 break
             }
     
             backup = operationPoints
-//            println("Ending with $operationPoints")
             pointMatcher = pointPattern.matcher(operationPoints)
         }
         
-//        println(points.size)
         return SVGOperation(operationType, operationId.isUpperCase(), points)
     }
     
