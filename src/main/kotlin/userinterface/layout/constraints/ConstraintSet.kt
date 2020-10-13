@@ -74,6 +74,19 @@ class ConstraintSet(vararg val constraints: Constraint) {
         dimensions.scale += scale
     }
     
+    fun updateConstraint(type: ConstraintType, direction: ConstraintDirection, newValue: Float) {
+        for (constraint in constraints) {
+            if (constraint.direction == direction) {
+                when (type) {
+                    ConstraintType.PIXEL -> (constraint as PixelConstraint).offset = newValue
+                    ConstraintType.RELATIVE -> (constraint as RelativeConstraint).percentage = newValue
+                    ConstraintType.ASPECT_RATIO -> (constraint as AspectRatioConstraint).aspectRatio = newValue
+                    else -> {}
+                }
+            }
+        }
+    }
+    
     fun apply(parent: MovableUIContainer? = null, parentDimensions: ItemDimensions? = null) {
         for (constraint in constraints) {
             constraint.apply(dimensions, parentDimensions, parent)

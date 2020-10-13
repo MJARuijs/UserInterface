@@ -5,7 +5,7 @@ import userinterface.MovableUIContainer
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.items.ItemDimensions
 
-class AspectRatioConstraint(direction: ConstraintDirection, private val aspectRatio: Float) : Constraint(direction) {
+class AspectRatioConstraint(direction: ConstraintDirection, var aspectRatio: Float) : Constraint(direction) {
     
     override fun apply(itemDimensions: ItemDimensions, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
         if (parent == null && parentDimensions == null) {

@@ -1,4 +1,4 @@
-package environment.sky
+package graphics
 
 import graphics.Quad
 import resources.images.ImageCache

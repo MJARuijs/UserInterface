@@ -6,8 +6,10 @@ import userinterface.animation.*
 import userinterface.items.ItemDimensions
 import userinterface.items.backgrounds.Background
 import userinterface.layout.UILayout
+import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
-import userinterface.svg.SVGIcon
+import userinterface.layout.constraints.constrainttypes.Constraint
+import userinterface.layout.constraints.constrainttypes.ConstraintType
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.ArrayList
 
@@ -41,7 +43,7 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
         }
     }
     
-    fun translate(translation: Vector2) {
+    open fun translate(translation: Vector2) {
         constraints.translate(translation)
     }
 
@@ -57,6 +59,10 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
     
     fun setScale(scale: Vector2) {
         constraints.setScale(scale)
+    }
+    
+    fun updateConstraint(type: ConstraintType, direction: ConstraintDirection, newValue: Float) {
+        constraints.updateConstraint(type, direction, newValue)
     }
     
     override fun apply(layout: UILayout, duration: Float) {

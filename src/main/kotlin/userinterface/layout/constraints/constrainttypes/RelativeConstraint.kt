@@ -5,7 +5,7 @@ import userinterface.MovableUIContainer
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.items.ItemDimensions
 
-class RelativeConstraint(direction: ConstraintDirection, private val percentage: Float, val anchorId: String = "parent") : Constraint(direction) {
+class RelativeConstraint(direction: ConstraintDirection, var percentage: Float, val anchorId: String = "parent") : Constraint(direction) {
     
     override fun apply(itemDimensions: ItemDimensions, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
         if (parent == null && parentDimensions == null) {

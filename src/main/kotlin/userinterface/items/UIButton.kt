@@ -2,11 +2,12 @@ package userinterface.items
 
 import devices.Button
 import devices.Mouse
+import userinterface.UniversalParameters
 import userinterface.layout.constraints.ConstraintSet
 import userinterface.effects.Effect
 import userinterface.items.backgrounds.Background
 
-class UIButton(id: String, constraints: ConstraintSet, background: Background, private val onClick: () -> Unit = {}, private val text: String = "") : Item(id, constraints, background) {
+class UIButton(id: String, constraints: ConstraintSet, private val onClick: () -> Unit = {}, private val text: String = "", background: Background = UniversalParameters.BUTTON_BACKGROUND) : Item(id, constraints, background) {
 
     private val hoverEffects = ArrayList<Effect>()
     private val onClickEffects = ArrayList<Effect>()

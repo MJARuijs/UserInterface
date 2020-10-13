@@ -5,7 +5,7 @@ import userinterface.MovableUIContainer
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.items.ItemDimensions
 
-class PixelConstraint(direction: ConstraintDirection, private val offset: Float = 0.0f, var anchorId: String = "parent") : Constraint(direction) {
+class PixelConstraint(direction: ConstraintDirection, var offset: Float = 0.0f, var anchorId: String = "parent") : Constraint(direction) {
     
     override fun apply(itemDimensions: ItemDimensions, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
         var referenceTranslation = Vector2()

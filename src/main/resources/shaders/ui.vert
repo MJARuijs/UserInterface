@@ -13,9 +13,12 @@ out vec2 passTexCoords;
 
 void main() {
     if (isIcon) {
-        position = translation + inPosition;
-//        position.x /= aspectRatio;
-        position *= size;
+
+        position = translation;
+        position.x /= aspectRatio;
+        position += inPosition * size;
+//        position /= aspectRatio;
+//        position *= size;
         gl_Position = vec4(position, 0, 1);
         return;
     }

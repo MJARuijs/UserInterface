@@ -44,10 +44,10 @@ class Switch(id: String, constraints: ConstraintSet, private var switchOn: Boole
     init {
         if (switchOn) {
             background = ColoredBackground(trackOnBackground)
-            thumb = UIButton("${id}_thumb", switchOnConstraints, ColoredBackground(thumbOnBackground), { toggle() })
+            thumb = UIButton("${id}_thumb", switchOnConstraints, { toggle() }, background = ColoredBackground(thumbOnBackground))
         } else {
             background = ColoredBackground(trackOffBackground)
-            thumb = UIButton("${id}_thumb", switchOffConstraints, ColoredBackground(thumbOffBackground), { toggle() })
+            thumb = UIButton("${id}_thumb", switchOffConstraints, { toggle() }, background = ColoredBackground(thumbOffBackground))
         }
         children += thumb
     }
