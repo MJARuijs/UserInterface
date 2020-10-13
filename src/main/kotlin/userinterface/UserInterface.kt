@@ -65,7 +65,7 @@ class UserInterface(private val aspectRatio: Float) {
         shaderProgram.set("viewPort", Vector2(windowWidth, windowHeight))
         for (window in windows) {
             if (window.shouldShow) {
-                window.draw(shaderProgram)
+                window.draw(shaderProgram, aspectRatio)
             }
         }
         shaderProgram.stop()
@@ -88,23 +88,6 @@ class UserInterface(private val aspectRatio: Float) {
                 }
             }
         }
-
-//        val removableAnimations = ArrayList<Animation>()
-//
-//        animations.forEach { animation ->
-//            if (!animation.started) {
-//                animation.start()
-//            }
-//            animation.item.isAnimating = true
-//            if (animation.apply(deltaTime)) {
-//                animation.stop()
-//                animation.item.isAnimating = false
-//                removableAnimations += animation
-//            }
-//            animation.item.animateChildren()
-//        }
-//
-//        animations.removeAll(removableAnimations)
     }
 
     fun destroy() {

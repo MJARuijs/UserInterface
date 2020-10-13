@@ -47,15 +47,15 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
 
     private fun hasTitleBar() = titleBar != null
 
-    fun draw(shaderProgram: ShaderProgram) {
+    fun draw(shaderProgram: ShaderProgram, aspectRatio: Float) {
         shaderProgram.set("translation", constraints.translation())
         shaderProgram.set("scale", constraints.scale())
         background.setProperties(shaderProgram)
         quad.draw()
         if (hasTitleBar()) {
-            titleBar!!.draw(shaderProgram)
+            titleBar!!.draw(shaderProgram, iconProgram, aspectRatio)
         }
-        children.forEach { child -> child.draw(shaderProgram) }
+        children.forEach { child -> child.draw(shaderProgram, iconProgram, aspectRatio) }
     }
 
     fun addButtonHoverEffects(buttonId: String, effect: Effect) {

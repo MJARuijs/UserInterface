@@ -32,20 +32,21 @@ open class Item(id: String, constraints: ConstraintSet, background: Background) 
         }
     }
 
-    open fun draw(shaderProgram: ShaderProgram) {
-        shaderProgram.set("isIcon", false)
-
+    open fun draw(shaderProgram: ShaderProgram, iconProgram: ShaderProgram, aspectRatio: Float) {
         shaderProgram.set("translation", constraints.translation())
         shaderProgram.set("scale", constraints.scale())
         background.setProperties(shaderProgram)
 
         quad.draw()
         if (this::icon.isInitialized) {
-            icon.draw(shaderProgram)
+            icon.draw(iconProgram, aspectRatio)
+            shaderProgram.start()
         }
+        
         children.forEach { child ->
-            child.draw(shaderProgram)
+            child.draw(shaderProgram, iconProgram, aspectRatio)
         }
+
     }
 
     fun destroy() {

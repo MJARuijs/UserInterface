@@ -7,7 +7,7 @@ import userinterface.layout.constraints.ConstraintSet
 import userinterface.effects.Effect
 import userinterface.items.backgrounds.Background
 
-class UIButton(id: String, constraints: ConstraintSet, private val onClick: () -> Unit = {}, private val text: String = "", background: Background = UniversalParameters.BUTTON_BACKGROUND) : Item(id, constraints, background) {
+open class UIButton(id: String, constraints: ConstraintSet, private var onClick: () -> Unit = {}, private val text: String = "", background: Background = UniversalParameters.BUTTON_BACKGROUND) : Item(id, constraints, background) {
 
     private val hoverEffects = ArrayList<Effect>()
     private val onClickEffects = ArrayList<Effect>()
@@ -20,6 +20,10 @@ class UIButton(id: String, constraints: ConstraintSet, private val onClick: () -
         }
     }
 
+    fun setOnClick(function: () -> Unit) {
+        onClick = function
+    }
+    
     override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
         if (super.update(mouse, aspectRatio, deltaTime)) {
             return true

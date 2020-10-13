@@ -10,6 +10,7 @@ import math.vectors.Vector2
 import org.lwjgl.opengl.GL11.*
 import userinterface.UserInterface
 import userinterface.effects.ColorEffect
+import userinterface.items.CheckBox
 import userinterface.items.ProgressBar
 import userinterface.items.Switch
 import userinterface.items.UIButton
@@ -20,8 +21,6 @@ import userinterface.layout.constraints.constrainttypes.AspectRatioConstraint
 import userinterface.layout.constraints.constrainttypes.CenterConstraint
 import userinterface.layout.constraints.constrainttypes.PixelConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
-import userinterface.svg.SVGIcon
-import userinterface.svg.SVGLoader
 import userinterface.text.Text
 import userinterface.text.font.FontLoader
 import userinterface.window.ButtonAlignment
@@ -82,6 +81,13 @@ fun main() {
         AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.05f)
     )
 
+    val checkBoxConstraint = ConstraintSet(
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        CenterConstraint(ConstraintDirection.HORIZONTAL),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
+    )
+    
     val testButton = UIButton("testButton", buttonConstraints, {
         println("Button 2 clicked!")
     })
@@ -91,21 +97,20 @@ fun main() {
     })
     
     val progressBar = ProgressBar("progress_bar", progressBarConstraint)
+    val checkBox = CheckBox("check_box", checkBoxConstraint, true, { checked ->
+        println("CheckBox checked: $checked")
+    })
     
-    val svgLoader = SVGLoader()
-    
-    val checkIcon = svgLoader.load("svg/tick.svg")
-    testButton.setIcon(SVGIcon(checkIcon, 0.1f))
-    
+    optionsWindow += checkBox
     optionsWindow += progressBar
+    optionsWindow += testButton
+    optionsWindow += switch
     userInterface += optionsWindow
 
     val textProgram = ShaderProgram.load("shaders/text.vert", "shaders/text.frag")
     val arialFont = FontLoader(window.aspectRatio).load("fonts/arial.png")
     val text = Text("Hoi lieverd :)", 5.0f, arialFont)
-
-//    val svgFile = parser.load("svg/check-mark-black-outline.svg")
-
+    
     userInterface.showWindow("options_menu")
     timer.reset()
     mouse.release()
@@ -147,8 +152,6 @@ fun main() {
         if (userInterface.isShowing()) {
             userInterface.update(mouse, timer.getDelta())
             userInterface.draw(window.width, window.height)
-//            checkIcon.draw()
-//            closeIcon.draw()
         }
         
         if (!progressBar.isPaused()) {

@@ -2,7 +2,6 @@ package util
 
 import java.io.File
 import java.io.FileWriter
-import java.net.URI
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.Files

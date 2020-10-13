@@ -8,7 +8,6 @@ import userinterface.items.backgrounds.Background
 import userinterface.layout.UILayout
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
-import userinterface.layout.constraints.constrainttypes.Constraint
 import userinterface.layout.constraints.constrainttypes.ConstraintType
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.ArrayList

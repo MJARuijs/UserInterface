@@ -15,10 +15,10 @@ class UIPage(id: String, private val background: Background) : UIContainer(id) {
         children.forEach { child -> child.position() }
     }
 
-    fun draw(shaderProgram: ShaderProgram) {
+    fun draw(shaderProgram: ShaderProgram, aspectRatio: Float) {
         background.setProperties(shaderProgram)
         quad.draw()
-        children.forEach { child -> child.draw(shaderProgram) }
+        children.forEach { child -> child.draw(shaderProgram, iconProgram, aspectRatio) }
     }
 
     fun destroy() {

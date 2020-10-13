@@ -1,6 +1,7 @@
 package userinterface
 
 import devices.Mouse
+import graphics.shaders.ShaderProgram
 import userinterface.items.Item
 import userinterface.items.ItemDimensions
 import userinterface.layout.UILayout
@@ -9,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap
 abstract class UIContainer(val id: String, private val layouts: ArrayList<UILayout> = ArrayList()) {
 
     private val postPonedItems = ConcurrentHashMap<Item, ArrayList<String>>()
+    protected val iconProgram = ShaderProgram.load("shaders/icon.vert", "shaders/icon.frag")
     
     val children = ArrayList<Item>()
     
