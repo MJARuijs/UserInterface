@@ -1,29 +1,20 @@
 package userinterface
 
-import graphics.Quad
 import graphics.shaders.ShaderProgram
-import userinterface.items.Item
-import userinterface.items.ItemDimensions
 import userinterface.items.backgrounds.Background
 import userinterface.layout.UILayout
 
 class UIPage(id: String, private val background: Background) : UIContainer(id) {
-
-    private var quad = Quad()
 
     init {
         children.forEach { child -> child.position() }
     }
 
     fun draw(shaderProgram: ShaderProgram, aspectRatio: Float) {
+        shaderProgram.set("allowedToOverdraw", true)
         background.setProperties(shaderProgram)
         quad.draw()
-        children.forEach { child -> child.draw(shaderProgram, iconProgram, aspectRatio) }
-    }
-
-    fun destroy() {
-        quad.destroy()
-        children.forEach { item -> item.destroy() }
+        children.forEach { child -> child.draw(shaderProgram, iconProgram, aspectRatio, null) }
     }
     
     override fun apply(layout: UILayout, duration: Float) {

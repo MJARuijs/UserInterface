@@ -20,8 +20,11 @@ uniform float cornerRadius;
 uniform float aspectRatio;
 uniform vec2 viewPort;
 
-uniform vec2 scale;
 uniform vec2 translation;
+uniform vec2 scale;
+uniform vec2 parentTranslation;
+uniform vec2 parentScale;
+uniform bool allowedToOverdraw;
 
 out vec4 outColor;
 
@@ -60,16 +63,30 @@ void checkCorner(vec2 currentPoint, float x, float y, float scaledCornerRadius) 
 }
 
 void main() {
+
+    if (!allowedToOverdraw) {
+        float parentMinX = parentTranslation.x - parentScale.x;
+        float parentMaxX = parentTranslation.x + parentScale.x;
+        float parentMinY = parentTranslation.y - parentScale.y;
+        float parentMaxY = parentTranslation.y + parentScale.y;
+
+        vec2 currentPoint = gl_FragCoord.xy;
+        currentPoint /= viewPort;
+        currentPoint = (currentPoint * 2.0) - 1.0;
+        currentPoint.x *= aspectRatio;
+
+        if (currentPoint.x < parentMinX || currentPoint.x > parentMaxX) {
+            discard;
+        }
+        if (currentPoint.y < parentMinY || currentPoint.y > parentMaxY) {
+            discard;
+        }
+    }
+
     if (textured) {
         vec4 textureColor = texture(sampler, passTexCoords);
         outColor = textureColor;
-//        if (outColor.a == 0.0) {
-//            outColor.a = 0.0f;
-//            outColor.r = 1.0f;
-//        }
-//        if (outColor.r == 0.0 || outColor.g == 0.0 || outColor.b == 0.0) {
-//            outColor.a = 0.0;
-//        }
+
         if (hasBackground) {
             if (hasOverlay) {
                 outColor = textureColor.a * overlayColor + (1.0 - textureColor.a) * color;

@@ -9,6 +9,9 @@ import userinterface.items.backgrounds.TexturedBackground
 object UniversalParameters {
 
     private val PRIMARY_COLOR = UIColor.BLUE
+    private val PRIMARY_BACKGROUND_COLOR = UIColor.GREY_DARK
+    
+    val ITEM_BACKGROUND = ColoredBackground(UIColor.BLUE)
     
     val SWITCH_THUMB_OFF_BACKGROUND = ColoredBackground(Color(185, 185, 185), 90f)
     val SWITCH_THUMB_ON_BACKGROUND = ColoredBackground(Color(65, 162, 239), 90f)
@@ -28,5 +31,7 @@ object UniversalParameters {
     
     val CHECK_BOX_UNCHECKED_BACKGROUND = ColoredBackground(UIColor.TRANSPARENT, 15f, 0.1f, UIColor.WHITE)
     val CHECK_BOX_CHECKED_BACKGROUND = TexturedBackground(ImageMap(ImageCache.get("textures/userinterface/check_mark.png")), PRIMARY_COLOR, UIColor.WHITE, 15f, 0.1f, outlineColor =  UIColor.WHITE)
+    
+    val SCROLL_PANE_BACKGROUND = ColoredBackground(PRIMARY_BACKGROUND_COLOR)
     
 }

@@ -18,7 +18,12 @@ class Mouse(private val window: Window) {
                 events.push(event)
             }
         }
-
+    
+        glfwSetScrollCallback(window.handle) { _: Long, xScroll: Double, yScroll: Double ->
+            this.xScroll = xScroll.toFloat()
+            this.yScroll = yScroll.toFloat()
+        }
+        
         glfwSetCursorPosCallback(window.handle) { _, newX: Double, newY: Double ->
 
             val scaledX = (newX - window.width / 2) / window.width
@@ -56,6 +61,12 @@ class Mouse(private val window: Window) {
     var dy = 0.0
         internal set
 
+    var xScroll = 0.0f
+        private set
+    
+    var yScroll = 0.0f
+        private set
+    
     var moved = false
         internal set
 
@@ -87,26 +98,28 @@ class Mouse(private val window: Window) {
             capture()
         }
     }
-
-    fun poll() {
-
+    
+    fun update() {
         pressed.clear()
         released.clear()
-
+        
+        xScroll = 0.0f
+        yScroll = 0.0f
+    
         while (events.isNotEmpty()) {
             val event = events.pop()
             when (event.action) {
-
+            
                 Action.PRESS -> {
                     pressed.add(event.button)
                     down.add(event.button)
                 }
-
+            
                 Action.RELEASE -> {
                     released.add(event.button)
                     down.remove(event.button)
                 }
-
+            
                 Action.REPEAT -> {
                     // ignore
                 }

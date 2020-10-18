@@ -12,6 +12,8 @@ class Animator {
     private val animations = ArrayList<Animation>()
     private val postPonedChildren = ConcurrentHashMap<String, MovableUIContainer>()
     private val computedChildren = ArrayList<String>()
+    
+    var isAnimating = false
 
     operator fun plusAssign(animation: Animation) {
         animations.add(animation)
@@ -60,7 +62,10 @@ class Animator {
 
     fun update(deltaTime: Float): Int {
         val removableAnimations = ArrayList<Animation>()
-
+        if (animations.isNotEmpty()) {
+            isAnimating = true
+        }
+        
         animations.forEach { animation ->
             if (animation.apply(deltaTime)) {
                 animation.onFinish()
@@ -69,6 +74,10 @@ class Animator {
         }
 
         animations.removeAll(removableAnimations)
+        
+        if (animations.isEmpty()) {
+            isAnimating = false
+        }
         return animations.size
     }
 

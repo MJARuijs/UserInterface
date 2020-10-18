@@ -1,17 +1,15 @@
 package userinterface.items
 
-import graphics.Quad
 import graphics.shaders.ShaderProgram
 import userinterface.MovableUIContainer
+import userinterface.UniversalParameters
 import userinterface.layout.constraints.ConstraintSet
 import userinterface.items.backgrounds.Background
 import userinterface.svg.SVGIcon
 import kotlin.math.min
 
-open class Item(id: String, constraints: ConstraintSet, background: Background) : MovableUIContainer(id, constraints, background) {
+open class Item(id: String, constraints: ConstraintSet, background: Background = UniversalParameters.BUTTON_BACKGROUND) : MovableUIContainer(id, constraints, background) {
 
-    private val quad = Quad()
-    
     private lateinit var icon: SVGIcon
     
     init {
@@ -32,9 +30,18 @@ open class Item(id: String, constraints: ConstraintSet, background: Background) 
         }
     }
 
-    open fun draw(shaderProgram: ShaderProgram, iconProgram: ShaderProgram, aspectRatio: Float) {
+    open fun draw(shaderProgram: ShaderProgram, iconProgram: ShaderProgram, aspectRatio: Float, parent: MovableUIContainer?) {
         shaderProgram.set("translation", constraints.translation())
         shaderProgram.set("scale", constraints.scale())
+        
+        if (parent != null) {
+            shaderProgram.set("allowedToOverdraw", parent.isChildBoundless(id))
+            shaderProgram.set("parentTranslation", parent.getTranslation())
+            shaderProgram.set("parentScale", parent.getScale())
+        }
+
+
+        
         background.setProperties(shaderProgram)
 
         quad.draw()
@@ -44,12 +51,8 @@ open class Item(id: String, constraints: ConstraintSet, background: Background) 
         }
         
         children.forEach { child ->
-            child.draw(shaderProgram, iconProgram, aspectRatio)
+            child.draw(shaderProgram, iconProgram, aspectRatio, this)
         }
 
-    }
-
-    fun destroy() {
-        quad.destroy()
     }
 }

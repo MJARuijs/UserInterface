@@ -3,7 +3,6 @@ package userinterface.items.backgrounds
 import graphics.shaders.ShaderProgram
 import math.Color
 import userinterface.UIColor
-import userinterface.effects.Effect
 
 class ColoredBackground(var color: Color, cornerRadius: Float = 0.0f, outline: Float = 0.0f, outlineColor: Color = Color()) : Background(cornerRadius, outline, outlineColor) {
 
@@ -14,10 +13,6 @@ class ColoredBackground(var color: Color, cornerRadius: Float = 0.0f, outline: F
     constructor(color: Color, cornerRadius: Float = 0.0f, outline: Float = 0.0f, outlineColor: UIColor) : this(color, cornerRadius, outline, outlineColor.color)
 
     constructor(background: ColoredBackground) : this(background.color, background.cornerRadius, background.outline, background.outlineColor)
-    
-    override fun applyEffects(effects: ArrayList<Effect>) {
-
-    }
 
     override fun setProperties(shaderProgram: ShaderProgram) {
         super.setProperties(shaderProgram)

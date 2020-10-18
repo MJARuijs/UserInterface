@@ -7,13 +7,11 @@ import graphics.GraphicsOption
 import graphics.shaders.ShaderProgram
 import math.Color
 import math.vectors.Vector2
+import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11.*
+import userinterface.UIColor
 import userinterface.UserInterface
-import userinterface.effects.ColorEffect
-import userinterface.items.CheckBox
-import userinterface.items.ProgressBar
-import userinterface.items.Switch
-import userinterface.items.UIButton
+import userinterface.items.*
 import userinterface.items.backgrounds.ColoredBackground
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
@@ -25,10 +23,10 @@ import userinterface.text.Text
 import userinterface.text.font.FontLoader
 import userinterface.window.ButtonAlignment
 import userinterface.window.UIWindow
+import util.FloatUtils
 
 fun main() {
     val window = Window("Game", ::onWindowResized)
-    
     val keyboard = window.keyboard
     val mouse = window.mouse
     val timer = Timer()
@@ -45,26 +43,18 @@ fun main() {
 
     val optionsWindow = UIWindow(
         "options_menu",
-        Vector2(0.9f * window.aspectRatio, 0.9f),
+        Vector2(1.7f, 0.9f),
         windowBackground,
         0.05f,
         titleBarBackground,
         ButtonAlignment.RIGHT
     )
-    optionsWindow.addButtonHoverEffects(
-        "close_button",
-        ColorEffect(Color(0.0f, 0.0f, 0.0f, 0.0f), Color(0.5f, 0.5f, 0.5f))
-    )
-    optionsWindow.addButtonOnClickEffects(
-        "close_button",
-        ColorEffect(Color(0.0f, 0.0f, 0.0f, 0.0f), Color(0.0f, 0.1f, 0.5f))
-    )
 
     val buttonConstraints = ConstraintSet(
         PixelConstraint(ConstraintDirection.TO_LEFT),
         PixelConstraint(ConstraintDirection.TO_TOP),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
-        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1f)
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f),
+        AspectRatioConstraint(ConstraintDirection.VERTICAL, 1f)
     )
 
     val switchConstraint = ConstraintSet(
@@ -88,6 +78,25 @@ fun main() {
         AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
     )
     
+    val scrollConstraints = ConstraintSet(
+        CenterConstraint(ConstraintDirection.HORIZONTAL),
+//        PixelConstraint(ConstraintDirection.TO_RIGHT),
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 1f),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f)
+    )
+    
+    val dummies = ArrayList<Item>()
+    val numberOfDummies = 10
+    for (i in 0 until numberOfDummies) {
+        dummies += Item("dummy$i", ConstraintSet(RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f)), ColoredBackground(UIColor.values()[i + 4]))
+    }
+    
+//    val dummyItem1 = Item("dummy", ConstraintSet(RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f)), ColoredBackground(UIColor.RED))
+//    val dummyItem2 = Item("dummy2", ConstraintSet(RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f)), ColoredBackground(UIColor.GREEN))
+//    val dummyItem3 = Item("dummy3", ConstraintSet(RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f)), ColoredBackground(UIColor.BLUE))
+//    val dummyItem4 = Item("dummy4", ConstraintSet(RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f)), ColoredBackground(UIColor.YELLOW))
+    
     val testButton = UIButton("testButton", buttonConstraints, {
         println("Button 2 clicked!")
     })
@@ -97,14 +106,35 @@ fun main() {
     })
     
     val progressBar = ProgressBar("progress_bar", progressBarConstraint)
+    
     val checkBox = CheckBox("check_box", checkBoxConstraint, true, { checked ->
         println("CheckBox checked: $checked")
     })
     
-    optionsWindow += checkBox
-    optionsWindow += progressBar
-    optionsWindow += testButton
-    optionsWindow += switch
+    val testDummy = Item("TestDummy", ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_LEFT),
+        PixelConstraint(ConstraintDirection.TO_TOP),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f)
+    ),
+                         ColoredBackground(UIColor.CYAN)
+    )
+    
+    val scrollPane = ScrollPane("scroll_pane", scrollConstraints, 2, 0.01f)
+    for (dummy in dummies) {
+        scrollPane += dummy
+    }
+//    scrollPane += dummyItem1
+//    scrollPane += dummyItem2
+//    scrollPane += dummyItem3
+//    scrollPane += dummyItem4
+
+//    scrollPane += testDummy
+    optionsWindow += scrollPane
+//    optionsWindow += checkBox
+//    optionsWindow += progressBar
+//    optionsWindow += testButton
+//    optionsWindow += switch
     userInterface += optionsWindow
 
     val textProgram = ShaderProgram.load("shaders/text.vert", "shaders/text.frag")
@@ -116,6 +146,7 @@ fun main() {
     mouse.release()
 
     while (!window.isClosed()) {
+        window.poll()
     
         if (keyboard.isPressed(Key.ESCAPE)) {
             mouse.toggle()
@@ -155,13 +186,12 @@ fun main() {
         }
         
         if (!progressBar.isPaused()) {
-            progressBar.setProgress(progressBar.getProgress() + 0.01f)
+//            progressBar.setProgress(progressBar.getProgress() + 0.01f)
         }
         
 //        text.render(textProgram)
         
         window.synchronize()
-        window.poll()
         timer.update()
     }
     

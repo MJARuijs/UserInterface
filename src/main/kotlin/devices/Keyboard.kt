@@ -4,7 +4,7 @@ import org.lwjgl.glfw.GLFW.glfwSetKeyCallback
 import java.util.*
 import kotlin.collections.HashSet
 
-class Keyboard(private val window: Window) {
+class Keyboard(window: Window) {
 
     init {
 
@@ -37,7 +37,7 @@ class Keyboard(private val window: Window) {
 
     fun isDown(key: Key) = down.contains(key)
 
-    fun poll() {
+    fun update() {
 
         pressed.clear()
         released.clear()

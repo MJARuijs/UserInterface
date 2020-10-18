@@ -1,7 +1,6 @@
 package userinterface.window
 
 import devices.Mouse
-import graphics.Quad
 import graphics.shaders.ShaderProgram
 import math.vectors.Vector2
 import userinterface.MovableUIContainer
@@ -9,15 +8,12 @@ import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
 import userinterface.layout.constraints.constrainttypes.CenterConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
-import userinterface.effects.Effect
 import userinterface.items.Item
-import userinterface.items.UIButton
 import userinterface.items.backgrounds.Background
 
 class UIWindow(id: String, constraints: ConstraintSet, background: Background, var shouldShow: Boolean = false, titleBarData: TitleBarData) : MovableUIContainer(id, constraints, background) {
 
     private var titleBar: TitleBar? = null
-    private var quad = Quad()
 
     constructor(id: String, scale: Vector2, background: Background, titleBarHeight: Float, titleBarBackground: Background = background, closeButtonAlignment: ButtonAlignment = ButtonAlignment.HIDDEN, shouldShow: Boolean = false) : this(
         id,
@@ -34,6 +30,8 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
 
     init {
         constraints.apply(this)
+        allowChildToIgnoreBounds("scroll_pane")
+    
         if (titleBarData.height > 0.0f) {
             titleBar = TitleBar("${id}_title_bar", titleBarData) {
                 shouldShow = false
@@ -42,6 +40,7 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
             
             constraints.translate(Vector2(0f, -titleBar!!.getScale().y))
             constraints.addToScale(Vector2(0f, -titleBar!!.getScale().y))
+            allowChildToIgnoreBounds(titleBar!!.id)
         }
     }
 
@@ -50,23 +49,28 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
     fun draw(shaderProgram: ShaderProgram, aspectRatio: Float) {
         shaderProgram.set("translation", constraints.translation())
         shaderProgram.set("scale", constraints.scale())
+        shaderProgram.set("allowedToOverdraw", true)
+    
         background.setProperties(shaderProgram)
         quad.draw()
+        
         if (hasTitleBar()) {
-            titleBar!!.draw(shaderProgram, iconProgram, aspectRatio)
+            // TODO: Can this be removed?
+//            titleBar!!.draw(shaderProgram, iconProgram, aspectRatio, this)
         }
-        children.forEach { child -> child.draw(shaderProgram, iconProgram, aspectRatio) }
+        children.forEach { child -> child.draw(shaderProgram, iconProgram, aspectRatio, this) }
     }
 
-    fun addButtonHoverEffects(buttonId: String, effect: Effect) {
-        val closeButton = titleBar?.findById(buttonId) ?: return
-        (closeButton as UIButton).addHoverEffect(effect)
-    }
-
-    fun addButtonOnClickEffects(buttonId: String, effect: Effect) {
-        val closeButton = titleBar?.findById(buttonId) ?: return
-        (closeButton as UIButton).addOnClickEffect(effect)
-    }
+    // TODO: Rewrite these functions to make use of the Animation classes, instead of the old Effect classes
+//    fun addButtonHoverEffects(buttonId: String, effect: Effect) {
+//        val closeButton = titleBar?.findById(buttonId) ?: return
+//        (closeButton as UIButton).addHoverEffect(effect)
+//    }
+//
+//    fun addButtonOnClickEffects(buttonId: String, effect: Effect) {
+//        val closeButton = titleBar?.findById(buttonId) ?: return
+//        (closeButton as UIButton).addOnClickEffect(effect)
+//    }
 
     override fun positionChild(item: Item) {
         item.position(this)
@@ -78,9 +82,5 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
             titleBar!!.update(mouse, aspectRatio, deltaTime)
         }
         return super.update(mouse, aspectRatio, deltaTime)
-    }
-
-    fun destroy() {
-        quad.destroy()
     }
 }

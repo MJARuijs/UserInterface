@@ -1,24 +1,39 @@
 package userinterface
 
 import devices.Mouse
+import graphics.Quad
 import graphics.shaders.ShaderProgram
 import userinterface.items.Item
-import userinterface.items.ItemDimensions
 import userinterface.layout.UILayout
 import java.util.concurrent.ConcurrentHashMap
 
 abstract class UIContainer(val id: String, private val layouts: ArrayList<UILayout> = ArrayList()) {
 
     private val postPonedItems = ConcurrentHashMap<Item, ArrayList<String>>()
-    protected val iconProgram = ShaderProgram.load("shaders/icon.vert", "shaders/icon.frag")
+    private val boundlessChildren = ArrayList<String>()
     
-    val children = ArrayList<Item>()
+    protected val iconProgram = ShaderProgram.load("shaders/icon.vert", "shaders/icon.frag")
+    protected val quad = Quad()
+    protected val children = ArrayList<Item>()
+    
+    // TODO: Can this be done? (And then of course be removed from children)
+//    init {
+//        children.forEach { child -> child.position() }
+//    }
     
     fun findById(id: String): Item? {
         return children.find { item -> item.id == id }
     }
     
-    operator fun plusAssign(item: Item) {
+    fun allowChildToIgnoreBounds(id: String) {
+        boundlessChildren += id
+    }
+    
+    fun isChildBoundless(id: String): Boolean {
+        return boundlessChildren.contains(id)
+    }
+    
+    open operator fun plusAssign(item: Item) {
         add(item, item.requiredIds())
     }
     
@@ -52,7 +67,7 @@ abstract class UIContainer(val id: String, private val layouts: ArrayList<UILayo
         if (children.any { child -> child.id == item.id }) {
             return
         }
-        
+
         positionChild(item)
 
         for (postPonedItem in postPonedItems) {
@@ -86,5 +101,10 @@ abstract class UIContainer(val id: String, private val layouts: ArrayList<UILayo
     }
     
     open fun apply(layout: UILayout, duration: Float) {}
+    
+    fun destroy() {
+        quad.destroy()
+        children.forEach { item -> item.destroy() }
+    }
 
 }

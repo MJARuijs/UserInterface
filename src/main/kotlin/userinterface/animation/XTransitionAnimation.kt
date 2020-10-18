@@ -12,7 +12,7 @@ class XTransitionAnimation(duration: Float, translation: Float, item: MovableUIC
     init {
         if (transitionType == TransitionType.MOVEMENT) {
             speed = translation / duration
-            finalPoint = translation - item.getTranslation().x
+            finalPoint = item.getTranslation().x + translation
         } else {
             speed = (translation - item.getTranslation().x) / duration
             finalPoint = translation

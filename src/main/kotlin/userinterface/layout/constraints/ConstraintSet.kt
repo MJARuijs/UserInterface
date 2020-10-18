@@ -5,7 +5,13 @@ import userinterface.MovableUIContainer
 import userinterface.layout.constraints.constrainttypes.*
 import userinterface.items.ItemDimensions
 
-class ConstraintSet(vararg val constraints: Constraint) {
+class ConstraintSet(val constraints: ArrayList<Constraint> = ArrayList()) {
+
+    constructor(vararg constraints: Constraint) : this() {
+        this.constraints.addAll(constraints)
+    }
+
+    private var dimensions = ItemDimensions()
 
     val requiredIds = ArrayList<String>()
 
@@ -21,13 +27,22 @@ class ConstraintSet(vararg val constraints: Constraint) {
                 }
             }
         }
+
+    }
+
+    fun add(constraint: Constraint, parent: MovableUIContainer? = null, parentDimensions: ItemDimensions? = null) {
+        constraints += constraint
+        apply(parent, parentDimensions)
+    }
     
-        constraints.sortWith(compareBy {
-            return@compareBy when (it) {
-                is PixelConstraint -> 1
-                else -> -1
-            }
-        })
+    fun add(constraints: ArrayList<Constraint>, parent: MovableUIContainer? = null, parentDimensions: ItemDimensions? = null) {
+        this.constraints += constraints
+        apply(parent, parentDimensions)
+    }
+    
+    fun add(constraints: ConstraintSet, parent: MovableUIContainer? = null, parentDimensions: ItemDimensions? = null) {
+        this.constraints += constraints.constraints
+        apply(parent, parentDimensions)
     }
 
     fun determineRequiredIds(): ArrayList<String> {
@@ -47,8 +62,6 @@ class ConstraintSet(vararg val constraints: Constraint) {
 
         return requiredIds
     }
-    
-    var dimensions = ItemDimensions()
 
     fun translation() = dimensions.translation
 
@@ -75,6 +88,7 @@ class ConstraintSet(vararg val constraints: Constraint) {
     }
     
     fun updateConstraint(type: ConstraintType, direction: ConstraintDirection, newValue: Float) {
+        
         for (constraint in constraints) {
             if (constraint.direction == direction) {
                 when (type) {
@@ -88,12 +102,26 @@ class ConstraintSet(vararg val constraints: Constraint) {
     }
     
     fun apply(parent: MovableUIContainer? = null, parentDimensions: ItemDimensions? = null) {
+        constraints.sortWith(compareBy {
+            return@compareBy when (it) {
+                is PixelConstraint -> 1
+                else -> -1
+            }
+        })
+        
         for (constraint in constraints) {
             constraint.apply(dimensions, parentDimensions, parent)
         }
     }
     
     fun computeResult(parentDimensions: ItemDimensions?, parent: MovableUIContainer?): ItemDimensions {
+        constraints.sortWith(compareBy {
+            return@compareBy when (it) {
+                is PixelConstraint -> 1
+                else -> -1
+            }
+        })
+        
         val result = ItemDimensions()
         for (constraint in constraints) {
             constraint.apply(result, parentDimensions, parent)

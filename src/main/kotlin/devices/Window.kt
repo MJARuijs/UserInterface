@@ -79,20 +79,19 @@ class Window(title: String, private val onWindowResized: (Int, Int) -> Unit) {
         glfwSwapInterval(1)
         createCapabilities()
     }
-
-    fun synchronize() {
-        glfwSwapBuffers(handle)
-    }
-
+    
     fun poll() {
-
+        
         resized = false
         mouse.moved = false
-
+        
         glfwPollEvents()
-
-        keyboard.poll()
-        mouse.poll()
+    }
+    
+    fun synchronize() {
+        glfwSwapBuffers(handle)
+        mouse.update()
+        keyboard.update()
     }
 
     fun resize(width: Int, height: Int) {

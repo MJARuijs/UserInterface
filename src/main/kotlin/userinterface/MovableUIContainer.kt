@@ -12,7 +12,7 @@ import userinterface.layout.constraints.constrainttypes.ConstraintType
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.ArrayList
 
-open class MovableUIContainer(id: String, var constraints: ConstraintSet, var background: Background) : UIContainer(id) {
+abstract class MovableUIContainer(id: String, var constraints: ConstraintSet, var background: Background) : UIContainer(id) {
     
     private val postPonedChildren = ConcurrentHashMap<String, MovableUIContainer>()
     private val computedChildren = ArrayList<String>()
@@ -21,6 +21,8 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
     
     var goalTranslation: Vector2? = null
     var goalScale: Vector2? = null
+    
+    fun isAnimating() = animator.isAnimating
     
     fun requiredIds() = constraints.requiredIds
     
@@ -36,7 +38,7 @@ open class MovableUIContainer(id: String, var constraints: ConstraintSet, var ba
     
     open fun position(parent: MovableUIContainer? = null, duration: Float = 0.0f) {
         constraints.apply(parent)
-        
+
         children.forEach { child ->
             child.position(this, duration)
         }

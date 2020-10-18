@@ -20,11 +20,12 @@ class CenterConstraint(direction: ConstraintDirection) : Constraint(direction) {
             referenceTranslation = parent.getTranslation()
         }
     
-        if (direction == ConstraintDirection.HORIZONTAL) {
-            itemDimensions.translation.x = referenceTranslation.x
+        when (direction) {
+            ConstraintDirection.HORIZONTAL -> itemDimensions.translation.x = referenceTranslation.x
+            ConstraintDirection.VERTICAL -> itemDimensions.translation.y = referenceTranslation.y
+            else -> println("Invalid direction given for CenterConstraint!")
         }
-        if (direction == ConstraintDirection.VERTICAL) {
-            itemDimensions.translation.y = referenceTranslation.y
-        }
+        
+        itemDimensions.translation.roundToDecimal(5)
     }
 }

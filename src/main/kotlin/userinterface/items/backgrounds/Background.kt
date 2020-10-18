@@ -2,7 +2,6 @@ package userinterface.items.backgrounds
 
 import graphics.shaders.ShaderProgram
 import math.Color
-import userinterface.effects.Effect
 
 abstract class Background(var cornerRadius: Float, var outline: Float = 0.0f, var outlineColor: Color = Color()) {
 
@@ -14,8 +13,6 @@ abstract class Background(var cornerRadius: Float, var outline: Float = 0.0f, va
             cornerRadius = 90.0f
         }
     }
-
-    abstract fun applyEffects(effects: ArrayList<Effect>)
 
     open fun setProperties(shaderProgram: ShaderProgram) {
         shaderProgram.set("cornerRadius", cornerRadius)

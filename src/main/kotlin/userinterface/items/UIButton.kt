@@ -3,14 +3,11 @@ package userinterface.items
 import devices.Button
 import devices.Mouse
 import userinterface.UniversalParameters
-import userinterface.layout.constraints.ConstraintSet
-import userinterface.effects.Effect
 import userinterface.items.backgrounds.Background
+import userinterface.layout.constraints.ConstraintSet
 
 open class UIButton(id: String, constraints: ConstraintSet, private var onClick: () -> Unit = {}, private val text: String = "", background: Background = UniversalParameters.BUTTON_BACKGROUND) : Item(id, constraints, background) {
 
-    private val hoverEffects = ArrayList<Effect>()
-    private val onClickEffects = ArrayList<Effect>()
     private var isClicked = false
     private var isHovered = false
 
@@ -34,40 +31,20 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
         if (isHovered && (mouse.isPressed(Button.LEFT) || mouse.isPressed(Button.LEFT))) {
             onClick()
             isClicked = true
-            onClickEffects.forEach { effect ->
-                effect.applyOn(this)
-            }
         } else if (isHovered) {
-            hoverEffects.forEach { effect ->
-                effect.applyOn(this)
-            }
+
         } else {
-            hoverEffects.forEach { effect ->
-                effect.removeFrom(this)
-            }
+
         }
 
         if (isClicked && (mouse.isReleased(Button.RIGHT) || mouse.isReleased(Button.LEFT))) {
             isClicked = false
-            onClickEffects.forEach { effect ->
-                effect.removeFrom(this)
-            }
         }
 
         if (isHovered || isClicked) {
             return true
         }
         return false
-    }
-
-    fun addHoverEffect(effect: Effect): UIButton {
-        hoverEffects += effect
-        return this
-    }
-
-    fun addOnClickEffect(effect: Effect): UIButton {
-        onClickEffects += effect
-        return this
     }
 
     private fun isHovered(mouse: Mouse, aspectRatio: Float): Boolean {

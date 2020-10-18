@@ -70,8 +70,9 @@ class PixelConstraint(direction: ConstraintDirection, var offset: Float = 0.0f, 
                 itemDimensions.translation.x -= offset * referenceScale.x * 2.0f
             } else {
                 itemDimensions.translation.x = referenceRight + itemDimensions.scale.x
-                itemDimensions.translation.x += offset * referenceScale.x * 2.0f
+                itemDimensions.translation.x += offset
             }
         }
+        itemDimensions.translation.roundToDecimal(5)
     }
 }

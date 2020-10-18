@@ -1,5 +1,6 @@
 package math.vectors
 
+import util.FloatUtils
 import kotlin.math.abs
 
 data class Vector2(var x: Float = 0.0f, var y: Float = 0.0f): Vector<Vector2> {
@@ -51,6 +52,12 @@ data class Vector2(var x: Float = 0.0f, var y: Float = 0.0f): Vector<Vector2> {
         if (y != 0.0f) {
             y /= norm
         }
+    }
+    
+    fun roundToDecimal(n: Int): Vector2 {
+        x = FloatUtils.roundToDecimal(x, n)
+        y = FloatUtils.roundToDecimal(y, n)
+        return this
     }
 
     override fun toString() = "<$x, $y>"

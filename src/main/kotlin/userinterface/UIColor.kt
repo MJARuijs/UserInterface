@@ -10,9 +10,9 @@ enum class UIColor(val color: Color) {
     GREY_LIGHT(WHITE.rgb() * 0.75f, 1.0f),
     GREY(0.5f, 0.5f, 0.5f, 1.0f),
     GREY_DARK(0.25f, 0.25f, 0.25f, 1.0f),
-    BLACK(0f, 0f, 0f, 1f),
+    BLACK(0f, 0f, 0f, 0.5f),
 
-    RED_BRIGHT(1.0f, 0.0f, 0.0f, 1.0f),
+    RED_BRIGHT(1.0f, 0.0f, 0.0f, 0.5f),
     RED_LIGHT(0.75f, 0.0f, 0.0f, 1.0f),
     RED(0.5f, 0.0f, 0.0f, 1.0f),
     RED_DARK(0.25f, 0.0f, 0.0f, 1.0f),

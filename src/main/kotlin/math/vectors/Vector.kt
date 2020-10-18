@@ -152,7 +152,7 @@ internal interface Vector<T: Vector<T>> {
      * @return an array containing the vector components.
      */
     fun toArray(): FloatArray
-
+    
     /**
      * Compare the vectors based on their euclidean length.
      * @param other the vector to compare with.
