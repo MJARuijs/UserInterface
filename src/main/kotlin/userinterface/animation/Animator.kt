@@ -1,8 +1,8 @@
 package userinterface.animation
 
+import math.vectors.Vector2
 import userinterface.MovableUIContainer
 import userinterface.items.Item
-import userinterface.items.ItemDimensions
 import userinterface.layout.UILayout
 import userinterface.layout.constraints.ConstraintSet
 import java.util.concurrent.ConcurrentHashMap
@@ -20,8 +20,9 @@ class Animator {
     }
 
     fun apply(item: MovableUIContainer, parent: MovableUIContainer, constraints: ConstraintSet, duration: Float) {
-        val newDimensions = constraints.computeResult(parent.getGoalDimensions(), parent)
-        animateLayoutTransition(item, duration, newDimensions)
+        val goalDimension = parent.getGoalDimensions()
+        val newDimensions = constraints.computeResult(goalDimension.first, goalDimension.second, parent)
+        animateLayoutTransition(item, duration, newDimensions.first, newDimensions.second)
     }
 
     fun apply(item: MovableUIContainer, children: ArrayList<Item>, layout: UILayout, duration: Float) {
@@ -41,9 +42,10 @@ class Animator {
         val childConstraints = layout.getConstraintsChange(child.id) ?: child.constraints
         val requiredIds = childConstraints.determineRequiredIds()
         if (computedChildren.containsAll(requiredIds)) {
-            val childDimensions = childConstraints.computeResult(item.getGoalDimensions(), item)
-            child.goalTranslation = childDimensions.translation
-            child.goalScale = childDimensions.scale
+            val goalDimension = item.getGoalDimensions()
+            val childDimensions = childConstraints.computeResult(goalDimension.first, goalDimension.second, item)
+            child.goalTranslation = childDimensions.first
+            child.goalScale = childDimensions.second
 
             computedChildren += child.id
 
@@ -53,7 +55,8 @@ class Animator {
             for (postPonedChild in postPonedChildren) {
                 applyChild(item, postPonedChild.value, layout, duration)
             }
-            animateLayoutTransition(child, duration, child.getGoalDimensions())
+            val childGoalDimensions = child.getGoalDimensions()
+            animateLayoutTransition(child, duration, childGoalDimensions.first, childGoalDimensions.second)
         } else {
             postPonedChildren[child.id] = child
         }
@@ -81,21 +84,21 @@ class Animator {
         return animations.size
     }
 
-    private fun animateLayoutTransition(item: MovableUIContainer, duration: Float, newDimensions: ItemDimensions) {
-        if (newDimensions.translation.x != item.getTranslation().x) {
-            animations += XTransitionAnimation(duration, newDimensions.translation.x, item, TransitionType.PLACEMENT)
+    private fun animateLayoutTransition(item: MovableUIContainer, duration: Float, newTranslation: Vector2, newScale: Vector2) {
+        if (newTranslation.x != item.getTranslation().x) {
+            animations += XTransitionAnimation(duration, newTranslation.x, item, TransitionType.PLACEMENT)
         }
 
-        if (newDimensions.translation.y != item.getTranslation().y) {
-            animations += YTransitionAnimation(duration, newDimensions.translation.y, item, TransitionType.PLACEMENT)
+        if (newTranslation.y != item.getTranslation().y) {
+            animations += YTransitionAnimation(duration, newTranslation.y, item, TransitionType.PLACEMENT)
         }
 
-        if (newDimensions.scale.x != item.getScale().x) {
-            animations += XScaleAnimation(duration, newDimensions.scale.x, item)
+        if (newScale.x != item.getScale().x) {
+            animations += XScaleAnimation(duration, newScale.x, item)
         }
 
-        if (newDimensions.scale.y != item.getScale().y) {
-            animations += YScaleAnimation(duration, newDimensions.scale.y, item)
+        if (newScale.y != item.getScale().y) {
+            animations += YScaleAnimation(duration, newScale.y, item)
         }
     }
 }

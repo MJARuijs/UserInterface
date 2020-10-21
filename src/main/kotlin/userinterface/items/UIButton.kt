@@ -3,12 +3,17 @@ package userinterface.items
 import devices.Button
 import devices.Mouse
 import math.Color
+import userinterface.MovableUIContainer
 import userinterface.UIColor
 import userinterface.UniversalParameters
 import userinterface.animation.Animation
 import userinterface.animation.effects.Effect
 import userinterface.items.backgrounds.Background
+import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
+import userinterface.layout.constraints.constrainttypes.CenterConstraint
+import userinterface.layout.constraints.constrainttypes.PixelConstraint
+import userinterface.layout.constraints.constrainttypes.RelativeConstraint
 import userinterface.text.font.Font
 
 open class UIButton(id: String, constraints: ConstraintSet, private var onClick: () -> Unit = {}, background: Background = UniversalParameters.BUTTON_BACKGROUND()) : Item(id, constraints, background) {
@@ -23,7 +28,20 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
     }
     
     fun setText(text: String, color: Color, font: Font) {
-        add(TextBox("${id}_text", constraints.copy(), text, color, font, 1f))
+        add(TextBox("${id}_text", ConstraintSet(
+            CenterConstraint(ConstraintDirection.HORIZONTAL),
+            CenterConstraint(ConstraintDirection.VERTICAL),
+            RelativeConstraint(ConstraintDirection.HORIZONTAL, 1.0f),
+            RelativeConstraint(ConstraintDirection.VERTICAL, 1.0f)
+        ), text, color, font, 1f))
+    }
+    
+    override fun position(parent: MovableUIContainer?, duration: Float) {
+        super.position(parent, duration)
+        if (id == "testButton2") {
+            println("Button translation: ${getTranslation()}")
+            println(findById("testButton2_text")!!.getTranslation())
+        }
     }
     
     fun setText(text: String, color: UIColor, font: Font) = setText(text, color.color, font)

@@ -40,8 +40,8 @@ open class Item(id: String, constraints: ConstraintSet, background: Background =
     }
 
     open fun draw(shaderProgram: ShaderProgram, iconProgram: ShaderProgram, textProgram: ShaderProgram, aspectRatio: Float, parent: MovableUIContainer?) {
-        shaderProgram.set("translation", constraints.translation())
-        shaderProgram.set("scale", constraints.scale())
+        shaderProgram.set("translation", getTranslation())
+        shaderProgram.set("scale", getScale())
         
         if (parent != null) {
             shaderProgram.set("allowedToOverdraw", parent.isChildBoundless(id))

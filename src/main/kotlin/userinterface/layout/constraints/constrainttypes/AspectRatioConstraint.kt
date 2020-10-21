@@ -1,28 +1,22 @@
 package userinterface.layout.constraints.constrainttypes
 
+import math.vectors.Vector2
 import userinterface.MovableUIContainer
 import userinterface.layout.constraints.ConstraintDirection
-import userinterface.items.ItemDimensions
 
 class AspectRatioConstraint(direction: ConstraintDirection, var aspectRatio: Float) : Constraint(direction) {
     
-    override fun copy(): AspectRatioConstraint {
-        return AspectRatioConstraint(direction, aspectRatio)
-    }
-    
-    override fun apply(itemDimensions: ItemDimensions, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
-        if (parent == null && parentDimensions == null) {
-            return
-        }
-        
+    override fun apply(translation: Vector2, scale: Vector2, parentTranslation: Vector2?, parentScale: Vector2?, parent: MovableUIContainer?): Pair<Vector2, Vector2> {
         if (direction == ConstraintDirection.VERTICAL) {
-            itemDimensions.scale.y = itemDimensions.scale.x * aspectRatio
+            scale.y = scale.x * aspectRatio
         }
         
         if (direction == ConstraintDirection.HORIZONTAL) {
-            itemDimensions.scale.x = itemDimensions.scale.y * aspectRatio
+            scale.x = scale.y * aspectRatio
         }
         
-        itemDimensions.scale.roundToDecimal(5)
+        scale.roundToDecimal(5)
+        
+        return Pair(translation, scale)
     }
 }

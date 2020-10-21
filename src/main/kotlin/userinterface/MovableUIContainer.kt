@@ -3,7 +3,6 @@ package userinterface
 import devices.Mouse
 import math.vectors.Vector2
 import userinterface.animation.*
-import userinterface.items.ItemDimensions
 import userinterface.items.backgrounds.Background
 import userinterface.layout.UILayout
 import userinterface.layout.constraints.ConstraintDirection
@@ -26,14 +25,14 @@ abstract class MovableUIContainer(id: String, var constraints: ConstraintSet, va
     
     fun requiredIds() = constraints.requiredIds
     
-    fun getTranslation() = constraints.translation()
+    fun getTranslation() = constraints.getTranslation()
     
-    fun getScale() = constraints.scale()
+    fun getScale() = constraints.getScale()
 
-    fun getGoalDimensions(): ItemDimensions {
+    fun getGoalDimensions(): Pair<Vector2, Vector2> {
         val translation = goalTranslation ?: getTranslation()
         val scale = goalScale ?: getScale()
-        return ItemDimensions(translation, scale)
+        return Pair(translation, scale)
     }
     
     open fun position(parent: MovableUIContainer? = null, duration: Float = 0.0f) {

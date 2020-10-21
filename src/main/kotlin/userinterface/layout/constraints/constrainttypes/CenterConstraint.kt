@@ -3,33 +3,30 @@ package userinterface.layout.constraints.constrainttypes
 import math.vectors.Vector2
 import userinterface.MovableUIContainer
 import userinterface.layout.constraints.ConstraintDirection
-import userinterface.items.ItemDimensions
 
 class CenterConstraint(direction: ConstraintDirection) : Constraint(direction) {
     
-    override fun copy(): Constraint {
-        return CenterConstraint(direction)
-    }
-    
-    override fun apply(itemDimensions: ItemDimensions, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
-        if (parent == null && parentDimensions == null) {
-            return
+    override fun apply(translation: Vector2, scale: Vector2, parentTranslation: Vector2?, parentScale: Vector2?, parent: MovableUIContainer?): Pair<Vector2, Vector2> {
+        if (parent == null && parentTranslation == null) {
+            return Pair(translation, scale)
         }
         
         var referenceTranslation = Vector2()
         
-        if (parentDimensions != null) {
-            referenceTranslation = parentDimensions.translation
+        if (parentTranslation != null) {
+            referenceTranslation = parentTranslation
         } else if (parent != null) {
             referenceTranslation = parent.getTranslation()
         }
     
         when (direction) {
-            ConstraintDirection.HORIZONTAL -> itemDimensions.translation.x = referenceTranslation.x
-            ConstraintDirection.VERTICAL -> itemDimensions.translation.y = referenceTranslation.y
+            ConstraintDirection.HORIZONTAL -> translation.x = referenceTranslation.x
+            ConstraintDirection.VERTICAL -> translation.y = referenceTranslation.y
             else -> println("Invalid direction given for CenterConstraint!")
         }
         
-        itemDimensions.translation.roundToDecimal(5)
+        translation.roundToDecimal(5)
+        
+        return Pair(translation, scale)
     }
 }

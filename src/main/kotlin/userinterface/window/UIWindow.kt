@@ -50,8 +50,8 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
     private fun hasTitleBar() = titleBar != null
 
     fun draw(shaderProgram: ShaderProgram, iconProgram: ShaderProgram, textProgram: ShaderProgram, aspectRatio: Float) {
-        shaderProgram.set("translation", constraints.translation())
-        shaderProgram.set("scale", constraints.scale())
+        shaderProgram.set("translation", getTranslation())
+        shaderProgram.set("scale", getScale())
         shaderProgram.set("allowedToOverdraw", true)
     
         background.setProperties(shaderProgram)

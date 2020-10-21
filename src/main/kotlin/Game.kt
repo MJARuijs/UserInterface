@@ -3,9 +3,7 @@ import devices.Timer
 import devices.Window
 import graphics.GraphicsContext
 import graphics.GraphicsOption
-import graphics.PointMesh
 import graphics.Sky
-import graphics.shaders.ShaderProgram
 import math.Color
 import math.vectors.Vector2
 import org.lwjgl.opengl.GL11.*
@@ -13,7 +11,9 @@ import userinterface.UIColor
 import userinterface.UniversalParameters
 import userinterface.UserInterface
 import userinterface.animation.effects.ColorEffect
-import userinterface.items.*
+import userinterface.items.ScrollPane
+import userinterface.items.TextBox
+import userinterface.items.UIButton
 import userinterface.items.backgrounds.ColorType
 import userinterface.items.backgrounds.ColoredBackground
 import userinterface.layout.constraints.ConstraintDirection
@@ -59,7 +59,7 @@ fun main() {
         RelativeConstraint(ConstraintDirection.VERTICAL, 1.0f),
         RelativeConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
     )
-    
+
 //    val button2Constraints = ConstraintSet(
 //        PixelConstraint(ConstraintDirection.TO_RIGHT),
 //        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f),
@@ -70,8 +70,8 @@ fun main() {
     val button2Constraints = ConstraintSet(
         PixelConstraint(ConstraintDirection.TO_RIGHT),
         PixelConstraint(ConstraintDirection.TO_BOTTOM),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
-        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.25f)
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.15f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)
     )
 
     val switchConstraint = ConstraintSet(
@@ -94,26 +94,20 @@ fun main() {
         RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
         AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
     )
-    
+
     val scrollConstraints = ConstraintSet(
         PixelConstraint(ConstraintDirection.TO_BOTTOM),
         PixelConstraint(ConstraintDirection.TO_LEFT),
         RelativeConstraint(ConstraintDirection.VERTICAL, 0.8f),
         RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.3f)
     )
-    
+
     val scrollTitleConstraints = ConstraintSet(
         PixelConstraint(ConstraintDirection.TO_LEFT, 0.0f),
         PixelConstraint(ConstraintDirection.TO_TOP, 0.0f, "scroll_pane"),
         RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f, "scroll_pane"),
         AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.25f)
     )
-    
-    val dummies = ArrayList<Item>()
-    val numberOfDummies = 10
-    for (i in 0 until numberOfDummies) {
-        dummies += Item("dummy$i", ConstraintSet(RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f)), ColoredBackground(UIColor.values()[i + 4]))
-    }
 
     val testButton = UIButton("testButton", buttonConstraints, {
         println("Button 2 clicked!")
@@ -127,16 +121,16 @@ fun main() {
         println("Button 2 clicked!")
     })
     testButton2.setText("Play", UIColor.WHITE, arialFont)
-
-    val switch = Switch("switch", switchConstraint, false, { newState ->
-        println("State changed to $newState")
-    })
+//
+//    val switch = Switch("switch", switchConstraint, false, { newState ->
+//        println("State changed to $newState")
+//    })
+//
+//    val progressBar = ProgressBar("progress_bar", progressBarConstraint)
     
-    val progressBar = ProgressBar("progress_bar", progressBarConstraint)
-    
-    val checkBox = CheckBox("check_box", checkBoxConstraint, true, { checked ->
-        println("CheckBox checked: $checked")
-    })
+//    val checkBox = CheckBox("check_box", checkBoxConstraint, true, { checked ->
+//        println("CheckBox checked: $checked")
+//    })
     
     val textBox = TextBox("text", scrollTitleConstraints, "Items", UIColor.WHITE, arialFont, 1.77f, ColoredBackground(UIColor.GREY_DARK))
     
@@ -176,7 +170,7 @@ fun main() {
         }
         
         if (keyboard.isPressed(Key.F)) {
-            switch.turnOn()
+//            switch.turnOn()
         }
 
         if (keyboard.isPressed(Key.A)) {
@@ -199,9 +193,9 @@ fun main() {
             userInterface.draw(window.width, window.height)
         }
         
-        if (!progressBar.isPaused()) {
+//        if (!progressBar.isPaused()) {
 //            progressBar.setProgress(progressBar.getProgress() + 0.01f)
-        }
+//        }
         
         window.synchronize()
         timer.update()
