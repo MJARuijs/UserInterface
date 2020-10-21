@@ -12,7 +12,6 @@ abstract class UIContainer(val id: String, private val layouts: ArrayList<UILayo
     private val postPonedItems = ConcurrentHashMap<Item, ArrayList<String>>()
     private val boundlessChildren = ArrayList<String>()
     
-    protected val iconProgram = ShaderProgram.load("shaders/icon.vert", "shaders/icon.frag")
     protected val quad = Quad()
     protected val children = ArrayList<Item>()
     

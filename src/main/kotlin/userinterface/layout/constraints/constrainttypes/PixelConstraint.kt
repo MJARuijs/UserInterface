@@ -7,6 +7,10 @@ import userinterface.items.ItemDimensions
 
 class PixelConstraint(direction: ConstraintDirection, var offset: Float = 0.0f, var anchorId: String = "parent") : Constraint(direction) {
     
+    override fun copy(): Constraint {
+        return PixelConstraint(direction, offset, anchorId)
+    }
+    
     override fun apply(itemDimensions: ItemDimensions, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
         var referenceTranslation = Vector2()
         var referenceScale = Vector2()

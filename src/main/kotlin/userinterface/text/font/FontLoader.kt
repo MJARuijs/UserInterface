@@ -4,7 +4,7 @@ import graphics.textures.ImageMap
 import math.vectors.Vector4
 import resources.Loader
 import resources.images.ImageCache
-import userinterface.text.Character
+import userinterface.text.line.Character
 import userinterface.text.MetaData
 import util.File
 

@@ -38,7 +38,7 @@ class TitleBar(id: String = "TitleBar", constraints: ConstraintSet, background: 
                     AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
                 )
                 
-                add(UIButton("close_button", buttonConstraints, onClick, background = UniversalParameters.CLOSE_BUTTON_BACKGROUND))
+                add(UIButton("close_button", buttonConstraints, onClick, background = UniversalParameters.CLOSE_BUTTON_BACKGROUND()))
             } else if (closeButtonAlignment == ButtonAlignment.LEFT) {
                 val buttonConstraints = ConstraintSet(
                     PixelConstraint(ConstraintDirection.TO_TOP, 0.0f),
@@ -47,7 +47,7 @@ class TitleBar(id: String = "TitleBar", constraints: ConstraintSet, background: 
                     AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
                 )
 
-                add(UIButton("close_button", buttonConstraints, onClick, background = UniversalParameters.CLOSE_BUTTON_BACKGROUND))
+                add(UIButton("close_button", buttonConstraints, onClick, background = UniversalParameters.CLOSE_BUTTON_BACKGROUND()))
             }
         }
     }

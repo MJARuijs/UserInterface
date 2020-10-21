@@ -6,6 +6,10 @@ import userinterface.items.ItemDimensions
 
 class AspectRatioConstraint(direction: ConstraintDirection, var aspectRatio: Float) : Constraint(direction) {
     
+    override fun copy(): AspectRatioConstraint {
+        return AspectRatioConstraint(direction, aspectRatio)
+    }
+    
     override fun apply(itemDimensions: ItemDimensions, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
         if (parent == null && parentDimensions == null) {
             return

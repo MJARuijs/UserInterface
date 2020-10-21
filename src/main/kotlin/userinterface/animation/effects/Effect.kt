@@ -1,0 +1,1 @@
+package userinterface.animation.effectsimport userinterface.items.Itemabstract class Effect(val duration: Float) {        abstract fun applyOn(item: Item)        abstract fun removeFrom(item: Item)    }

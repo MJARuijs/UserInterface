@@ -8,4 +8,6 @@ abstract class Constraint(var direction: ConstraintDirection) {
     
     abstract fun apply(itemDimensions: ItemDimensions, parentDimensions: ItemDimensions?, parent: MovableUIContainer?)
 
+    abstract fun copy(): Constraint
+    
 }

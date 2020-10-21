@@ -4,11 +4,14 @@ import devices.Mouse
 import graphics.shaders.ShaderProgram
 import math.vectors.Vector2
 import userinterface.MovableUIContainer
+import userinterface.animation.Animation
+import userinterface.animation.effects.Effect
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
 import userinterface.layout.constraints.constrainttypes.CenterConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
 import userinterface.items.Item
+import userinterface.items.UIButton
 import userinterface.items.backgrounds.Background
 
 class UIWindow(id: String, constraints: ConstraintSet, background: Background, var shouldShow: Boolean = false, titleBarData: TitleBarData) : MovableUIContainer(id, constraints, background) {
@@ -46,7 +49,7 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
 
     private fun hasTitleBar() = titleBar != null
 
-    fun draw(shaderProgram: ShaderProgram, aspectRatio: Float) {
+    fun draw(shaderProgram: ShaderProgram, iconProgram: ShaderProgram, textProgram: ShaderProgram, aspectRatio: Float) {
         shaderProgram.set("translation", constraints.translation())
         shaderProgram.set("scale", constraints.scale())
         shaderProgram.set("allowedToOverdraw", true)
@@ -54,23 +57,19 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
         background.setProperties(shaderProgram)
         quad.draw()
         
-        if (hasTitleBar()) {
-            // TODO: Can this be removed?
-//            titleBar!!.draw(shaderProgram, iconProgram, aspectRatio, this)
-        }
-        children.forEach { child -> child.draw(shaderProgram, iconProgram, aspectRatio, this) }
+        children.forEach { child -> child.draw(shaderProgram, iconProgram, textProgram, aspectRatio, this) }
     }
 
     // TODO: Rewrite these functions to make use of the Animation classes, instead of the old Effect classes
-//    fun addButtonHoverEffects(buttonId: String, effect: Effect) {
-//        val closeButton = titleBar?.findById(buttonId) ?: return
-//        (closeButton as UIButton).addHoverEffect(effect)
-//    }
-//
-//    fun addButtonOnClickEffects(buttonId: String, effect: Effect) {
-//        val closeButton = titleBar?.findById(buttonId) ?: return
-//        (closeButton as UIButton).addOnClickEffect(effect)
-//    }
+    fun addButtonHoverEffects(buttonId: String, animation: Effect) {
+        val closeButton = titleBar?.findById(buttonId) ?: return
+        (closeButton as UIButton).addOnHoverAnimation(animation)
+    }
+
+    fun addButtonOnClickEffects(buttonId: String, animation: Animation) {
+        val closeButton = titleBar?.findById(buttonId) ?: return
+        (closeButton as UIButton).addOnClickAnimation(animation)
+    }
 
     override fun positionChild(item: Item) {
         item.position(this)

@@ -2,15 +2,24 @@ package userinterface.items
 
 import graphics.shaders.ShaderProgram
 import userinterface.MovableUIContainer
+import userinterface.UIColor
 import userinterface.UniversalParameters
 import userinterface.layout.constraints.ConstraintSet
 import userinterface.items.backgrounds.Background
+import userinterface.items.backgrounds.ColoredBackground
+import userinterface.items.backgrounds.TexturedBackground
 import userinterface.svg.SVGIcon
 import kotlin.math.min
 
-open class Item(id: String, constraints: ConstraintSet, background: Background = UniversalParameters.BUTTON_BACKGROUND) : MovableUIContainer(id, constraints, background) {
+open class Item(id: String, constraints: ConstraintSet, background: Background = UniversalParameters.ITEM_BACKGROUND()) : MovableUIContainer(id, constraints, background) {
 
     private lateinit var icon: SVGIcon
+    
+    val baseBackgroundColor = when (background) {
+        is ColoredBackground -> background.color
+        is TexturedBackground -> background.overlayColor
+        else -> UIColor.TRANSPARENT.color
+    }
     
     init {
         if (requiredIds().contains(id)) {
@@ -30,7 +39,7 @@ open class Item(id: String, constraints: ConstraintSet, background: Background =
         }
     }
 
-    open fun draw(shaderProgram: ShaderProgram, iconProgram: ShaderProgram, aspectRatio: Float, parent: MovableUIContainer?) {
+    open fun draw(shaderProgram: ShaderProgram, iconProgram: ShaderProgram, textProgram: ShaderProgram, aspectRatio: Float, parent: MovableUIContainer?) {
         shaderProgram.set("translation", constraints.translation())
         shaderProgram.set("scale", constraints.scale())
         
@@ -39,8 +48,6 @@ open class Item(id: String, constraints: ConstraintSet, background: Background =
             shaderProgram.set("parentTranslation", parent.getTranslation())
             shaderProgram.set("parentScale", parent.getScale())
         }
-
-
         
         background.setProperties(shaderProgram)
 
@@ -51,8 +58,7 @@ open class Item(id: String, constraints: ConstraintSet, background: Background =
         }
         
         children.forEach { child ->
-            child.draw(shaderProgram, iconProgram, aspectRatio, this)
+            child.draw(shaderProgram, iconProgram, textProgram, aspectRatio, this)
         }
-
     }
 }

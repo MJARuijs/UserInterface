@@ -17,10 +17,10 @@ import userinterface.layout.constraints.constrainttypes.RelativeConstraint
 
 class Switch(id: String, constraints: ConstraintSet, private var switchOn: Boolean = false,
              private var onStateChanged: (Boolean) -> Unit = {},
-             private val trackOnBackground: ColoredBackground = SWITCH_TRACK_ON_BACKGROUND,
-             private val thumbOnBackground: ColoredBackground = SWITCH_THUMB_ON_BACKGROUND,
-             private val trackOffBackground: ColoredBackground = SWITCH_TRACK_OFF_BACKGROUND,
-             private val thumbOffBackground: ColoredBackground = SWITCH_THUMB_OFF_BACKGROUND)
+             private val trackOnBackground: ColoredBackground = SWITCH_TRACK_ON_BACKGROUND(),
+             private val thumbOnBackground: ColoredBackground = SWITCH_THUMB_ON_BACKGROUND(),
+             private val trackOffBackground: ColoredBackground = SWITCH_TRACK_OFF_BACKGROUND(),
+             private val thumbOffBackground: ColoredBackground = SWITCH_THUMB_OFF_BACKGROUND())
     : Item(id, constraints, trackOffBackground) {
 
     private var thumb: Item

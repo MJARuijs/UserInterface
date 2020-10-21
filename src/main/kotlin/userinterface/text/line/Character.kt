@@ -1,4 +1,6 @@
-package userinterface.text
+package userinterface.text.line
+
+import userinterface.text.MetaData
 
 class Character(val id: Char, val x: Float, val y: Float, val width: Float, val height: Float, val xOffset: Float, val yOffset: Float, val quadWidth: Float, val quadHeight: Float, val advance: Float) {
 
@@ -7,11 +9,13 @@ class Character(val id: Char, val x: Float, val y: Float, val width: Float, val 
     val yMaxTexCoord = y + height
 
     companion object {
+        const val LINE_HEIGHT = 0.03f
+        
         fun fromLine(line: String, metaData: MetaData, aspectRatio: Float): Character {
             val textureSize = metaData.scaleW
 
             val lineHeightPixels = metaData.lineHeight - metaData.paddingHeight
-            val verticalSize = 0.03f / lineHeightPixels
+            val verticalSize = LINE_HEIGHT / lineHeightPixels
             val horizontalSize = verticalSize / aspectRatio
 
             val values = line.split(" ")

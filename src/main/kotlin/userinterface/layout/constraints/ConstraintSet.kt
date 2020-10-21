@@ -87,8 +87,22 @@ class ConstraintSet(val constraints: ArrayList<Constraint> = ArrayList()) {
         dimensions.scale += scale
     }
     
+    fun copy(): ConstraintSet {
+        println(translation())
+        val copiedConstraints = ArrayList<Constraint>()
+        for (constraint in constraints) {
+            copiedConstraints += constraint
+        }
+        val copiedConstraintSet = ConstraintSet(copiedConstraints)
+//        copiedConstraintSet.dimensions = this.dimensions
+        copiedConstraintSet.dimensions = this.dimensions.copy()
+        println(translation())
+        println(copiedConstraintSet.translation())
+        println()
+        return copiedConstraintSet
+    }
+    
     fun updateConstraint(type: ConstraintType, direction: ConstraintDirection, newValue: Float) {
-        
         for (constraint in constraints) {
             if (constraint.direction == direction) {
                 when (type) {

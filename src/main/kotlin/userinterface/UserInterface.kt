@@ -5,13 +5,15 @@ import graphics.GraphicsContext
 import graphics.GraphicsOption
 import graphics.shaders.ShaderProgram
 import math.vectors.Vector2
-import userinterface.animation.Animation
 import userinterface.window.UIWindow
 
 class UserInterface(private val aspectRatio: Float) {
 
     private val shaderProgram = ShaderProgram.load("shaders/ui.vert", "shaders/ui.frag")
-    private val animations = ArrayList<Animation>()
+    private val iconProgram = ShaderProgram.load("shaders/icon.vert", "shaders/icon.frag")
+    
+    private val textProgram = ShaderProgram.load("shaders/text.vert", "shaders/text.frag")
+    
     private val pages = ArrayList<UIPage>()
     private val windows = ArrayList<UIWindow>()
 
@@ -25,12 +27,13 @@ class UserInterface(private val aspectRatio: Float) {
         windows += window
     }
 
-    operator fun plusAssign(animation: Animation) {
-        animations += animation
-    }
-    
     fun showPage(name: String) {
-
+        if (pages.any { page -> page.id == name }) {
+            pages.forEach { page ->
+                page.shouldShow = page.id == name
+            }
+            showingId = name
+        }
     }
 
     fun showWindow(name: String) {
@@ -63,9 +66,14 @@ class UserInterface(private val aspectRatio: Float) {
         shaderProgram.start()
         shaderProgram.set("aspectRatio", aspectRatio)
         shaderProgram.set("viewPort", Vector2(windowWidth, windowHeight))
+        for (page in pages) {
+            if (page.shouldShow) {
+                page.draw(shaderProgram, iconProgram, textProgram, aspectRatio)
+            }
+        }
         for (window in windows) {
             if (window.shouldShow) {
-                window.draw(shaderProgram, aspectRatio)
+                window.draw(shaderProgram, iconProgram, textProgram, aspectRatio)
             }
         }
         shaderProgram.stop()

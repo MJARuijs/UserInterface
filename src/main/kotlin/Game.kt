@@ -1,17 +1,20 @@
 import devices.Key
 import devices.Timer
 import devices.Window
-import graphics.Sky
 import graphics.GraphicsContext
 import graphics.GraphicsOption
+import graphics.PointMesh
+import graphics.Sky
 import graphics.shaders.ShaderProgram
 import math.Color
 import math.vectors.Vector2
-import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11.*
 import userinterface.UIColor
+import userinterface.UniversalParameters
 import userinterface.UserInterface
+import userinterface.animation.effects.ColorEffect
 import userinterface.items.*
+import userinterface.items.backgrounds.ColorType
 import userinterface.items.backgrounds.ColoredBackground
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
@@ -19,11 +22,9 @@ import userinterface.layout.constraints.constrainttypes.AspectRatioConstraint
 import userinterface.layout.constraints.constrainttypes.CenterConstraint
 import userinterface.layout.constraints.constrainttypes.PixelConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
-import userinterface.text.Text
 import userinterface.text.font.FontLoader
 import userinterface.window.ButtonAlignment
 import userinterface.window.UIWindow
-import util.FloatUtils
 
 fun main() {
     val window = Window("Game", ::onWindowResized)
@@ -50,11 +51,27 @@ fun main() {
         ButtonAlignment.RIGHT
     )
 
+    optionsWindow.addButtonHoverEffects("close_button", ColorEffect(UniversalParameters.CLOSE_BUTTON_HOVERED_COLOR(), ColorType.BACKGROUND_COLOR))
+    
     val buttonConstraints = ConstraintSet(
-        PixelConstraint(ConstraintDirection.TO_LEFT),
-        PixelConstraint(ConstraintDirection.TO_TOP),
-        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f),
-        AspectRatioConstraint(ConstraintDirection.VERTICAL, 1f)
+        CenterConstraint(ConstraintDirection.HORIZONTAL),
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 1.0f),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
+    )
+    
+//    val button2Constraints = ConstraintSet(
+//        PixelConstraint(ConstraintDirection.TO_RIGHT),
+//        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f),
+//        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.2f),
+//        AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.25f)
+//    )
+
+    val button2Constraints = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_RIGHT),
+        PixelConstraint(ConstraintDirection.TO_BOTTOM),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.5f),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.25f)
     )
 
     val switchConstraint = ConstraintSet(
@@ -79,11 +96,17 @@ fun main() {
     )
     
     val scrollConstraints = ConstraintSet(
-        CenterConstraint(ConstraintDirection.HORIZONTAL),
-//        PixelConstraint(ConstraintDirection.TO_RIGHT),
-        CenterConstraint(ConstraintDirection.VERTICAL),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 1f),
-        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f)
+        PixelConstraint(ConstraintDirection.TO_BOTTOM),
+        PixelConstraint(ConstraintDirection.TO_LEFT),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.8f),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.3f)
+    )
+    
+    val scrollTitleConstraints = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_LEFT, 0.0f),
+        PixelConstraint(ConstraintDirection.TO_TOP, 0.0f, "scroll_pane"),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f, "scroll_pane"),
+        AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.25f)
     )
     
     val dummies = ArrayList<Item>()
@@ -91,15 +114,19 @@ fun main() {
     for (i in 0 until numberOfDummies) {
         dummies += Item("dummy$i", ConstraintSet(RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f)), ColoredBackground(UIColor.values()[i + 4]))
     }
-    
-//    val dummyItem1 = Item("dummy", ConstraintSet(RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f)), ColoredBackground(UIColor.RED))
-//    val dummyItem2 = Item("dummy2", ConstraintSet(RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f)), ColoredBackground(UIColor.GREEN))
-//    val dummyItem3 = Item("dummy3", ConstraintSet(RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f)), ColoredBackground(UIColor.BLUE))
-//    val dummyItem4 = Item("dummy4", ConstraintSet(RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f)), ColoredBackground(UIColor.YELLOW))
-    
+
     val testButton = UIButton("testButton", buttonConstraints, {
         println("Button 2 clicked!")
     })
+    val arialFont = FontLoader(window.aspectRatio).load("fonts/arial.png")
+
+//    testButton.addOnHoverAnimation(ColorEffect(UIColor.RED.color, ColorType.BACKGROUND_COLOR))
+//    testButton.addOnHoverAnimation(TranslationEffect(0.05f, 0f))
+    
+    val testButton2 = UIButton("testButton2", button2Constraints, {
+        println("Button 2 clicked!")
+    })
+    testButton2.setText("Play", UIColor.WHITE, arialFont)
 
     val switch = Switch("switch", switchConstraint, false, { newState ->
         println("State changed to $newState")
@@ -111,40 +138,27 @@ fun main() {
         println("CheckBox checked: $checked")
     })
     
-    val testDummy = Item("TestDummy", ConstraintSet(
-        PixelConstraint(ConstraintDirection.TO_LEFT),
-        PixelConstraint(ConstraintDirection.TO_TOP),
-        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.25f)
-    ),
-                         ColoredBackground(UIColor.CYAN)
-    )
+    val textBox = TextBox("text", scrollTitleConstraints, "Items", UIColor.WHITE, arialFont, 1.77f, ColoredBackground(UIColor.GREY_DARK))
     
     val scrollPane = ScrollPane("scroll_pane", scrollConstraints, 2, 0.01f)
-    for (dummy in dummies) {
-        scrollPane += dummy
-    }
-//    scrollPane += dummyItem1
-//    scrollPane += dummyItem2
-//    scrollPane += dummyItem3
-//    scrollPane += dummyItem4
+//    for (dummy in dummies) {
+//        scrollPane += dummy
+//    }
+//    scrollPane += textBox
 
-//    scrollPane += testDummy
     optionsWindow += scrollPane
 //    optionsWindow += checkBox
 //    optionsWindow += progressBar
 //    optionsWindow += testButton
+    optionsWindow += testButton2
+    optionsWindow += textBox
 //    optionsWindow += switch
     userInterface += optionsWindow
-
-    val textProgram = ShaderProgram.load("shaders/text.vert", "shaders/text.frag")
-    val arialFont = FontLoader(window.aspectRatio).load("fonts/arial.png")
-    val text = Text("Hoi lieverd :)", 5.0f, arialFont)
     
     userInterface.showWindow("options_menu")
     timer.reset()
     mouse.release()
-
+    
     while (!window.isClosed()) {
         window.poll()
     
@@ -188,8 +202,6 @@ fun main() {
         if (!progressBar.isPaused()) {
 //            progressBar.setProgress(progressBar.getProgress() + 0.01f)
         }
-        
-//        text.render(textProgram)
         
         window.synchronize()
         timer.update()

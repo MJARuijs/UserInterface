@@ -1,11 +1,10 @@
 package userinterface.text
 
-import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.*
 
-class TextQuad(val vertices: FloatArray, textureCoords: FloatArray) {
+class TextQuad(private val vertices: FloatArray, textureCoords: FloatArray) {
 
     private val vao = glGenVertexArrays()
     private val vbo = glGenBuffers()

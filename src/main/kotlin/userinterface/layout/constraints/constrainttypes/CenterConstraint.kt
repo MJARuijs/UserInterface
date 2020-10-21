@@ -7,6 +7,10 @@ import userinterface.items.ItemDimensions
 
 class CenterConstraint(direction: ConstraintDirection) : Constraint(direction) {
     
+    override fun copy(): Constraint {
+        return CenterConstraint(direction)
+    }
+    
     override fun apply(itemDimensions: ItemDimensions, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
         if (parent == null && parentDimensions == null) {
             return

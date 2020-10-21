@@ -2,23 +2,38 @@ package userinterface.items
 
 import devices.Button
 import devices.Mouse
+import math.Color
+import userinterface.UIColor
 import userinterface.UniversalParameters
+import userinterface.animation.Animation
+import userinterface.animation.effects.Effect
 import userinterface.items.backgrounds.Background
 import userinterface.layout.constraints.ConstraintSet
+import userinterface.text.font.Font
 
-open class UIButton(id: String, constraints: ConstraintSet, private var onClick: () -> Unit = {}, private val text: String = "", background: Background = UniversalParameters.BUTTON_BACKGROUND) : Item(id, constraints, background) {
+open class UIButton(id: String, constraints: ConstraintSet, private var onClick: () -> Unit = {}, background: Background = UniversalParameters.BUTTON_BACKGROUND()) : Item(id, constraints, background) {
 
     private var isClicked = false
     private var isHovered = false
-
-    init {
-        if (text.isNotBlank()) {
-
-        }
-    }
+    private val hoverAnimations = ArrayList<Effect>()
+    private val clickAnimations = ArrayList<Animation>()
 
     fun setOnClick(function: () -> Unit) {
         onClick = function
+    }
+    
+    fun setText(text: String, color: Color, font: Font) {
+        add(TextBox("${id}_text", constraints.copy(), text, color, font, 1f))
+    }
+    
+    fun setText(text: String, color: UIColor, font: Font) = setText(text, color.color, font)
+    
+    fun addOnHoverAnimation(animation: Effect) {
+        hoverAnimations += animation
+    }
+    
+    fun addOnClickAnimation(animation: Animation) {
+        clickAnimations += animation
     }
     
     override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
@@ -26,15 +41,24 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
             return true
         }
 
-        isHovered = isHovered(mouse, aspectRatio)
+        val isNowHovered = isHovered(mouse, aspectRatio)
 
+        if (isHovered && !isNowHovered) {
+            for (effect in hoverAnimations) {
+                effect.removeFrom(this)
+            }
+        }
+        if (!isHovered && isNowHovered) {
+            for (effect in hoverAnimations) {
+                effect.applyOn(this)
+            }
+        }
+        
+        isHovered = isNowHovered
+        
         if (isHovered && (mouse.isPressed(Button.LEFT) || mouse.isPressed(Button.LEFT))) {
             onClick()
             isClicked = true
-        } else if (isHovered) {
-
-        } else {
-
         }
 
         if (isClicked && (mouse.isReleased(Button.RIGHT) || mouse.isReleased(Button.LEFT))) {

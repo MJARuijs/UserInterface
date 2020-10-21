@@ -7,6 +7,10 @@ import userinterface.items.ItemDimensions
 
 class RelativeConstraint(direction: ConstraintDirection, var percentage: Float, val anchorId: String = "parent", private val relativePercentage: Boolean = true) : Constraint(direction) {
     
+    override fun copy(): Constraint {
+        return RelativeConstraint(direction, percentage, anchorId, relativePercentage)
+    }
+    
     override fun apply(itemDimensions: ItemDimensions, parentDimensions: ItemDimensions?, parent: MovableUIContainer?) {
         if (parent == null && parentDimensions == null) {
             return

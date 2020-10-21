@@ -65,6 +65,8 @@ data class Color(var r: Float = 0.0f, var g: Float = 0.0f, var b: Float = 0.0f, 
     fun toArray(): FloatArray = floatArrayOf(r, g, b, a)
 
     fun rgb() = Vector3(r, g, b)
+    
+    fun copy() = Color(r, g, b, a)
 
     companion object {
 
