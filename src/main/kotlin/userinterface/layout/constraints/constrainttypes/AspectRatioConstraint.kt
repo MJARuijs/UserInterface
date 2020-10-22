@@ -19,8 +19,4 @@ class AspectRatioConstraint(direction: ConstraintDirection, var aspectRatio: Flo
         
         return Pair(translation, scale)
     }
-    
-    override fun toString(): String {
-        return "AspectRatioConstraint($direction,$aspectRatio)"
-    }
 }

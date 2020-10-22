@@ -65,8 +65,4 @@ class PixelConstraint(direction: ConstraintDirection, var offset: Float = 0.0f, 
             translation[axis.index] -= offset * referenceScale[axis.index] * 2.0f * sign
         }
     }
-    
-    override fun toString(): String {
-        return "PixelConstraint($direction,$offset,$anchorId)"
-    }
 }

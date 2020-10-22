@@ -2,7 +2,7 @@ package userinterface.window
 
 import userinterface.UniversalParameters
 import userinterface.items.Item
-import userinterface.items.button.UIButton
+import userinterface.items.UIButton
 import userinterface.items.backgrounds.Background
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet

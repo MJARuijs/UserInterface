@@ -1,4 +1,3 @@
-import com.google.gson.Gson
 import devices.Key
 import devices.Timer
 import devices.Window
@@ -16,7 +15,7 @@ import userinterface.animation.animationtypes.ColorAnimationType
 import userinterface.animation.effects.ColorEffect
 import userinterface.animation.effects.TranslationEffect
 import userinterface.items.TextBox
-import userinterface.items.button.UIButton
+import userinterface.items.UIButton
 import userinterface.items.backgrounds.ColorType
 import userinterface.items.backgrounds.ColoredBackground
 import userinterface.layout.constraints.ConstraintDirection
@@ -187,10 +186,6 @@ fun main() {
             window.close()
         }
 
-        if (keyboard.isPressed(Key.A)) {
-            println(Gson().toJson(loadLevelButton.getData()))
-        }
-        
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         sky.render()
         

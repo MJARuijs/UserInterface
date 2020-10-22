@@ -10,7 +10,6 @@ import userinterface.animation.ColorAnimation
 import userinterface.animation.animationtypes.ColorAnimationType
 import userinterface.items.backgrounds.ColorType
 import userinterface.items.backgrounds.ColoredBackground
-import userinterface.items.button.UIButton
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
 import userinterface.layout.constraints.constrainttypes.AspectRatioConstraint

@@ -40,10 +40,4 @@ open class Item(id: String, constraints: ConstraintSet, background: Background =
             child.draw(shaderProgram, iconProgram, textProgram, aspectRatio, this)
         }
     }
-    
-    override fun toString(): String {
-        val periodIndex = javaClass.toString().lastIndexOf('.')
-        val className = javaClass.toString().substring(periodIndex + 1)
-        return "$className($id,$constraints,$background)"
-    }
 }
