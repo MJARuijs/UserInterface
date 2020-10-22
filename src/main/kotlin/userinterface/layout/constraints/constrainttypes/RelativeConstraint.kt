@@ -41,4 +41,8 @@ class RelativeConstraint(direction: ConstraintDirection, var percentage: Float, 
         
         return Pair(translation, scale)
     }
+    
+    override fun toString(): String {
+        return "RelativeConstraint($direction,$percentage,$anchorId,$relativePercentage)"
+    }
 }

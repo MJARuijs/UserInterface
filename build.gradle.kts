@@ -29,16 +29,14 @@ dependencies {
     implementation("org.lwjgl", "lwjgl-openal")
     implementation("org.lwjgl", "lwjgl-opengl")
     implementation("org.lwjgl", "lwjgl-stb")
+    implementation("com.google.code.gson:gson:2.8.6")
+    
     runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-assimp", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-openal", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
-//    compile("com.badlogicgames.gdx:gdx:$gdxVersion")
-//    compile("com.badlogicgames.gdx:gdx-freetype:$gdxVersion")
-//    compile("com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop")
-
 }
 
 tasks {

@@ -1,3 +1,4 @@
+import com.google.gson.Gson
 import devices.Key
 import devices.Timer
 import devices.Window
@@ -15,7 +16,7 @@ import userinterface.animation.animationtypes.ColorAnimationType
 import userinterface.animation.effects.ColorEffect
 import userinterface.animation.effects.TranslationEffect
 import userinterface.items.TextBox
-import userinterface.items.UIButton
+import userinterface.items.button.UIButton
 import userinterface.items.backgrounds.ColorType
 import userinterface.items.backgrounds.ColoredBackground
 import userinterface.layout.constraints.ConstraintDirection
@@ -162,10 +163,8 @@ fun main() {
 //    optionsWindow += mainMenuTitle
 //    optionsWindow += playButton
     
-    
     userInterface += optionsWindow
     userInterface += mainMenu
-    
     
     userInterface.showPage("main_menu")
 //    userInterface.showWindow("options_menu")
@@ -187,19 +186,11 @@ fun main() {
         if (keyboard.isPressed(Key.F1) || keyboard.isPressed(Key.KP1)) {
             window.close()
         }
-        
+
         if (keyboard.isPressed(Key.A)) {
-            optionsWindow.applyLayout("animated_layout", 0.5f)
+            println(Gson().toJson(loadLevelButton.getData()))
         }
-
-        if (keyboard.isPressed(Key.S)) {
-            optionsWindow.applyLayout("standard_layout", 0.5f)
-        }
-
-        if (keyboard.isPressed(Key.D)) {
-            optionsWindow.applyLayout("third_layout", 0.5f)
-        }
-
+        
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         sky.render()
         
@@ -207,10 +198,6 @@ fun main() {
             userInterface.update(mouse, timer.getDelta())
             userInterface.draw(window.width, window.height)
         }
-        
-//        if (!progressBar.isPaused()) {
-//            progressBar.setProgress(progressBar.getProgress() + 0.01f)
-//        }
         
         window.synchronize()
         timer.update()

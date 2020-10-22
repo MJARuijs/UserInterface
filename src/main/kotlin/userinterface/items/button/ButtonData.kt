@@ -1,0 +1,1 @@
+package userinterface.items.buttonimport userinterface.UniversalParametersimport userinterface.items.backgrounds.Backgroundimport userinterface.layout.constraints.constrainttypes.Constraintdata class ButtonData(val id: String, val constraints: ArrayList<Constraint>, val onClick: () -> Unit = {}, val background: Background = UniversalParameters.BUTTON_BACKGROUND()) {}

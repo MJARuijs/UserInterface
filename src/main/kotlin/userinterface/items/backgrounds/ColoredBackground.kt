@@ -1,11 +1,12 @@
 package userinterface.items.backgrounds
 
+import com.google.gson.Gson
 import graphics.shaders.ShaderProgram
 import math.Color
 import userinterface.UIColor
 
 class ColoredBackground(var color: Color, cornerRadius: Float = 0.0f, outline: Float = 0.0f, outlineColor: Color = Color()) : Background(cornerRadius, outline, outlineColor) {
-
+    
     constructor(color: UIColor, cornerRadius: Float = 0.0f, outline: Float = 0.0f, outlineColor: Color = Color()) : this((color.color), cornerRadius, outline, outlineColor)
 
     constructor(color: UIColor, cornerRadius: Float = 0.0f, outline: Float = 0.0f, outlineColor: UIColor) : this(color.color, cornerRadius, outline, outlineColor.color)
@@ -18,5 +19,9 @@ class ColoredBackground(var color: Color, cornerRadius: Float = 0.0f, outline: F
         super.setProperties(shaderProgram)
         shaderProgram.set("color", color)
         shaderProgram.set("textured", false)
+    }
+    
+    override fun toString(): String {
+        return "ColoredBackground($color,$cornerRadius,$outline,$outlineColor"
     }
 }

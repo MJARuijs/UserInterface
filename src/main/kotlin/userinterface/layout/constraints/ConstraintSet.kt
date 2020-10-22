@@ -133,4 +133,8 @@ class ConstraintSet(val constraints: ArrayList<Constraint> = ArrayList()) {
     }
     
     fun computeResult(parentDimensions: Pair<Vector2, Vector2>?, parent: UIContainer?) = computeResult(parentDimensions?.first, parentDimensions?.second, parent)
+    
+    override fun toString(): String {
+        return "ConstraintSet($constraints)"
+    }
 }

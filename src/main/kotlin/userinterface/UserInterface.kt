@@ -14,7 +14,7 @@ class UserInterface(private val aspectRatio: Float) {
     
     private val textProgram = ShaderProgram.load("shaders/text.vert", "shaders/text.frag")
     
-    private val pages = ArrayList<UIPage>()
+    val pages = ArrayList<UIPage>()
     private val windows = ArrayList<UIWindow>()
 
     private var showingId = ""
@@ -112,5 +112,14 @@ class UserInterface(private val aspectRatio: Float) {
     fun destroy() {
         windows.forEach { window -> window.destroy() }
         pages.forEach { page -> page.destroy() }
+    }
+    
+    fun saveToFile() {
+        var pageString = ""
+        for (page in pages) {
+//            for (child in page.children) {
+//
+//            }
+        }
     }
 }

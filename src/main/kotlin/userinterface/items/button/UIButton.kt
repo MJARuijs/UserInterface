@@ -1,4 +1,4 @@
-package userinterface.items
+package userinterface.items.button
 
 import devices.Button
 import devices.Mouse
@@ -8,6 +8,8 @@ import userinterface.UIColor
 import userinterface.UniversalParameters
 import userinterface.animation.Animation
 import userinterface.animation.effects.Effect
+import userinterface.items.Item
+import userinterface.items.TextBox
 import userinterface.items.backgrounds.Background
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
@@ -28,12 +30,14 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
     }
     
     fun setText(text: String, background: Background, color: Color, font: Font = UniversalParameters.arialFont): UIButton {
-        add(TextBox("${id}_text", ConstraintSet(
+        add(
+            TextBox("${id}_text", ConstraintSet(
             CenterConstraint(ConstraintDirection.HORIZONTAL),
             CenterConstraint(ConstraintDirection.VERTICAL),
             RelativeConstraint(ConstraintDirection.HORIZONTAL, 1.0f),
             RelativeConstraint(ConstraintDirection.VERTICAL, 1.0f)
-        ), text, 1.77f, 3f, background, color, font))
+        ), text, 1.77f, 3f, background, color, font)
+        )
         return this
     }
     
@@ -58,6 +62,8 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
         clickAnimations += effects
         return this
     }
+    
+    fun getData() = ButtonData(id, constraints.constraints, onClick, background)
     
     override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
         if (super.update(mouse, aspectRatio, deltaTime)) {

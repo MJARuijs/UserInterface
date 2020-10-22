@@ -4,13 +4,12 @@ import devices.Mouse
 import graphics.shaders.ShaderProgram
 import math.vectors.Vector2
 import userinterface.MovableUIContainer
-import userinterface.animation.Animation
 import userinterface.animation.effects.Effect
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
 import userinterface.layout.constraints.constrainttypes.CenterConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
-import userinterface.items.UIButton
+import userinterface.items.button.UIButton
 import userinterface.items.backgrounds.Background
 
 class UIWindow(id: String, constraints: ConstraintSet, background: Background, var shouldShow: Boolean = false, titleBarData: TitleBarData) : MovableUIContainer(id, constraints, background) {

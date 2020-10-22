@@ -28,4 +28,9 @@ class TexturedBackground(val textureMap: TextureMap, private var backgroundColor
         shaderProgram.set("sampler", sampler.index)
         sampler.bind(textureMap)
     }
+    
+    override fun toString(): String {
+        return "TextureBackground($$cornerRadius,$outline,$outlineColor"
+    }
+    
 }

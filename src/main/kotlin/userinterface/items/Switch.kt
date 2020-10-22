@@ -6,11 +6,11 @@ import userinterface.UniversalParameters.SWITCH_THUMB_OFF_BACKGROUND
 import userinterface.UniversalParameters.SWITCH_THUMB_ON_BACKGROUND
 import userinterface.UniversalParameters.SWITCH_TRACK_OFF_BACKGROUND
 import userinterface.UniversalParameters.SWITCH_TRACK_ON_BACKGROUND
-import userinterface.animation.Animation
 import userinterface.animation.ColorAnimation
 import userinterface.animation.animationtypes.ColorAnimationType
 import userinterface.items.backgrounds.ColorType
 import userinterface.items.backgrounds.ColoredBackground
+import userinterface.items.button.UIButton
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
 import userinterface.layout.constraints.constrainttypes.AspectRatioConstraint

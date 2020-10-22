@@ -99,5 +99,4 @@ abstract class UIContainer(val id: String, private val layouts: ArrayList<UILayo
         quad.destroy()
         children.forEach { item -> item.destroy() }
     }
-
 }

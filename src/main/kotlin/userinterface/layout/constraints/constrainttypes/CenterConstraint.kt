@@ -26,4 +26,8 @@ class CenterConstraint(direction: ConstraintDirection) : Constraint(direction) {
         
         return Pair(translation, scale)
     }
+    
+    override fun toString(): String {
+        return "CenterConstraint($direction)"
+    }
 }
