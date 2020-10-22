@@ -15,15 +15,16 @@ abstract class MovableUIContainer(id: String, var constraints: ConstraintSet, va
     
     private val postPonedChildren = ConcurrentHashMap<String, MovableUIContainer>()
     private val computedChildren = ArrayList<String>()
+    
+    private var goalTranslation: Vector2? = null
+    private var goalScale: Vector2? = null
 
     val animator = Animator()
+
+    var basePosition = Vector2()
+    var baseScale = Vector2(1.0f, 1.0f)
     
-    var goalTranslation: Vector2? = null
-    var goalScale: Vector2? = null
-    
-    fun isAnimating() = animator.isAnimating
-    
-    fun requiredIds() = constraints.requiredIds
+    fun requiredIds() = constraints.determineRequiredIds()
     
     fun getTranslation() = constraints.getTranslation()
     
@@ -35,9 +36,24 @@ abstract class MovableUIContainer(id: String, var constraints: ConstraintSet, va
         return Pair(translation, scale)
     }
     
-    open fun position(parent: MovableUIContainer? = null, duration: Float = 0.0f) {
+    fun getGoalTranslation() = goalTranslation ?: getTranslation()
+    
+    fun setGoalTranslation(goal: Vector2) {
+        goalTranslation = goal
+    }
+    
+    fun getGoalScale() = goalScale ?: getScale()
+    
+    fun setGoalScale(goal: Vector2) {
+        goalScale = goal
+    }
+    
+    open fun position(parent: UIContainer? = null, duration: Float = 0.0f) {
         constraints.apply(parent)
 
+        basePosition = getTranslation()
+        baseScale = getScale()
+        
         children.forEach { child ->
             child.position(this, duration)
         }
@@ -45,6 +61,10 @@ abstract class MovableUIContainer(id: String, var constraints: ConstraintSet, va
     
     open fun translate(translation: Vector2) {
         constraints.translate(translation)
+        
+        children.forEach { child ->
+            child.translate(translation)
+        }
     }
 
     fun setTranslation(translation: Vector2) = place(translation)

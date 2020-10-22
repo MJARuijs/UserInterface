@@ -27,6 +27,8 @@ data class Color(var r: Float = 0.0f, var g: Float = 0.0f, var b: Float = 0.0f, 
     operator fun times(factor: Float) = Color(r * factor, g * factor, b * factor, a * factor)
 
     operator fun div(factor: Float) = Color(r / factor, g / factor, b / factor, a / factor)
+    
+    operator fun unaryMinus() = Color(-r, -g, -b, a)
 
     operator fun get(i: Int): Float {
         return when(i) {

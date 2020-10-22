@@ -1,7 +1,5 @@
 package userinterface.text
 
-import graphics.GraphicsContext
-import graphics.GraphicsOption
 import graphics.samplers.ClampMode
 import graphics.samplers.Sampler
 import graphics.shaders.ShaderProgram
@@ -32,15 +30,10 @@ class Text(val text: String, private val fontSize: Float, private val maxLineWid
         shaderProgram.set("scale", scale)
         shaderProgram.set("color", color)
         
-        GraphicsContext.enable(GraphicsOption.ALPHA_BLENDING)
-        GraphicsContext.disable(GraphicsOption.DEPTH_TESTING)
-        
         sampler.bind(font.textureAtlas)
         textQuad.draw()
         
         shaderProgram.stop()
-        GraphicsContext.disable(GraphicsOption.ALPHA_BLENDING)
-        GraphicsContext.enable(GraphicsOption.DEPTH_TESTING)
     }
     
     private fun createLines(): List<Line> {
@@ -82,11 +75,11 @@ class Text(val text: String, private val fontSize: Float, private val maxLineWid
         for (line in lines) {
             for (word in line.words) {
                 for (character in word.characters) {
-                    val x = (xCursor + character.xOffset * fontSize) * aspectRatio
-                    val y = (yCursor + character.yOffset * fontSize) * aspectRatio
+                    val x = (xCursor + character.xOffset * fontSize) / aspectRatio
+                    val y = (yCursor + character.yOffset * fontSize)
     
-                    val letterMaxX = x + (character.quadWidth * fontSize) * aspectRatio
-                    val letterMaxY = y + (character.quadHeight * fontSize) * aspectRatio
+                    val letterMaxX = x + (character.quadWidth * fontSize) / aspectRatio
+                    val letterMaxY = y + (character.quadHeight * fontSize)
     
                     vertices += floatArrayOf(
                         x, -y,
@@ -137,44 +130,20 @@ class Text(val text: String, private val fontSize: Float, private val maxLineWid
                 maxY = y
             }
         }
+        
         val xDifference = (maxX - minX)
         val yDifference = (minY - maxY)
-//        println("$minX, $maxX, $minY, $maxY, $xDifference, $yDifference")
     
-        var newVertices = FloatArray(0)
+        var repositionedVertices = FloatArray(0)
     
         for (i in vertices.indices step 2) {
             val x = vertices[i]
             val y = vertices[i + 1]
             
-            newVertices += x - xDifference / 2.0f
-            newVertices += y - yDifference / 2.0f
+            repositionedVertices += x - xDifference / 2.0f
+            repositionedVertices += y - yDifference / 2.0f
         }
-        minX = Float.MAX_VALUE
-        maxX = Float.MIN_VALUE
-        minY = Float.MAX_VALUE
-        maxY = Float.MIN_VALUE
-        for (i in newVertices.indices step 2) {
-            val x = newVertices[i]
-            val y = newVertices[i + 1]
-        
-            if (x < minX) {
-                minX = x
-            }
-            if (x > maxX) {
-                maxX = x
-            }
-            if (y < minY) {
-                minY = y
-            }
-            if (y > maxY) {
-                maxY = y
-            }
-        }
-    
-//        println("$minX, $maxX, $minY, $maxY")
-    
-        return TextQuad(newVertices, texCoords)
+        return TextQuad(repositionedVertices, texCoords)
     }
 
     fun destroy() {

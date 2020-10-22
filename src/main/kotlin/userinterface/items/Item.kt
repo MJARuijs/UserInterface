@@ -1,8 +1,10 @@
 package userinterface.items
 
 import graphics.shaders.ShaderProgram
+import math.vectors.Vector2
 import userinterface.MovableUIContainer
 import userinterface.UIColor
+import userinterface.UIContainer
 import userinterface.UniversalParameters
 import userinterface.layout.constraints.ConstraintSet
 import userinterface.items.backgrounds.Background
@@ -31,7 +33,7 @@ open class Item(id: String, constraints: ConstraintSet, background: Background =
         this.icon = icon
     }
     
-    override fun position(parent: MovableUIContainer?, duration: Float) {
+    override fun position(parent: UIContainer?, duration: Float) {
         super.position(parent, duration)
         if (this::icon.isInitialized) {
             icon.translate(getTranslation())
@@ -43,11 +45,11 @@ open class Item(id: String, constraints: ConstraintSet, background: Background =
         shaderProgram.set("translation", getTranslation())
         shaderProgram.set("scale", getScale())
         
-        if (parent != null) {
-            shaderProgram.set("allowedToOverdraw", parent.isChildBoundless(id))
-            shaderProgram.set("parentTranslation", parent.getTranslation())
-            shaderProgram.set("parentScale", parent.getScale())
-        }
+//        if (parent != null) {
+            shaderProgram.set("allowedToOverdraw", parent?.isChildBoundless(id) ?: true)
+            shaderProgram.set("parentTranslation", parent?.getTranslation() ?: Vector2())
+            shaderProgram.set("parentScale", parent?.getScale() ?: Vector2(1.0f, 1.0f))
+//        }
         
         background.setProperties(shaderProgram)
 

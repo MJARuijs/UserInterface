@@ -2,24 +2,30 @@ package userinterface.animation
 
 import math.vectors.Vector2
 import userinterface.MovableUIContainer
+import userinterface.animation.animationtypes.TransitionType
 import kotlin.math.abs
 
-class XTransitionAnimation(duration: Float, translation: Float, item: MovableUIContainer, transitionType: TransitionType) : Animation(item) {
+class XTransitionAnimation(val duration: Float, val translation: Float, val transitionType: TransitionType, onFinish: () -> Unit = {}) : Animation(onFinish) {
     
     private var speed = 0f
     private var finalPoint = 0f
     
-    init {
-        if (transitionType == TransitionType.MOVEMENT) {
-            speed = translation / duration
-            finalPoint = item.getTranslation().x + translation
-        } else {
-            speed = (translation - item.getTranslation().x) / duration
-            finalPoint = translation
-        }
-    }
+    private var started = false
     
-    override fun apply(deltaTime: Float): Boolean {
+    override fun apply(deltaTime: Float, item: MovableUIContainer): Boolean {
+        if (!started) {
+            started = true
+            if (transitionType == TransitionType.MOVEMENT) {
+                speed = translation / duration
+                finalPoint = item.getTranslation().x + translation
+            } else {
+                speed = (translation - item.getGoalDimensions().first.x) / duration
+                finalPoint = translation
+            }
+    
+            item.setGoalTranslation(Vector2(finalPoint, item.getGoalTranslation().y))
+        }
+        
         val increase = deltaTime * speed
         if (abs(item.getTranslation().x - finalPoint) < abs(increase)) {
             item.place(Vector2(finalPoint, item.getTranslation().y))

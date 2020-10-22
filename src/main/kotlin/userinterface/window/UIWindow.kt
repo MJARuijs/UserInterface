@@ -10,7 +10,6 @@ import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
 import userinterface.layout.constraints.constrainttypes.CenterConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
-import userinterface.items.Item
 import userinterface.items.UIButton
 import userinterface.items.backgrounds.Background
 
@@ -33,7 +32,6 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
 
     init {
         constraints.apply(this)
-        allowChildToIgnoreBounds("scroll_pane")
     
         if (titleBarData.height > 0.0f) {
             titleBar = TitleBar("${id}_title_bar", titleBarData) {
@@ -63,18 +61,13 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
     // TODO: Rewrite these functions to make use of the Animation classes, instead of the old Effect classes
     fun addButtonHoverEffects(buttonId: String, animation: Effect) {
         val closeButton = titleBar?.findById(buttonId) ?: return
-        (closeButton as UIButton).addOnHoverAnimation(animation)
+        (closeButton as UIButton).addHoverEffects(animation)
     }
 
-    fun addButtonOnClickEffects(buttonId: String, animation: Animation) {
-        val closeButton = titleBar?.findById(buttonId) ?: return
-        (closeButton as UIButton).addOnClickAnimation(animation)
-    }
-
-    override fun positionChild(item: Item) {
-        item.position(this)
-        children += item
-    }
+//    fun addButtonOnClickEffects(buttonId: String, animation: Animation) {
+//        val closeButton = titleBar?.findById(buttonId) ?: return
+//        (closeButton as UIButton).addClickEffects(animation)
+//    }
 
     override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
         if (hasTitleBar()) {

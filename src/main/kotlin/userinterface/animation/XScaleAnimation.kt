@@ -5,17 +5,19 @@ import userinterface.MovableUIContainer
 import userinterface.items.Item
 import kotlin.math.abs
 
-class XScaleAnimation(duration: Float, toScale: Float, item: MovableUIContainer) : Animation(item) {
+class XScaleAnimation(val duration: Float, val toScale: Float) : Animation() {
+    
+    private var started = false
     
     private var speed = 0f
     private var finalScale = 0f
     
-    init {
-        speed = (toScale - item.getScale().x) / duration
-        finalScale = toScale
-    }
-    
-    override fun apply(deltaTime: Float): Boolean {
+    override fun apply(deltaTime: Float, item: MovableUIContainer): Boolean {
+        if (!started) {
+            speed = (toScale - item.getScale().x) / duration
+            finalScale = toScale
+            started = true
+        }
         val increase = deltaTime * speed
         
         if (abs(item.getScale().x - finalScale) < abs(increase)) {

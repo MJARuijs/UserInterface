@@ -5,17 +5,18 @@ import userinterface.MovableUIContainer
 import userinterface.items.Item
 import kotlin.math.abs
 
-class YScaleAnimation(duration: Float, toScale: Float, item: MovableUIContainer) : Animation(item) {
+class YScaleAnimation(val duration: Float, val toScale: Float) : Animation() {
     
     private var speed = 0f
     private var finalScale = 0f
+    private var started = false
     
-    init {
-        speed = (toScale - item.getScale().y) / duration
-        finalScale = toScale
-    }
-    
-    override fun apply(deltaTime: Float): Boolean {
+    override fun apply(deltaTime: Float, item: MovableUIContainer): Boolean {
+        if (!started) {
+            started = true
+            speed = (toScale - item.getScale().y) / duration
+            finalScale = toScale
+        }
         val increase = deltaTime * speed
         
         if (abs(item.getScale().y - finalScale) < abs(increase)) {

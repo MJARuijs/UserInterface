@@ -8,11 +8,22 @@ import userinterface.items.backgrounds.TexturedBackground
 import userinterface.text.font.FontLoader
 
 object UniversalParameters {
-
+    
     private val PRIMARY_COLOR = UIColor.BLUE
     private val PRIMARY_BACKGROUND_COLOR = UIColor.GREY_DARK
     
+    var aspectRatio: Float = 1.0f
+        private set
+    
+    fun init(aspectRatio: Float) {
+        this.aspectRatio = aspectRatio
+    }
+
+    val arialFont = FontLoader(aspectRatio).load("fonts/arial.png")
+    
     const val ANIMATION_DURATION = 0.1f
+    
+    fun TEXT_COLOR() = UIColor.WHITE
     
     fun ITEM_BACKGROUND() = ColoredBackground(UIColor.BLUE)
     
@@ -39,5 +50,7 @@ object UniversalParameters {
     fun SCROLL_PANE_BACKGROUND() = ColoredBackground(PRIMARY_BACKGROUND_COLOR)
     
     fun TEXTBOX_BACKGROUND() = ColoredBackground(UIColor.TRANSPARENT)
+    
+    fun MENU_BACKGROUND() = ColoredBackground(UIColor.TRANSPARENT)
     
 }

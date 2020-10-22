@@ -2,25 +2,28 @@ package userinterface.animation
 
 import math.vectors.Vector2
 import userinterface.MovableUIContainer
-import userinterface.items.Item
+import userinterface.animation.animationtypes.TransitionType
 import kotlin.math.abs
 
-class YTransitionAnimation(duration: Float, translation: Float, item: MovableUIContainer, transitionType: TransitionType) : Animation(item) {
+class YTransitionAnimation(val duration: Float, val translation: Float, val transitionType: TransitionType, onFinish: () -> Unit = {}) : Animation(onFinish) {
     
-    private val speed: Float
-    private val finalPoint: Float
+    private var started = false
+    private var speed = 0.0f
+    private var finalPoint = 0.0f
     
-    init {
-        if (transitionType == TransitionType.MOVEMENT) {
-            speed = translation / duration
-            finalPoint = item.getTranslation().y + translation
-        } else {
-            speed = (translation - item.getTranslation().y) / (duration)
-            finalPoint = translation
+    override fun apply(deltaTime: Float, item: MovableUIContainer): Boolean {
+        if (!started) {
+            started = true
+            if (transitionType == TransitionType.MOVEMENT) {
+                speed = translation / duration
+                finalPoint = item.getTranslation().y + translation
+            } else {
+                speed = (translation - item.getGoalDimensions().first.y) / duration
+                finalPoint = translation
+            }
+    
+            item.setGoalTranslation(Vector2(item.getGoalTranslation().x, finalPoint))
         }
-    }
-    
-    override fun apply(deltaTime: Float): Boolean {
         val increase = deltaTime * speed
         
         if (abs(item.getTranslation().y - finalPoint) < abs(increase)) {

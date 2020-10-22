@@ -57,6 +57,11 @@ class UserInterface(private val aspectRatio: Float) {
                 return true
             }
         }
+        for (page in pages) {
+            if (page.shouldShow) {
+                return true
+            }
+        }
         return false
     }
 
@@ -85,6 +90,12 @@ class UserInterface(private val aspectRatio: Float) {
         windows.forEach { window ->
             if (window.shouldShow) {
                 window.update(mouse, aspectRatio, deltaTime)
+            }
+        }
+        
+        pages.forEach { page ->
+            if (page.shouldShow) {
+                page.update(mouse, aspectRatio, deltaTime)
             }
         }
 

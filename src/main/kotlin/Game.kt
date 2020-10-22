@@ -8,10 +8,12 @@ import math.Color
 import math.vectors.Vector2
 import org.lwjgl.opengl.GL11.*
 import userinterface.UIColor
+import userinterface.UIPage
 import userinterface.UniversalParameters
 import userinterface.UserInterface
+import userinterface.animation.animationtypes.ColorAnimationType
 import userinterface.animation.effects.ColorEffect
-import userinterface.items.ScrollPane
+import userinterface.animation.effects.TranslationEffect
 import userinterface.items.TextBox
 import userinterface.items.UIButton
 import userinterface.items.backgrounds.ColorType
@@ -22,7 +24,6 @@ import userinterface.layout.constraints.constrainttypes.AspectRatioConstraint
 import userinterface.layout.constraints.constrainttypes.CenterConstraint
 import userinterface.layout.constraints.constrainttypes.PixelConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
-import userinterface.text.font.FontLoader
 import userinterface.window.ButtonAlignment
 import userinterface.window.UIWindow
 
@@ -31,6 +32,8 @@ fun main() {
     val keyboard = window.keyboard
     val mouse = window.mouse
     val timer = Timer()
+    
+    UniversalParameters.init(window.aspectRatio)
     
     GraphicsContext.init(Color(0.25f, 0.25f, 0.25f))
     GraphicsContext.enable(GraphicsOption.DEPTH_TESTING, GraphicsOption.FACE_CULLING, GraphicsOption.TEXTURE_MAPPING)
@@ -51,105 +54,121 @@ fun main() {
         ButtonAlignment.RIGHT
     )
 
-    optionsWindow.addButtonHoverEffects("close_button", ColorEffect(UniversalParameters.CLOSE_BUTTON_HOVERED_COLOR(), ColorType.BACKGROUND_COLOR))
+    optionsWindow.addButtonHoverEffects("close_button", ColorEffect(UniversalParameters.CLOSE_BUTTON_HOVERED_COLOR(), ColorType.BACKGROUND_COLOR, ColorAnimationType.ADD_TO_COLOR))
+
+    val mainMenuTitleConstraints = ConstraintSet(
+        CenterConstraint(ConstraintDirection.HORIZONTAL),
+        PixelConstraint(ConstraintDirection.TO_TOP, 0.0f),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.6f),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.3f)
+    )
     
-    val buttonConstraints = ConstraintSet(
-        CenterConstraint(ConstraintDirection.HORIZONTAL),
-        CenterConstraint(ConstraintDirection.VERTICAL),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 1.0f),
-        RelativeConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
-    )
-
-//    val button2Constraints = ConstraintSet(
-//        PixelConstraint(ConstraintDirection.TO_RIGHT),
-//        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f),
-//        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.2f),
-//        AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.25f)
-//    )
-
-    val button2Constraints = ConstraintSet(
-        PixelConstraint(ConstraintDirection.TO_RIGHT),
-        PixelConstraint(ConstraintDirection.TO_BOTTOM),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.15f),
-        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2f)
-    )
-
-    val switchConstraint = ConstraintSet(
-        PixelConstraint(ConstraintDirection.TO_TOP, 0.2f),
-        PixelConstraint(ConstraintDirection.TO_LEFT, 0.2f),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.15f),
-        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 3.0f)
-    )
-
-    val progressBarConstraint = ConstraintSet(
-        CenterConstraint(ConstraintDirection.HORIZONTAL),
-        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.15f),
-        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f),
-        AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.05f)
-    )
-
-    val checkBoxConstraint = ConstraintSet(
-        CenterConstraint(ConstraintDirection.VERTICAL),
-        CenterConstraint(ConstraintDirection.HORIZONTAL),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
-        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
-    )
-
-    val scrollConstraints = ConstraintSet(
-        PixelConstraint(ConstraintDirection.TO_BOTTOM),
-        PixelConstraint(ConstraintDirection.TO_LEFT),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.8f),
-        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.3f)
-    )
-
-    val scrollTitleConstraints = ConstraintSet(
-        PixelConstraint(ConstraintDirection.TO_LEFT, 0.0f),
-        PixelConstraint(ConstraintDirection.TO_TOP, 0.0f, "scroll_pane"),
-        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.5f, "scroll_pane"),
+    val loadLevelButtonConstraints = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_LEFT, 0.01f),
+        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.0f, "main_menu_title"),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.2f),
         AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.25f)
     )
-
-    val testButton = UIButton("testButton", buttonConstraints, {
-        println("Button 2 clicked!")
-    })
-    val arialFont = FontLoader(window.aspectRatio).load("fonts/arial.png")
-
-//    testButton.addOnHoverAnimation(ColorEffect(UIColor.RED.color, ColorType.BACKGROUND_COLOR))
-//    testButton.addOnHoverAnimation(TranslationEffect(0.05f, 0f))
     
-    val testButton2 = UIButton("testButton2", button2Constraints, {
-        println("Button 2 clicked!")
-    })
-    testButton2.setText("Play", UIColor.WHITE, arialFont)
-//
-//    val switch = Switch("switch", switchConstraint, false, { newState ->
-//        println("State changed to $newState")
-//    })
-//
-//    val progressBar = ProgressBar("progress_bar", progressBarConstraint)
+    val newLevelButtonConstraints = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_LEFT, 0.01f),
+        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.1f, "load_level_button"),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.2f),
+        AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.25f)
+    )
     
-//    val checkBox = CheckBox("check_box", checkBoxConstraint, true, { checked ->
-//        println("CheckBox checked: $checked")
-//    })
+    val optionsButtonConstraints = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_LEFT, 0.01f),
+        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.1f, "new_level_button"),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.2f),
+        AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.25f)
+    )
     
-    val textBox = TextBox("text", scrollTitleConstraints, "Items", UIColor.WHITE, arialFont, 1.77f, ColoredBackground(UIColor.GREY_DARK))
+    val creditsButtonConstraints = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_LEFT, 0.01f),
+        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.1f, "options_button"),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.2f),
+        AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.25f)
+    )
     
-    val scrollPane = ScrollPane("scroll_pane", scrollConstraints, 2, 0.01f)
-//    for (dummy in dummies) {
-//        scrollPane += dummy
-//    }
-//    scrollPane += textBox
-
-    optionsWindow += scrollPane
-//    optionsWindow += checkBox
-//    optionsWindow += progressBar
-//    optionsWindow += testButton
-    optionsWindow += testButton2
-    optionsWindow += textBox
-//    optionsWindow += switch
+    val quitButtonConstraints = ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_LEFT, 0.01f),
+        PixelConstraint(ConstraintDirection.TO_BOTTOM, 0.1f, "credits_button"),
+        RelativeConstraint(ConstraintDirection.HORIZONTAL, 0.2f),
+        AspectRatioConstraint(ConstraintDirection.VERTICAL, 0.25f)
+    )
+    
+    val mainMenuTitle = TextBox("main_menu_title", mainMenuTitleConstraints, "Main Menu",  window.aspectRatio, 5f, ColoredBackground(UIColor.TRANSPARENT))
+    
+    val buttonHoverEffects = arrayListOf(
+        TranslationEffect(0.05f, 0.0f),
+        ColorEffect(UIColor.GREY_DARK, ColorType.BACKGROUND_COLOR, ColorAnimationType.ADD_TO_COLOR)
+    )
+    
+    val buttonClickEffects = arrayListOf(
+        TranslationEffect(0.0f, -0.01f, 0.05f),
+        ColorEffect(UIColor.GREY_DARK, ColorType.BACKGROUND_COLOR, ColorAnimationType.ADD_TO_COLOR)
+    )
+    
+    val loadLevelButton = UIButton("load_level_button", loadLevelButtonConstraints)
+        .setText("Load Level")
+        .addHoverEffects(buttonHoverEffects)
+        .addClickEffects(buttonClickEffects)
+        .setOnClick {
+            println("Go to Load Menu")
+        }
+    
+    val newLevelButton = UIButton("new_level_button", newLevelButtonConstraints)
+        .setText("New Level")
+        .addHoverEffects(buttonHoverEffects)
+        .addClickEffects(buttonClickEffects)
+        .setOnClick {
+            println("Go to New-Level Menu")
+        }
+    
+    val optionsButton = UIButton("options_button", optionsButtonConstraints)
+        .setText("Options")
+        .addHoverEffects(buttonHoverEffects)
+        .addClickEffects(buttonClickEffects)
+        .setOnClick {
+            println("Go to options menu")
+        }
+    
+    val creditsButton = UIButton("credits_button", creditsButtonConstraints)
+        .setText("Credits")
+        .addHoverEffects(buttonHoverEffects)
+        .addClickEffects(buttonClickEffects)
+        .setOnClick {
+            println("Go to credits menu")
+        }
+    
+    val quitButton = UIButton("quit_button", quitButtonConstraints)
+        .setText("Quit")
+        .addHoverEffects(buttonHoverEffects)
+        .addClickEffects(buttonClickEffects)
+        .setOnClick {
+            println("Quit the game")
+            window.close()
+        }
+    
+    val mainMenu = UIPage("main_menu")
+    mainMenu += mainMenuTitle
+    mainMenu += loadLevelButton
+    mainMenu += newLevelButton
+    mainMenu += optionsButton
+    mainMenu += creditsButton
+    mainMenu += quitButton
+    
+//    optionsWindow += mainMenuTitle
+//    optionsWindow += playButton
+    
+    
     userInterface += optionsWindow
+    userInterface += mainMenu
     
-    userInterface.showWindow("options_menu")
+    
+    userInterface.showPage("main_menu")
+//    userInterface.showWindow("options_menu")
     timer.reset()
     mouse.release()
     
@@ -169,10 +188,6 @@ fun main() {
             window.close()
         }
         
-        if (keyboard.isPressed(Key.F)) {
-//            switch.turnOn()
-        }
-
         if (keyboard.isPressed(Key.A)) {
             optionsWindow.applyLayout("animated_layout", 0.5f)
         }

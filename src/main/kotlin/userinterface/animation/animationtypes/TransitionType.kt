@@ -1,4 +1,4 @@
-package userinterface.animation
+package userinterface.animation.animationtypes
 
 enum class TransitionType {
     

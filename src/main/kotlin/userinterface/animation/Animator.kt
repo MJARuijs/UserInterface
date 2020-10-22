@@ -2,27 +2,29 @@ package userinterface.animation
 
 import math.vectors.Vector2
 import userinterface.MovableUIContainer
+import userinterface.animation.animationtypes.ColorAnimationType
+import userinterface.animation.animationtypes.TransitionType
 import userinterface.items.Item
 import userinterface.layout.UILayout
 import userinterface.layout.constraints.ConstraintSet
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.ArrayList
 
 class Animator {
 
-    private val animations = ArrayList<Animation>()
+    private val animations = ArrayList<Pair<MovableUIContainer, Animation>>()
+    private val animationQueue = LinkedList<List<Pair<MovableUIContainer, Animation>>>()
     private val postPonedChildren = ConcurrentHashMap<String, MovableUIContainer>()
     private val computedChildren = ArrayList<String>()
     
-    var isAnimating = false
-
-    operator fun plusAssign(animation: Animation) {
-        animations.add(animation)
+    operator fun plusAssign(animations: List<Pair<MovableUIContainer, Animation>>) {
+        animationQueue += animations
     }
 
-    fun apply(item: MovableUIContainer, parent: MovableUIContainer, constraints: ConstraintSet, duration: Float) {
-        val goalDimension = parent.getGoalDimensions()
-        val newDimensions = constraints.computeResult(goalDimension.first, goalDimension.second, parent)
-        animateLayoutTransition(item, duration, newDimensions.first, newDimensions.second)
+    fun apply(item: MovableUIContainer, parent: MovableUIContainer, constraints: ConstraintSet, duration: Float, extraAnimations: ArrayList<Pair<MovableUIContainer, Animation>> = ArrayList()) {
+        val newDimensions = constraints.computeResult(parent.getGoalDimensions(), parent)
+        animateLayoutTransition(item, duration, newDimensions, extraAnimations)
     }
 
     fun apply(item: MovableUIContainer, children: ArrayList<Item>, layout: UILayout, duration: Float) {
@@ -32,9 +34,11 @@ class Animator {
         for (child in children) {
             applyChild(item, child, layout, duration)
         }
+        
         val itemChanges = layout.getColorChange(item.id)
         if (itemChanges != null) {
-            animations += ColorAnimation(duration, itemChanges.first.color, itemChanges.second, item)
+            val colorAnimation = ColorAnimation(duration, itemChanges.first.color, ColorAnimationType.CHANGE_TO_COLOR, itemChanges.second)
+            animationQueue += arrayListOf<Pair<MovableUIContainer, Animation>>(Pair(item, colorAnimation))
         }
     }
 
@@ -42,10 +46,9 @@ class Animator {
         val childConstraints = layout.getConstraintsChange(child.id) ?: child.constraints
         val requiredIds = childConstraints.determineRequiredIds()
         if (computedChildren.containsAll(requiredIds)) {
-            val goalDimension = item.getGoalDimensions()
-            val childDimensions = childConstraints.computeResult(goalDimension.first, goalDimension.second, item)
-            child.goalTranslation = childDimensions.first
-            child.goalScale = childDimensions.second
+            val childDimensions = childConstraints.computeResult(item.getGoalDimensions(), item)
+            child.setGoalTranslation(childDimensions.first)
+            child.setGoalTranslation(childDimensions.second)
 
             computedChildren += child.id
 
@@ -55,50 +58,55 @@ class Animator {
             for (postPonedChild in postPonedChildren) {
                 applyChild(item, postPonedChild.value, layout, duration)
             }
-            val childGoalDimensions = child.getGoalDimensions()
-            animateLayoutTransition(child, duration, childGoalDimensions.first, childGoalDimensions.second)
+            animateLayoutTransition(child, duration, child.getGoalDimensions())
         } else {
             postPonedChildren[child.id] = child
         }
         child.apply(layout, duration)
     }
 
-    fun update(deltaTime: Float): Int {
-        val removableAnimations = ArrayList<Animation>()
-        if (animations.isNotEmpty()) {
-            isAnimating = true
-        }
+    fun update(deltaTime: Float) {
+        val removableAnimations = ArrayList<Pair<MovableUIContainer, Animation>>()
         
         animations.forEach { animation ->
-            if (animation.apply(deltaTime)) {
-                animation.onFinish()
+            if (animation.second.apply(deltaTime, animation.first)) {
+                animation.second.onFinish()
                 removableAnimations += animation
             }
         }
 
-        animations.removeAll(removableAnimations)
-        
-        if (animations.isEmpty()) {
-            isAnimating = false
+        if (removableAnimations.isNotEmpty()) {
+            animations.removeAll(removableAnimations)
         }
-        return animations.size
+        
+        if (animations.isEmpty() && animationQueue.isNotEmpty()) {
+            val queuedAnimation = animationQueue.poll()
+            animations += queuedAnimation
+        }
     }
 
-    private fun animateLayoutTransition(item: MovableUIContainer, duration: Float, newTranslation: Vector2, newScale: Vector2) {
+    private fun animateLayoutTransition(item: MovableUIContainer, duration: Float, newDimensions: Pair<Vector2, Vector2>, extraAnimations: ArrayList<Pair<MovableUIContainer, Animation>> = ArrayList()) = animateLayoutTransition(item, duration, newDimensions.first, newDimensions.second, extraAnimations)
+    
+    private fun animateLayoutTransition(item: MovableUIContainer, duration: Float, newTranslation: Vector2, newScale: Vector2, extraAnimations: ArrayList<Pair<MovableUIContainer, Animation>> = ArrayList()) {
+        val requiredAnimations = ArrayList<Pair<MovableUIContainer, Animation>>()
+        requiredAnimations.addAll(extraAnimations)
+        
         if (newTranslation.x != item.getTranslation().x) {
-            animations += XTransitionAnimation(duration, newTranslation.x, item, TransitionType.PLACEMENT)
+            requiredAnimations += Pair(item, XTransitionAnimation(duration, newTranslation.x, TransitionType.PLACEMENT))
         }
 
         if (newTranslation.y != item.getTranslation().y) {
-            animations += YTransitionAnimation(duration, newTranslation.y, item, TransitionType.PLACEMENT)
+            requiredAnimations += Pair(item, YTransitionAnimation(duration, newTranslation.y, TransitionType.PLACEMENT))
         }
 
         if (newScale.x != item.getScale().x) {
-            animations += XScaleAnimation(duration, newScale.x, item)
+            requiredAnimations += Pair(item, XScaleAnimation(duration, newScale.x))
         }
 
         if (newScale.y != item.getScale().y) {
-            animations += YScaleAnimation(duration, newScale.y, item)
+            requiredAnimations += Pair(item, YScaleAnimation(duration, newScale.y))
         }
+        
+        animationQueue += requiredAnimations
     }
 }
