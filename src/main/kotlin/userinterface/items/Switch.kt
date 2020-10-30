@@ -33,7 +33,7 @@ class Switch(id: String, constraints: ConstraintSet, private var switchOn: Boole
         RelativeConstraint(ConstraintDirection.VERTICAL, 1.5f),
         AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 1.0f)
     )
-
+    
     private val switchOnConstraints = ConstraintSet(
         PixelConstraint(ConstraintDirection.TO_RIGHT),
         CenterConstraint(ConstraintDirection.VERTICAL),
@@ -59,7 +59,8 @@ class Switch(id: String, constraints: ConstraintSet, private var switchOn: Boole
         switchOn = true
         val trackAnimation = Pair(this, ColorAnimation(duration, trackOnBackground.outlineColor, ColorAnimationType.CHANGE_TO_COLOR, ColorType.OUTLINE_COLOR))
         val thumbAnimation = Pair(thumb, ColorAnimation(duration, thumbOnBackground.color, ColorAnimationType.CHANGE_TO_COLOR, ColorType.BACKGROUND_COLOR))
-        animator.apply(this, this, switchOnConstraints, duration, arrayListOf(trackAnimation))
+        animator += arrayListOf(trackAnimation)
+//        animator.apply(this, this, constraints, duration, arrayListOf(trackAnimation))
         animator.apply(thumb, this, switchOnConstraints, duration, arrayListOf(thumbAnimation))
     }
 
@@ -67,7 +68,8 @@ class Switch(id: String, constraints: ConstraintSet, private var switchOn: Boole
         switchOn = false
         val trackAnimation = Pair(this, ColorAnimation(duration, trackOffBackground.outlineColor, ColorAnimationType.CHANGE_TO_COLOR, ColorType.OUTLINE_COLOR))
         val thumbAnimation = Pair(thumb, ColorAnimation(duration, thumbOffBackground.color, ColorAnimationType.CHANGE_TO_COLOR, ColorType.BACKGROUND_COLOR))
-        animator.apply(this, this, switchOffConstraints, duration, arrayListOf(trackAnimation))
+        animator += arrayListOf(trackAnimation)
+//        animator.apply(this, this, constraints, duration, arrayListOf(trackAnimation))
         animator.apply(thumb, this, switchOffConstraints, duration, arrayListOf(thumbAnimation))
     }
 

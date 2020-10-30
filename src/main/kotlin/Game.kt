@@ -14,6 +14,8 @@ import userinterface.UserInterface
 import userinterface.animation.animationtypes.ColorAnimationType
 import userinterface.animation.effects.ColorEffect
 import userinterface.animation.effects.TranslationEffect
+import userinterface.items.ProgressBar
+import userinterface.items.Switch
 import userinterface.items.TextBox
 import userinterface.items.UIButton
 import userinterface.items.backgrounds.ColorType
@@ -110,13 +112,7 @@ fun main() {
         ColorEffect(UIColor.GREY_DARK, ColorType.BACKGROUND_COLOR, ColorAnimationType.ADD_TO_COLOR)
     )
     
-    val loadLevelButton = UIButton("load_level_button", loadLevelButtonConstraints)
-        .setText("Load Level")
-        .addHoverEffects(buttonHoverEffects)
-        .addClickEffects(buttonClickEffects)
-        .setOnClick {
-            println("Go to Load Menu")
-        }
+    
     
     val newLevelButton = UIButton("new_level_button", newLevelButtonConstraints)
         .setText("New Level")
@@ -151,13 +147,43 @@ fun main() {
             window.close()
         }
     
+    val switchConstraints = ConstraintSet(
+        CenterConstraint(ConstraintDirection.HORIZONTAL),
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 3.0f)
+    )
+    
+    val progressBarConstraints = ConstraintSet(
+        CenterConstraint(ConstraintDirection.HORIZONTAL),
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.05f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 14.0f)
+    )
+    
+    val switch = Switch("switch", switchConstraints)
+    val progressBar = ProgressBar("bar", progressBarConstraints)
+    val loadLevelButton = UIButton("load_level_button", loadLevelButtonConstraints)
+        .setText("Pause/resume")
+        .addHoverEffects(buttonHoverEffects)
+        .addClickEffects(buttonClickEffects)
+        .setOnClick {
+            if (progressBar.isPaused()) {
+                progressBar.resume()
+            } else {
+                progressBar.pause()
+            }
+        }
+    
     val mainMenu = UIPage("main_menu")
     mainMenu += mainMenuTitle
-    mainMenu += loadLevelButton
-    mainMenu += newLevelButton
-    mainMenu += optionsButton
-    mainMenu += creditsButton
-    mainMenu += quitButton
+    mainMenu += switch
+//    mainMenu += progressBar
+//    mainMenu += loadLevelButton
+//    mainMenu += newLevelButton
+//    mainMenu += optionsButton
+//    mainMenu += creditsButton
+//    mainMenu += quitButton
     
 //    optionsWindow += mainMenuTitle
 //    optionsWindow += playButton
@@ -192,6 +218,10 @@ fun main() {
         if (userInterface.isShowing()) {
             userInterface.update(mouse, timer.getDelta())
             userInterface.draw(window.width, window.height)
+        }
+        
+        if (!progressBar.isPaused()) {
+            progressBar.setProgress(progressBar.getProgress() + 0.005f)
         }
         
         window.synchronize()

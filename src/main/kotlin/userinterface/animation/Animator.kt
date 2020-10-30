@@ -24,6 +24,9 @@ class Animator {
 
     fun apply(item: MovableUIContainer, parent: MovableUIContainer, constraints: ConstraintSet, duration: Float, extraAnimations: ArrayList<Pair<MovableUIContainer, Animation>> = ArrayList()) {
         val newDimensions = constraints.computeResult(parent.getGoalDimensions(), parent)
+        println("${item.id}")
+        println("${item.getGoalDimensions().first} ${item.getGoalDimensions().second}")
+        println("${newDimensions.first} ${newDimensions.second}")
         animateLayoutTransition(item, duration, newDimensions, extraAnimations)
     }
 
@@ -101,10 +104,12 @@ class Animator {
 
         if (newScale.x != item.getScale().x) {
             requiredAnimations += Pair(item, XScaleAnimation(duration, newScale.x))
+            println("${newScale.x} ${item.getScale().x}")
         }
 
         if (newScale.y != item.getScale().y) {
             requiredAnimations += Pair(item, YScaleAnimation(duration, newScale.y))
+//            println("${newScale.y} ${item.getScale().y}")
         }
         
         animationQueue += requiredAnimations
