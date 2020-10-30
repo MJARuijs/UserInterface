@@ -1,1 +1,0 @@
-package userinterface.animation.animationtypesenum class ColorAnimationType {        ADD_TO_COLOR,    CHANGE_TO_COLOR    }

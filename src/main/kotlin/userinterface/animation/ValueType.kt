@@ -1,0 +1,1 @@
+package userinterface.animationenum class ValueType(val parameterName: String) {        TRANSLATION_X("x"),    TRANSLATION_Y("y"),    SCALE_X("xScale"),    SCALE_Y("yScale"),    COLOR("values")    }

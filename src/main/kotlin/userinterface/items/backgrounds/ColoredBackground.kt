@@ -2,6 +2,7 @@ package userinterface.items.backgrounds
 
 import graphics.shaders.ShaderProgram
 import math.Color
+import math.vectors.Vector4
 import userinterface.UIColor
 
 class ColoredBackground(var color: Color, cornerRadius: Float = 0.0f, outline: Float = 0.0f, outlineColor: Color = Color()) : Background(cornerRadius, outline, outlineColor) {
@@ -19,4 +20,5 @@ class ColoredBackground(var color: Color, cornerRadius: Float = 0.0f, outline: F
         shaderProgram.set("color", color)
         shaderProgram.set("textured", false)
     }
+    
 }

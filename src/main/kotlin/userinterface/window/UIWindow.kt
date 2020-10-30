@@ -30,7 +30,7 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
     )
 
     init {
-        constraints.apply(this)
+        constraints.apply(this, this)
     
         if (titleBarData.height > 0.0f) {
             titleBar = TitleBar("${id}_title_bar", titleBarData) {
@@ -38,8 +38,10 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
             }
             add(titleBar!!)
             
-            constraints.translate(Vector2(0f, -titleBar!!.getScale().y))
-            constraints.addToScale(Vector2(0f, -titleBar!!.getScale().y))
+            translate(Vector2(0f, -titleBar!!.getScale().y))
+            addToScale(Vector2(0f, -titleBar!!.getScale().y * 2f))
+//            constraints.translate(Vector2(0f, -titleBar!!.getScale().y))
+//            constraints.addToScale(Vector2(0f, -titleBar!!.getScale().y))
             allowChildToIgnoreBounds(titleBar!!.id)
         }
     }

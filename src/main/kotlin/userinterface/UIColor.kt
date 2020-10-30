@@ -48,7 +48,7 @@ enum class UIColor(val color: Color) {
 
     constructor(rgb: Vector3, a: Float) : this(Color(rgb, a))
 
-    fun getValues() = Vector4(color.r, color.g, color.b, color.a)
+    fun getValues() = Vector4(color.r(), color.g(), color.b(), color.a())
 
     fun rgb() = color.rgb()
 

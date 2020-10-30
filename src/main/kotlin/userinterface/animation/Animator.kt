@@ -2,8 +2,6 @@ package userinterface.animation
 
 import math.vectors.Vector2
 import userinterface.MovableUIContainer
-import userinterface.animation.animationtypes.ColorAnimationType
-import userinterface.animation.animationtypes.TransitionType
 import userinterface.items.Item
 import userinterface.layout.UILayout
 import userinterface.layout.constraints.ConstraintSet
@@ -24,9 +22,6 @@ class Animator {
 
     fun apply(item: MovableUIContainer, parent: MovableUIContainer, constraints: ConstraintSet, duration: Float, extraAnimations: ArrayList<Pair<MovableUIContainer, Animation>> = ArrayList()) {
         val newDimensions = constraints.computeResult(parent.getGoalDimensions(), parent)
-        println("${item.id}")
-        println("${item.getGoalDimensions().first} ${item.getGoalDimensions().second}")
-        println("${newDimensions.first} ${newDimensions.second}")
         animateLayoutTransition(item, duration, newDimensions, extraAnimations)
     }
 
@@ -40,24 +35,27 @@ class Animator {
         
         val itemChanges = layout.getColorChange(item.id)
         if (itemChanges != null) {
-            val colorAnimation = ColorAnimation(duration, itemChanges.first.color, ColorAnimationType.CHANGE_TO_COLOR, itemChanges.second)
+            val colorAnimation = ValueAnimation(duration, itemChanges.first.color, ValueType.COLOR, AnimationType.SET, itemChanges.second)
             animationQueue += arrayListOf<Pair<MovableUIContainer, Animation>>(Pair(item, colorAnimation))
         }
     }
 
     private fun applyChild(item: MovableUIContainer, child: MovableUIContainer, layout: UILayout, duration: Float) {
-        val childConstraints = layout.getConstraintsChange(child.id) ?: child.constraints
+        val childConstraints = layout.getConstraintsChange(child.id) ?: return
         val requiredIds = childConstraints.determineRequiredIds()
+    
         if (computedChildren.containsAll(requiredIds)) {
             val childDimensions = childConstraints.computeResult(item.getGoalDimensions(), item)
             child.setGoalTranslation(childDimensions.first)
-            child.setGoalTranslation(childDimensions.second)
+            child.setGoalScale(childDimensions.second)
+            println("${child.id} ${childDimensions.first} ${child.getTranslation()}")
 
             computedChildren += child.id
 
             if (postPonedChildren.containsKey(child.id)) {
                 postPonedChildren.remove(child.id)
             }
+            
             for (postPonedChild in postPonedChildren) {
                 applyChild(item, postPonedChild.value, layout, duration)
             }
@@ -72,7 +70,7 @@ class Animator {
         val removableAnimations = ArrayList<Pair<MovableUIContainer, Animation>>()
         
         animations.forEach { animation ->
-            if (animation.second.apply(deltaTime, animation.first)) {
+            if (animation.second.apply(deltaTime)) {
                 animation.second.onFinish()
                 removableAnimations += animation
             }
@@ -95,21 +93,19 @@ class Animator {
         requiredAnimations.addAll(extraAnimations)
         
         if (newTranslation.x != item.getTranslation().x) {
-            requiredAnimations += Pair(item, XTransitionAnimation(duration, newTranslation.x, TransitionType.PLACEMENT))
+            requiredAnimations += Pair(item, ValueAnimation(duration, newTranslation.x, ValueType.TRANSLATION_X, AnimationType.SET, item))
         }
 
         if (newTranslation.y != item.getTranslation().y) {
-            requiredAnimations += Pair(item, YTransitionAnimation(duration, newTranslation.y, TransitionType.PLACEMENT))
+            requiredAnimations += Pair(item, ValueAnimation(duration, newTranslation.y, ValueType.TRANSLATION_Y, AnimationType.SET, item))
         }
 
         if (newScale.x != item.getScale().x) {
-            requiredAnimations += Pair(item, XScaleAnimation(duration, newScale.x))
-            println("${newScale.x} ${item.getScale().x}")
+            requiredAnimations += Pair(item, ValueAnimation(duration, newScale.x, ValueType.SCALE_X, AnimationType.SET, item))
         }
 
         if (newScale.y != item.getScale().y) {
-            requiredAnimations += Pair(item, YScaleAnimation(duration, newScale.y))
-//            println("${newScale.y} ${item.getScale().y}")
+            requiredAnimations += Pair(item, ValueAnimation(duration, newScale.y, ValueType.SCALE_Y, AnimationType.SET, item))
         }
         
         animationQueue += requiredAnimations

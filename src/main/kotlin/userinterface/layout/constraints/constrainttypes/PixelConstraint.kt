@@ -49,6 +49,7 @@ class PixelConstraint(direction: ConstraintDirection, var offset: Float = 0.0f, 
             val referenceRight = referenceTranslation.x + referenceScale.x
             calculateTranslation(translation, referenceRight, scale, referenceScale, Axis.X, true)
         }
+        
         translation.roundToDecimal(5)
         
         return Pair(translation, scale)

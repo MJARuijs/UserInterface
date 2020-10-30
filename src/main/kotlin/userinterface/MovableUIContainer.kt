@@ -18,6 +18,12 @@ abstract class MovableUIContainer(id: String, var constraints: ConstraintSet, va
     
     private var goalTranslation: Vector2? = null
     private var goalScale: Vector2? = null
+    
+    var x = 0.0f
+    var y = 0.0f
+    
+    var xScale = 1.0f
+    var yScale = 1.0f
 
     val animator = Animator()
 
@@ -26,9 +32,9 @@ abstract class MovableUIContainer(id: String, var constraints: ConstraintSet, va
     
     fun requiredIds() = constraints.determineRequiredIds()
     
-    fun getTranslation() = constraints.getTranslation()
+    fun getTranslation() = Vector2(x, y)
     
-    fun getScale() = constraints.getScale()
+    fun getScale() = Vector2(xScale, yScale)
 
     fun getGoalDimensions(): Pair<Vector2, Vector2> {
         val translation = goalTranslation ?: getTranslation()
@@ -49,7 +55,7 @@ abstract class MovableUIContainer(id: String, var constraints: ConstraintSet, va
     }
     
     open fun position(parent: UIContainer? = null, duration: Float = 0.0f) {
-        constraints.apply(parent)
+        constraints.apply(this, parent)
 
         basePosition = getTranslation()
         baseScale = getScale()
@@ -60,25 +66,29 @@ abstract class MovableUIContainer(id: String, var constraints: ConstraintSet, va
     }
     
     open fun translate(translation: Vector2) {
-        constraints.translate(translation)
+        x += translation.x
+        y += translation.y
         
         children.forEach { child ->
             child.translate(translation)
         }
     }
-
+    
     fun setTranslation(translation: Vector2) = place(translation)
     
     fun place(placement: Vector2) {
-        constraints.place(placement)
+        x += placement.x
+        y += placement.y
     }
     
     fun addToScale(scale: Vector2) {
-        constraints.addToScale(scale)
+        xScale += scale.x
+        yScale += scale.y
     }
     
     fun setScale(scale: Vector2) {
-        constraints.setScale(scale)
+        xScale = scale.x
+        yScale = scale.y
     }
     
     fun updateConstraint(type: ConstraintType, direction: ConstraintDirection, newValue: Float) {

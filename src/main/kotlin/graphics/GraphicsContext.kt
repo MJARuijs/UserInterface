@@ -13,7 +13,7 @@ object GraphicsContext {
         if (!initialised.getAndSet(true)) {
 
             GL.createCapabilities()
-            glClearColor(background.r, background.g, background.b, 1.0f)
+            glClearColor(background.r(), background.g(), background.b(), 1.0f)
             glClearDepth(1.0)
 
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)

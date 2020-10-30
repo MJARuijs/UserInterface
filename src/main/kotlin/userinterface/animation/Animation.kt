@@ -4,6 +4,6 @@ import userinterface.MovableUIContainer
 
 abstract class Animation(val onFinish: () -> Unit = {}) {
     
-    abstract fun apply(deltaTime: Float, item: MovableUIContainer): Boolean
+    abstract fun apply(deltaTime: Float): Boolean
 
 }

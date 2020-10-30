@@ -11,9 +11,6 @@ class ConstraintSet(val constraints: ArrayList<Constraint> = ArrayList()) {
         this.constraints.addAll(constraints)
     }
 
-    private var translation = Vector2()
-    private var scale = Vector2(1f, 1f)
-
     private val requiredIds = ArrayList<String>()
 
     init {
@@ -30,19 +27,19 @@ class ConstraintSet(val constraints: ArrayList<Constraint> = ArrayList()) {
         }
     }
 
-    fun add(constraint: Constraint, parent: MovableUIContainer? = null, parentTranslation: Vector2? = null, parentScale: Vector2? = null) {
+    fun add(item: MovableUIContainer, constraint: Constraint, parent: MovableUIContainer? = null, parentTranslation: Vector2? = null, parentScale: Vector2? = null) {
         constraints += constraint
-        apply(parent, parentTranslation, parentScale)
+        apply(item, parent, parentTranslation, parentScale)
     }
     
-    fun add(constraints: ArrayList<Constraint>, parent: MovableUIContainer? = null, parentTranslation: Vector2? = null, parentScale: Vector2? = null) {
+    fun add(item: MovableUIContainer, constraints: ArrayList<Constraint>, parent: MovableUIContainer? = null, parentTranslation: Vector2? = null, parentScale: Vector2? = null) {
         this.constraints += constraints
-        apply(parent, parentTranslation, parentScale)
+        apply(item, parent, parentTranslation, parentScale)
     }
     
-    fun add(constraints: ConstraintSet, parent: MovableUIContainer? = null, parentTranslation: Vector2? = null, parentScale: Vector2? = null) {
+    fun add(item: MovableUIContainer, constraints: ConstraintSet, parent: MovableUIContainer? = null, parentTranslation: Vector2? = null, parentScale: Vector2? = null) {
         this.constraints += constraints.constraints
-        apply(parent, parentTranslation, parentScale)
+        apply(item, parent, parentTranslation, parentScale)
     }
 
     fun determineRequiredIds(): ArrayList<String> {
@@ -62,30 +59,6 @@ class ConstraintSet(val constraints: ArrayList<Constraint> = ArrayList()) {
 
         return requiredIds
     }
-
-    fun getTranslation() = translation
-
-    fun getScale() = scale
-
-    fun translate(translation: Vector2) {
-        this.translation += translation
-    }
-    
-    fun place(placement: Vector2) {
-        this.translation = placement
-    }
-    
-    fun setScale(scale: Vector2) {
-        this.scale = scale
-    }
-
-    fun getScale(scale: Vector2) {
-        this.scale *= scale
-    }
-    
-    fun addToScale(scale: Vector2) {
-        this.scale += scale
-    }
     
     fun updateConstraint(type: ConstraintType, direction: ConstraintDirection, newValue: Float) {
         for (constraint in constraints) {
@@ -100,7 +73,7 @@ class ConstraintSet(val constraints: ArrayList<Constraint> = ArrayList()) {
         }
     }
     
-    fun apply(parent: UIContainer? = null, parentTranslation: Vector2? = null, parentScale: Vector2? = null) {
+    fun apply(item: MovableUIContainer, parent: UIContainer? = null, parentTranslation: Vector2? = null, parentScale: Vector2? = null) {
         constraints.sortWith(compareBy {
             return@compareBy when (it) {
                 is PixelConstraint -> 1
@@ -108,12 +81,20 @@ class ConstraintSet(val constraints: ArrayList<Constraint> = ArrayList()) {
             }
         })
         
+        var translation = item.getTranslation()
+        var scale = item.getScale()
+        
         for (constraint in constraints) {
-            constraint.apply(translation, scale, parentTranslation, parentScale, parent)
+            val result = constraint.apply(translation, scale, parentTranslation, parentScale, parent)
+            translation = result.first
+            scale = result.second
         }
+        
+        item.setTranslation(translation)
+        item.setScale(scale)
     }
     
-    fun apply(parent: UIContainer? = null, parentDimensions: Pair<Vector2, Vector2>? = null) = apply(parent, parentDimensions?.first, parentDimensions?.second)
+    fun apply(item: MovableUIContainer, parent: UIContainer? = null, parentDimensions: Pair<Vector2, Vector2>? = null) = apply(item, parent, parentDimensions?.first, parentDimensions?.second)
     
     private fun computeResult(parentTranslation: Vector2?, parentScale: Vector2?, parent: UIContainer?): Pair<Vector2, Vector2> {
         constraints.sortWith(compareBy {

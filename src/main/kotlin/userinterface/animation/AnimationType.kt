@@ -1,0 +1,1 @@
+package userinterface.animationenum class AnimationType {        ADD_TO_CURRENT,    SET    }

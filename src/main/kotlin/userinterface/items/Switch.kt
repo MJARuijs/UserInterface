@@ -6,8 +6,7 @@ import userinterface.UniversalParameters.SWITCH_THUMB_OFF_BACKGROUND
 import userinterface.UniversalParameters.SWITCH_THUMB_ON_BACKGROUND
 import userinterface.UniversalParameters.SWITCH_TRACK_OFF_BACKGROUND
 import userinterface.UniversalParameters.SWITCH_TRACK_ON_BACKGROUND
-import userinterface.animation.ColorAnimation
-import userinterface.animation.animationtypes.ColorAnimationType
+//import userinterface.animation.animationtypes.ColorAnimationType
 import userinterface.items.backgrounds.ColorType
 import userinterface.items.backgrounds.ColoredBackground
 import userinterface.layout.constraints.ConstraintDirection
@@ -57,20 +56,20 @@ class Switch(id: String, constraints: ConstraintSet, private var switchOn: Boole
 
     fun turnOn(duration: Float = UniversalParameters.ANIMATION_DURATION) {
         switchOn = true
-        val trackAnimation = Pair(this, ColorAnimation(duration, trackOnBackground.outlineColor, ColorAnimationType.CHANGE_TO_COLOR, ColorType.OUTLINE_COLOR))
-        val thumbAnimation = Pair(thumb, ColorAnimation(duration, thumbOnBackground.color, ColorAnimationType.CHANGE_TO_COLOR, ColorType.BACKGROUND_COLOR))
-        animator += arrayListOf(trackAnimation)
+//        val trackAnimation = Pair(this, ColorAnimation(duration, trackOnBackground.outlineColor, ColorAnimationType.CHANGE_TO_COLOR, ColorType.OUTLINE_COLOR))
+//        val thumbAnimation = Pair(thumb, ColorAnimation(duration, thumbOnBackground.color, ColorAnimationType.CHANGE_TO_COLOR, ColorType.BACKGROUND_COLOR))
+//        animator += arrayListOf(trackAnimation)
 //        animator.apply(this, this, constraints, duration, arrayListOf(trackAnimation))
-        animator.apply(thumb, this, switchOnConstraints, duration, arrayListOf(thumbAnimation))
+//        animator.apply(thumb, this, switchOnConstraints, duration, arrayListOf(thumbAnimation))
     }
 
     fun turnOff(duration: Float = UniversalParameters.ANIMATION_DURATION) {
         switchOn = false
-        val trackAnimation = Pair(this, ColorAnimation(duration, trackOffBackground.outlineColor, ColorAnimationType.CHANGE_TO_COLOR, ColorType.OUTLINE_COLOR))
-        val thumbAnimation = Pair(thumb, ColorAnimation(duration, thumbOffBackground.color, ColorAnimationType.CHANGE_TO_COLOR, ColorType.BACKGROUND_COLOR))
-        animator += arrayListOf(trackAnimation)
+//        val trackAnimation = Pair(this, ColorAnimation(duration, trackOffBackground.outlineColor, ColorAnimationType.CHANGE_TO_COLOR, ColorType.OUTLINE_COLOR))
+//        val thumbAnimation = Pair(thumb, ColorAnimation(duration, thumbOffBackground.color, ColorAnimationType.CHANGE_TO_COLOR, ColorType.BACKGROUND_COLOR))
+//        animator += arrayListOf(trackAnimation)
 //        animator.apply(this, this, constraints, duration, arrayListOf(trackAnimation))
-        animator.apply(thumb, this, switchOffConstraints, duration, arrayListOf(thumbAnimation))
+//        animator.apply(thumb, this, switchOffConstraints, duration, arrayListOf(thumbAnimation))
     }
 
     fun toggle(duration: Float = UniversalParameters.ANIMATION_DURATION) {

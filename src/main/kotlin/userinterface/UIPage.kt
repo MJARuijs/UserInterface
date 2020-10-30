@@ -7,6 +7,9 @@ import userinterface.layout.UILayout
 
 class UIPage(id: String, private val background: Background = UniversalParameters.MENU_BACKGROUND(), var shouldShow: Boolean = false) : UIContainer(id) {
 
+    var currentLayout = ""
+        private set
+    
     fun draw(shaderProgram: ShaderProgram, iconProgram: ShaderProgram, textProgram: ShaderProgram, aspectRatio: Float) {
         shaderProgram.set("allowedToOverdraw", true)
         background.setProperties(shaderProgram)
@@ -15,10 +18,10 @@ class UIPage(id: String, private val background: Background = UniversalParameter
     }
     
     override fun apply(layout: UILayout, duration: Float) {
+        currentLayout = layout.id
+        println("Applying ${layout.id}")
         children.forEach { child ->
             child.apply(layout, duration)
         }
     }
-    
-
 }
