@@ -11,7 +11,7 @@ import userinterface.items.backgrounds.ColoredBackground
 import userinterface.items.backgrounds.TexturedBackground
 
 open class Item(id: String, constraints: ConstraintSet, background: Background = UniversalParameters.ITEM_BACKGROUND()) : MovableUIContainer(id, constraints, background) {
-
+    
     val baseBackgroundColor = when (background) {
         is ColoredBackground -> background.color
         is TexturedBackground -> background.overlayColor

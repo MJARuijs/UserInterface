@@ -7,6 +7,7 @@ import userinterface.MovableUIContainer
 import userinterface.UIColor
 import userinterface.UniversalParameters
 import userinterface.animation.Animation
+import userinterface.animation.Animator
 import userinterface.animation.effects.Effect
 import userinterface.items.backgrounds.Background
 import userinterface.layout.constraints.ConstraintDirection
@@ -21,7 +22,7 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
     private var isHovered = false
     private val hoverAnimations = ArrayList<Effect>()
     private val clickAnimations = ArrayList<Effect>()
-
+    
     fun setOnClick(function: () -> Unit): UIButton {
         onClick = function
         return this
@@ -69,7 +70,7 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
         val isNowHovered = isHovered(mouse, aspectRatio)
 
         if (isHovered && !isNowHovered) {
-            val removeAnimations = ArrayList<Pair<MovableUIContainer, Animation>>()
+            val removeAnimations = ArrayList<Animation>()
             for (effect in hoverAnimations) {
                 removeAnimations += effect.removeFrom(this)
             }
@@ -77,7 +78,7 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
         }
         
         if (!isHovered && isNowHovered) {
-            val applyAnimations = ArrayList<Pair<MovableUIContainer, Animation>>()
+            val applyAnimations = ArrayList<Animation>()
             for (effect in hoverAnimations) {
                 applyAnimations += effect.applyOn(this)
             }
@@ -88,7 +89,7 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
         
         if (isHovered && (mouse.isPressed(Button.LEFT) || mouse.isPressed(Button.LEFT))) {
             onClick()
-            val applyAnimations = ArrayList<Pair<MovableUIContainer, Animation>>()
+            val applyAnimations = ArrayList<Animation>()
             for (effect in clickAnimations) {
                 applyAnimations += effect.applyOn(this)
             }
@@ -98,7 +99,7 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
 
         if (isClicked && (mouse.isReleased(Button.RIGHT) || mouse.isReleased(Button.LEFT))) {
             isClicked = false
-            val removeAnimations = ArrayList<Pair<MovableUIContainer, Animation>>()
+            val removeAnimations = ArrayList<Animation>()
             for (effect in clickAnimations) {
                 removeAnimations += effect.removeFrom(this)
             }

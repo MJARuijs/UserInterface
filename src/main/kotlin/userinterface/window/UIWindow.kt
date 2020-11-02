@@ -15,7 +15,7 @@ import userinterface.items.backgrounds.Background
 class UIWindow(id: String, constraints: ConstraintSet, background: Background, var shouldShow: Boolean = false, titleBarData: TitleBarData) : MovableUIContainer(id, constraints, background) {
 
     private var titleBar: TitleBar? = null
-
+    
     constructor(id: String, scale: Vector2, background: Background, titleBarHeight: Float, titleBarBackground: Background = background, closeButtonAlignment: ButtonAlignment = ButtonAlignment.HIDDEN, shouldShow: Boolean = false) : this(
         id,
         ConstraintSet(

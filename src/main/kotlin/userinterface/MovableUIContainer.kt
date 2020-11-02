@@ -19,8 +19,8 @@ abstract class MovableUIContainer(id: String, var constraints: ConstraintSet, va
     private var goalTranslation: Vector2? = null
     private var goalScale: Vector2? = null
 
-    val animator = Animator()
-
+    val animator by lazy { Animator(this) }
+    
     var basePosition = Vector2()
     var baseScale = Vector2(1.0f, 1.0f)
     
@@ -86,7 +86,7 @@ abstract class MovableUIContainer(id: String, var constraints: ConstraintSet, va
     }
     
     override fun apply(layout: UILayout, duration: Float) {
-        animator.apply(this, children, layout, duration)
+        animator.apply(children, layout, duration)
     }
 
     override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {

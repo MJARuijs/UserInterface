@@ -12,7 +12,7 @@ import userinterface.layout.constraints.constrainttypes.PixelConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
 
 class TitleBar(id: String = "TitleBar", constraints: ConstraintSet, background: Background, closeButtonAlignment: ButtonAlignment, onClick: () -> Unit = {}) : Item(id, constraints, background) {
-
+    
     constructor(id: String, height: Float, background: Background, closeButtonAlignment: ButtonAlignment, onClick: () -> Unit = {}) : this(
         id,
         ConstraintSet(

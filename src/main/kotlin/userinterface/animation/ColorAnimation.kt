@@ -9,7 +9,7 @@ import userinterface.items.backgrounds.ColoredBackground
 import userinterface.items.backgrounds.TexturedBackground
 import kotlin.math.abs
 
-class ColorAnimation(val duration: Float, private val otherColor: Color, private val type: ColorAnimationType, private val colorType: ColorType, private val ignoreAlpha: Boolean = true, onFinish: () -> Unit = {}) : Animation(onFinish) {
+class ColorAnimation(val duration: Float, val item: MovableUIContainer, private val otherColor: Color, private val type: ColorAnimationType, private val colorType: ColorType, private val ignoreAlpha: Boolean = true, onFinish: () -> Unit = {}) : Animation(onFinish) {
 
     private var rSpeed = 0.0f
     private var gSpeed = 0.0f
@@ -21,7 +21,7 @@ class ColorAnimation(val duration: Float, private val otherColor: Color, private
     private var startColor = Color()
     private var goalColor = Color()
 
-    override fun apply(deltaTime: Float, item: MovableUIContainer): Boolean {
+    override fun apply(deltaTime: Float): Boolean {
         if (!started) {
             startColor = if (colorType == ColorType.BACKGROUND_COLOR) {
                 if (item.background is ColoredBackground) {

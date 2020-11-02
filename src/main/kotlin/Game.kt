@@ -112,8 +112,6 @@ fun main() {
         ColorEffect(UIColor.GREY_DARK, ColorType.BACKGROUND_COLOR, ColorAnimationType.ADD_TO_COLOR)
     )
     
-    
-    
     val newLevelButton = UIButton("new_level_button", newLevelButtonConstraints)
         .setText("New Level")
         .addHoverEffects(buttonHoverEffects)
@@ -179,11 +177,11 @@ fun main() {
     mainMenu += mainMenuTitle
     mainMenu += switch
 //    mainMenu += progressBar
-//    mainMenu += loadLevelButton
-//    mainMenu += newLevelButton
-//    mainMenu += optionsButton
-//    mainMenu += creditsButton
-//    mainMenu += quitButton
+    mainMenu += loadLevelButton
+    mainMenu += newLevelButton
+    mainMenu += optionsButton
+    mainMenu += creditsButton
+    mainMenu += quitButton
     
 //    optionsWindow += mainMenuTitle
 //    optionsWindow += playButton

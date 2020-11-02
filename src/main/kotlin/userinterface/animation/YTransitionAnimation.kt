@@ -5,13 +5,13 @@ import userinterface.MovableUIContainer
 import userinterface.animation.animationtypes.TransitionType
 import kotlin.math.abs
 
-class YTransitionAnimation(val duration: Float, val translation: Float, val transitionType: TransitionType, onFinish: () -> Unit = {}) : Animation(onFinish) {
+class YTransitionAnimation(val duration: Float, val item: MovableUIContainer, val translation: Float, val transitionType: TransitionType, onFinish: () -> Unit = {}) : Animation(onFinish) {
     
     private var started = false
     private var speed = 0.0f
     private var finalPoint = 0.0f
     
-    override fun apply(deltaTime: Float, item: MovableUIContainer): Boolean {
+    override fun apply(deltaTime: Float): Boolean {
         if (!started) {
             started = true
             if (transitionType == TransitionType.MOVEMENT) {
