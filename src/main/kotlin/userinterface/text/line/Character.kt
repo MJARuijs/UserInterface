@@ -9,34 +9,44 @@ class Character(val id: Char, val x: Float, val y: Float, val width: Float, val 
     val yMaxTexCoord = y + height
 
     companion object {
+        private const val DESIRED_PADDING = 8.0f
         const val LINE_HEIGHT = 0.03f
-        
+    
         fun fromLine(line: String, metaData: MetaData, aspectRatio: Float): Character {
             val textureSize = metaData.scaleW
 
             val lineHeightPixels = metaData.lineHeight - metaData.paddingHeight
             val verticalSize = LINE_HEIGHT / lineHeightPixels
             val horizontalSize = verticalSize / aspectRatio
-
             val values = line.split(" ")
 
             val id = values[0].toInt().toChar()
-            val x = (values[1].toFloat() + metaData.paddingLeft) / textureSize
-            val y = (values[2].toFloat() + metaData.paddingTop) / textureSize
+            val x = (values[1].toFloat() ) / textureSize
+            val y = (values[2].toFloat() ) / textureSize
 
-            val width = values[3].toInt() - metaData.paddingWidth
-            val height = values[4].toInt() - metaData.paddingHeight
+            val width = values[3].toFloat()
+            val height = values[4].toFloat()
+    
+//            val x = (values[1].toFloat() + metaData.paddingLeft - DESIRED_PADDING) / textureSize
+//            val y = (values[2].toFloat() + metaData.paddingTop - DESIRED_PADDING) / textureSize
 
+//            val width = values[3].toFloat() - (metaData.paddingWidth - 2.0f * DESIRED_PADDING)
+//            val height = values[4].toFloat() - (metaData.paddingHeight - 2.0f * DESIRED_PADDING)
+            
             val quadWidth = width * horizontalSize
             val quadHeight = height * verticalSize
 
             val xTextureSize = width / textureSize
             val yTextureSize = height / textureSize
 
-            val xOffset = (values[5].toInt() + metaData.paddingLeft) * horizontalSize
-            val yOffset = (values[6].toInt() + metaData.paddingTop) * verticalSize
+            val xOffset = (values[5].toInt()) * horizontalSize
+            val yOffset = (values[6].toInt()) * verticalSize
             val advance = (values[7].toInt() - metaData.paddingWidth) * horizontalSize
-
+            
+//            if (id == 'M') {
+//                println("$quadWidth, $verticalSize")
+//            }
+//            println("id=${id.toInt()}, x=$x, y=$y, xTex=$xTextureSize, yTex=$yTextureSize, xOff=$xOffset, yOff=$yOffset, quadWidth=$quadWidth, quadHeight=$quadHeight, advance=$advance")
             return Character(id, x, y, xTextureSize, yTextureSize, xOffset, yOffset, quadWidth, quadHeight, advance)
         }
     }

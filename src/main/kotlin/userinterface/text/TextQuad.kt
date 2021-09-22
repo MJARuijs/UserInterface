@@ -4,11 +4,12 @@ import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 import org.lwjgl.opengl.GL30.*
 
-class TextQuad(private val vertices: FloatArray, textureCoords: FloatArray) {
+class TextQuad(vertices: FloatArray, textureCoords: FloatArray) {
 
     private val vao = glGenVertexArrays()
     private val vbo = glGenBuffers()
     private val tbo = glGenBuffers()
+    private val count = vertices.size / 2
 
     init {
         glBindVertexArray(vao)
@@ -29,7 +30,7 @@ class TextQuad(private val vertices: FloatArray, textureCoords: FloatArray) {
 
     fun draw() {
         glBindVertexArray(vao)
-        glDrawArrays(GL_TRIANGLES, 0, vertices.size / 2)
+        glDrawArrays(GL_TRIANGLES, 0, count)
         glBindVertexArray(0)
     }
 
@@ -38,5 +39,4 @@ class TextQuad(private val vertices: FloatArray, textureCoords: FloatArray) {
         glDeleteBuffers(tbo)
         glDeleteVertexArrays(vao)
     }
-
 }

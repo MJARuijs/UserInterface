@@ -1,0 +1,1 @@
+package userinterface.textenum class AlignmentType {    CENTER,    RIGHT_ALIGNED,    LEFT_ALIGNED}

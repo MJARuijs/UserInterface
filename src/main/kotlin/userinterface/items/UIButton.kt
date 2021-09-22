@@ -3,44 +3,60 @@ package userinterface.items
 import devices.Button
 import devices.Mouse
 import math.Color
-import userinterface.MovableUIContainer
 import userinterface.UIColor
 import userinterface.UniversalParameters
 import userinterface.animation.Animation
-import userinterface.animation.Animator
 import userinterface.animation.effects.Effect
 import userinterface.items.backgrounds.Background
+import userinterface.items.backgrounds.ColoredBackground
 import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
 import userinterface.layout.constraints.constrainttypes.CenterConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
+import userinterface.text.Text
+import userinterface.text.TextAlignment
 import userinterface.text.font.Font
 
 open class UIButton(id: String, constraints: ConstraintSet, private var onClick: () -> Unit = {}, background: Background = UniversalParameters.BUTTON_BACKGROUND()) : Item(id, constraints, background) {
-
-    private var isClicked = false
-    private var isHovered = false
+    
     private val hoverAnimations = ArrayList<Effect>()
     private val clickAnimations = ArrayList<Effect>()
+    
+    private var isClicked = false
+    private var isHovered = false
     
     fun setOnClick(function: () -> Unit): UIButton {
         onClick = function
         return this
     }
     
-    private fun setText(text: String, background: Background, color: Color, font: Font = UniversalParameters.arialFont): UIButton {
-        add(
-            TextBox("${id}_text", ConstraintSet(
-            CenterConstraint(ConstraintDirection.HORIZONTAL),
-            CenterConstraint(ConstraintDirection.VERTICAL),
-            RelativeConstraint(ConstraintDirection.HORIZONTAL, 1.0f),
-            RelativeConstraint(ConstraintDirection.VERTICAL, 1.0f)
-        ), text, 1.77f, 3f, background, color, font)
-        )
+    private fun setText(textString: String, alignment: TextAlignment, scale: Float = 1.0f, background: Background, color: Color, font: Font = UniversalParameters.defaultFont): UIButton {
+        add(TextBox(
+            "${id}_text", ConstraintSet(
+                CenterConstraint(ConstraintDirection.HORIZONTAL),
+                CenterConstraint(ConstraintDirection.VERTICAL),
+                RelativeConstraint(ConstraintDirection.HORIZONTAL, 1.0f),
+                RelativeConstraint(ConstraintDirection.VERTICAL, 1.0f)
+            ), textString, 1f, alignment, background, color, font
+        ))
+    
+        val textBox = (findById("${id}_text")!! as TextBox)
+        if (scale == 0.0f) {
+            val xRatio = textBox.xSize() / getScale().x
+            val yRatio = textBox.ySize() / getScale().y
+//            println("$xRatio, ${textBox.xSize()} ${getScale().x} :: $yRatio ${textBox.ySize()} ${getScale().y}")
+        
+            textBox.setScale(3.0f)
+        } else {
+            textBox.setScale(scale)
+        }
+        textBox.alignWith(getTranslation(), getScale(), alignment)
+
+        
         return this
     }
     
-    fun setText(text: String, background: Background = UniversalParameters.TEXTBOX_BACKGROUND(), color: UIColor = UniversalParameters.TEXT_COLOR(), font: Font = UniversalParameters.arialFont) = setText(text, background, color.color, font)
+    fun setText(text: String, alignment: TextAlignment, scale: Float = 0.0f, background: Background = ColoredBackground(UIColor.TRANSPARENT), color: UIColor = UniversalParameters.TEXT_COLOR(), font: Font = UniversalParameters.defaultFont) = setText(text, alignment, scale, background, color.color, font)
     
     fun addHoverEffects(vararg animation: Effect): UIButton {
         hoverAnimations += animation
@@ -87,7 +103,7 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
         
         isHovered = isNowHovered
         
-        if (isHovered && (mouse.isPressed(Button.LEFT) || mouse.isPressed(Button.LEFT))) {
+        if (isHovered && !isClicked && (mouse.isPressed(Button.LEFT) || mouse.isPressed(Button.LEFT))) {
             onClick()
             val applyAnimations = ArrayList<Animation>()
             for (effect in clickAnimations) {

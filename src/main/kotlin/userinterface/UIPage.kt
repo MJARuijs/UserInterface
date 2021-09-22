@@ -19,6 +19,5 @@ class UIPage(id: String, private val background: Background = UniversalParameter
             child.apply(layout, duration)
         }
     }
-    
 
 }

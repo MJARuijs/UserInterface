@@ -1,0 +1,1 @@
+package userinterface.textclass TextAlignment(val type: AlignmentType, var offset: Float = 0.0f)

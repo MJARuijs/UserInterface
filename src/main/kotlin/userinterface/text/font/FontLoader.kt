@@ -56,7 +56,7 @@ class FontLoader(private val aspectRatio: Float) : Loader<Font> {
 
         val texture = ImageMap(ImageCache.get(texturePath))
 
-        return Font(texture, metaData, characters)
+        return Font(texture, characters)
     }
 
 }

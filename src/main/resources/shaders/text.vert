@@ -10,12 +10,7 @@ uniform float scale;
 out vec2 passTexCoords;
 
 void main() {
-    passTexCoords = inTexCoords;
-
-    vec2 position = inPosition* scale;
-    vec2 scaledTranslation = translation;
-    scaledTranslation.x /= aspectRatio;
-    position += scaledTranslation;
-
+    vec2 position = inPosition * scale + translation;
     gl_Position = vec4(position, 0.0, 1.0);
+    passTexCoords = inTexCoords;
 }

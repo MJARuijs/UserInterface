@@ -11,10 +11,9 @@ class UserInterface(private val aspectRatio: Float) {
 
     private val shaderProgram = ShaderProgram.load("shaders/ui.vert", "shaders/ui.frag")
     private val iconProgram = ShaderProgram.load("shaders/icon.vert", "shaders/icon.frag")
-    
     private val textProgram = ShaderProgram.load("shaders/text.vert", "shaders/text.frag")
     
-    val pages = ArrayList<UIPage>()
+    private val pages = ArrayList<UIPage>()
     private val windows = ArrayList<UIWindow>()
 
     private var showingId = ""
@@ -50,7 +49,7 @@ class UserInterface(private val aspectRatio: Float) {
             window.shouldShow = false
         }
     }
-
+    
     fun isShowing(): Boolean {
         for (window in windows) {
             if (window.shouldShow) {

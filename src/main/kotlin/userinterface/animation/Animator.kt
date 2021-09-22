@@ -55,7 +55,7 @@ class Animator(private val item: MovableUIContainer) {
         if (computedChildren.containsAll(requiredIds)) {
             val childDimensions = childConstraints.computeResult(item.getGoalDimensions(), item)
             child.setGoalTranslation(childDimensions.first)
-            child.setGoalTranslation(childDimensions.second)
+            child.setGoalScale(childDimensions.second)
 
             computedChildren += child.id
 

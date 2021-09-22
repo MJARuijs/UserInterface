@@ -4,6 +4,7 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.stb.STBImage
 import resources.Loader
 import util.File
+import java.nio.ByteBuffer
 
 class ImageLoader: Loader<ImageData> {
 
@@ -18,7 +19,7 @@ class ImageLoader: Loader<ImageData> {
 
         val pixels = STBImage.stbi_load(absolutePath, widthBuffer, heightBuffer, channelBuffer, 4)
                 ?: throw IllegalArgumentException("Could not find texture file: $path")
-
+        
         return ImageData(widthBuffer.get(), heightBuffer.get(), pixels)
     }
 

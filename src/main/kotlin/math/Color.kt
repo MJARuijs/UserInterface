@@ -75,6 +75,11 @@ data class Color(var r: Float = 0.0f, var g: Float = 0.0f, var b: Float = 0.0f, 
         fun average(first: Color, second: Color): Color = (first + second) / 2.0f
 
         fun mix(first: Color, second: Color, weight: Float) = (first * (1.0f - weight)) + (second * weight)
+        
+        fun fromString(string: String): Color {
+            val values = string.split(',')
+            return Color(values[0].toFloat(), values[1].toFloat(), values[2].toFloat(), values[3].toFloat())
+        }
 
     }
 

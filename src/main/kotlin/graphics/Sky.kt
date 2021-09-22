@@ -1,12 +1,9 @@
 package graphics
 
-import graphics.Quad
-import resources.images.ImageCache
-import graphics.GraphicsContext
-import graphics.GraphicsOption
 import graphics.samplers.Sampler
 import graphics.shaders.ShaderProgram
 import graphics.textures.ImageMap
+import resources.images.ImageCache
 
 class Sky {
 

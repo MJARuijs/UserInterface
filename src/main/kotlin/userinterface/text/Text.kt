@@ -5,22 +5,35 @@ import graphics.samplers.Sampler
 import graphics.shaders.ShaderProgram
 import math.Color
 import math.vectors.Vector2
+import userinterface.UniversalParameters
 import userinterface.text.font.Font
 import userinterface.text.line.Character.Companion.LINE_HEIGHT
 import userinterface.text.line.Line
 import userinterface.text.line.Word
+import kotlin.math.abs
 
-class Text(val text: String, private val fontSize: Float, private val maxLineWidth: Float = 1.0f, private val font: Font, var color: Color, private val aspectRatio: Float, var translation: Vector2 = Vector2(), var scale: Float = 1.0f) {
+class Text(val text: String, private val fontSize: Float, private val maxLineWidth: Float = 1.0f, private val font: Font, var color: Color, var translation: Vector2 = Vector2(), var scale: Float = 1.0f) {
 
     private val sampler = Sampler(0, clamping = ClampMode.EDGE)
     private val spaceWidth = font.getSpaceWidth() * fontSize
 
     private val textQuad: TextQuad
+    
+    private var center = Vector2()
+    
+    private var minX = Float.MAX_VALUE
+    private var maxX = -Float.MAX_VALUE
+    private var minY = Float.MAX_VALUE
+    private var maxY = -Float.MAX_VALUE
 
     init {
         val lines = createLines()
         textQuad = createTextMesh(lines)
     }
+    
+    fun xSize() = abs(maxX - minX)
+    
+    fun ySize() = abs(maxY - minY)
     
     fun draw(shaderProgram: ShaderProgram, aspectRatio: Float) {
         shaderProgram.start()
@@ -34,6 +47,15 @@ class Text(val text: String, private val fontSize: Float, private val maxLineWid
         textQuad.draw()
         
         shaderProgram.stop()
+    }
+    
+    fun alignWith(parentTranslation: Vector2, parentScale: Vector2, alignment: TextAlignment) {
+        if (alignment.type == AlignmentType.CENTER) {
+            translation = parentTranslation / Vector2(UniversalParameters.aspectRatio, 1.0f) - center * scale
+        } else {
+            translation.x = (parentTranslation.x - parentScale.x) / UniversalParameters.aspectRatio + alignment.offset
+            translation.y = parentTranslation.y + (ySize() / 2.0f) * scale
+        }
     }
     
     private fun createLines(): List<Line> {
@@ -75,12 +97,25 @@ class Text(val text: String, private val fontSize: Float, private val maxLineWid
         for (line in lines) {
             for (word in line.words) {
                 for (character in word.characters) {
-                    val x = (xCursor + character.xOffset * fontSize) / aspectRatio
-                    val y = (yCursor + character.yOffset * fontSize)
+                    val x = xCursor + character.xOffset * fontSize
+                    val y = yCursor + character.yOffset * fontSize
     
-                    val letterMaxX = x + (character.quadWidth * fontSize) / aspectRatio
+                    val letterMaxX = x + (character.quadWidth * fontSize)
                     val letterMaxY = y + (character.quadHeight * fontSize)
     
+                    if (x < minX) {
+                        minX = x
+                    }
+                    if (y < minY) {
+                        minY = y
+                    }
+                    if (letterMaxX > maxX) {
+                        maxX = letterMaxX
+                    }
+                    if (letterMaxY > maxY) {
+                        maxY = letterMaxY
+                    }
+                    
                     vertices += floatArrayOf(
                         x, -y,
                         x, -letterMaxY,
@@ -108,42 +143,9 @@ class Text(val text: String, private val fontSize: Float, private val maxLineWid
             yCursor += LINE_HEIGHT * fontSize
         }
         
-        var minX = Float.MAX_VALUE
-        var maxX = Float.MIN_VALUE
-        var minY = Float.MAX_VALUE
-        var maxY = Float.MIN_VALUE
-        
-        for (i in vertices.indices step 2) {
-            val x = vertices[i]
-            val y = vertices[i + 1]
-            
-            if (x < minX) {
-                minX = x
-            }
-            if (x > maxX) {
-                maxX = x
-            }
-            if (y < minY) {
-                minY = y
-            }
-            if (y > maxY) {
-                maxY = y
-            }
-        }
-        
-        val xDifference = (maxX - minX)
-        val yDifference = (minY - maxY)
-    
-        var repositionedVertices = FloatArray(0)
-    
-        for (i in vertices.indices step 2) {
-            val x = vertices[i]
-            val y = vertices[i + 1]
-            
-            repositionedVertices += x - xDifference / 2.0f
-            repositionedVertices += y - yDifference / 2.0f
-        }
-        return TextQuad(repositionedVertices, texCoords)
+        center = Vector2((maxX - minX) / 2.0f, (minY - maxY) / 2.0f)
+
+        return TextQuad(vertices, texCoords)
     }
 
     fun destroy() {

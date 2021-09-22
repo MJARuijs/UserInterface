@@ -17,17 +17,7 @@ class ConstraintSet(val constraints: ArrayList<Constraint> = ArrayList()) {
     private val requiredIds = ArrayList<String>()
 
     init {
-        for (constraint in constraints) {
-            if (constraint is PixelConstraint) {
-                if (constraint.anchorId != "parent") {
-                    requiredIds += constraint.anchorId
-                }
-            } else if (constraint is RelativeConstraint) {
-                if (constraint.anchorId != "parent") {
-                    requiredIds += constraint.anchorId
-                }
-            }
-        }
+        determineRequiredIds()
     }
 
     fun add(constraint: Constraint, parent: MovableUIContainer? = null, parentTranslation: Vector2? = null, parentScale: Vector2? = null) {

@@ -5,7 +5,7 @@ import userinterface.MovableUIContainer
 import userinterface.animation.animationtypes.TransitionType
 import kotlin.math.abs
 
-class XTransitionAnimation(val duration: Float, val item: MovableUIContainer, val translation: Float, val transitionType: TransitionType, onFinish: () -> Unit = {}) : Animation(onFinish) {
+class XTransitionAnimation(val duration: Float, val item: MovableUIContainer, private val translation: Float, private val transitionType: TransitionType, onFinish: () -> Unit = {}) : Animation(onFinish) {
     
     private var speed = 0f
     private var finalPoint = 0f

@@ -19,4 +19,20 @@ class ColoredBackground(var color: Color, cornerRadius: Float = 0.0f, outline: F
         shaderProgram.set("color", color)
         shaderProgram.set("textured", false)
     }
+    
+    fun fromString(string: String): ColoredBackground {
+        val startIndex = string.indexOf('(') + 1
+        val endIndex = string.indexOf(')')
+        val valuesString = string.substring(startIndex, endIndex)
+        val values = valuesString.split(',')
+        val color = Color.fromString(values[0])
+        val cornerRadius = values[1].toFloat()
+        val outline = values[2].toFloat()
+        val outlineColor = Color.fromString(values[3])
+        return ColoredBackground(color, cornerRadius, outline, outlineColor)
+    }
+    
+    override fun toString(): String {
+        return "ColoredBackground($color,$cornerRadius,$outline,$outlineColor)"
+    }
 }

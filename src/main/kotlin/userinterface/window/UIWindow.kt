@@ -50,7 +50,7 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
         shaderProgram.set("translation", getTranslation())
         shaderProgram.set("scale", getScale())
         shaderProgram.set("allowedToOverdraw", true)
-    
+        
         background.setProperties(shaderProgram)
         quad.draw()
         
