@@ -21,12 +21,6 @@ class TextMesh(vertices: FloatArray, textureCoords: FloatArray) {
         glVertexArrayAttribFormat(vao, 1, 2, GL_FLOAT, false, 0)
         glEnableVertexArrayAttrib(vao, 1)
     }
-    
-    fun updateInstanceData(vertices: FloatArray, textureCoords: FloatArray) {
-        count = vertices.size / 2
-        glNamedBufferData(vbo, vertices, GL_DYNAMIC_DRAW)
-        glNamedBufferData(tbo, textureCoords, GL_DYNAMIC_DRAW)
-    }
 
     fun draw() {
         glBindVertexArray(vao)

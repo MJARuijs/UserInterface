@@ -53,10 +53,12 @@ class FontLoader(private val aspectRatio: Float) : Loader<Font> {
         for (i in 1 until lines.size) {
             characters += Character.fromLine(lines[i], metaData, aspectRatio)
         }
-
+        
         val texture = ImageMap(ImageCache.get(texturePath))
 
-        return Font(texture, characters)
+        val paddingSize = Character.DESIRED_PADDING / metaData.scaleW
+        
+        return Font(texture, characters, paddingSize)
     }
 
 }

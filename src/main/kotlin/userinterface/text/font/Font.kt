@@ -4,7 +4,7 @@ import graphics.textures.ImageMap
 import resources.Resource
 import userinterface.text.line.Character
 
-class Font(val textureAtlas: ImageMap, private val characters: ArrayList<Character>) : Resource {
+class Font(val textureAtlas: ImageMap, private val characters: ArrayList<Character>, val paddingSize: Float) : Resource {
 
     fun getSpaceWidth(): Float {
         val spaceCharacter = getCharacter(32.toChar())

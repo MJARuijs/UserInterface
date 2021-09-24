@@ -29,9 +29,12 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
     
     private var characterVertices = arrayListOf<CharacterData>()
     private var characterTextureCoordinates = arrayListOf<FloatArray>()
+    
+    private var parentTranslation = Vector2()
+    private var parentScale = Vector2()
+    private var alignment = TextAlignment(AlignmentType.CENTER)
 
     init {
-        println("CREATING $text")
         val lines = createLines()
         textMesh = createTextMesh(lines)
     }
@@ -53,7 +56,7 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
                 val y = arr.vertices[i + 1]
         
                 val point = Vector2(x, y)
-                val scaledPoint = point * scale + translation
+                val scaledPoint = point * scale
                 points += scaledPoint.toArray()
             }
         }
@@ -75,8 +78,12 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
             }
         }
         
+        val realignText = text.isBlank() && stringBuilder.isNotEmpty()
         text = stringBuilder.toString()
         updateMesh()
+        if (realignText) {
+            realign()
+        }
     }
     
     fun removeCharacter(i: Int) {
@@ -100,12 +107,12 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
 
     fun getCharacterInFrontOfCursor(xPosition: Float, aspectRatio: Float): Int {
         val firstCharacterDimensions = getCharacterXBounds(0)
-        if (xPosition <= firstCharacterDimensions.first * aspectRatio) {
+        if (xPosition <= firstCharacterDimensions.first * aspectRatio + font.paddingSize) {
             return 0
         }
         
         val lastCharacterDimensions = getCharacterXBounds(text.length -  1)
-        if (xPosition >= lastCharacterDimensions.second * aspectRatio) {
+        if (xPosition >= lastCharacterDimensions.second * aspectRatio - font.paddingSize) {
             return length()
         }
 
@@ -129,6 +136,14 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
     }
     
     fun getSelectedCharacter(xPosition: Float): Int {
+        val firstCharacterBounds = getCharacterXBounds(0)
+        if (xPosition < firstCharacterBounds.first) {
+            return 0
+        }
+        val lastCharacterBounds = getCharacterXBounds(text.length - 1)
+        if (xPosition > lastCharacterBounds.second) {
+            return text.length - 1
+        }
         for ((i, character) in characterVertices.withIndex()) {
             val characterDimensions = getCharacterXBounds(character)
             if (xPosition > characterDimensions.first && xPosition < characterDimensions.second) {
@@ -164,14 +179,21 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
     }
     
     fun alignWith(parentTranslation: Vector2, parentScale: Vector2, alignment: TextAlignment) {
+        this.parentTranslation = parentTranslation
+        this.parentScale = parentScale
+        this.alignment = alignment
+        realign()
+    }
+    
+    private fun realign() {
         if (alignment.type == AlignmentType.CENTER) {
             translation = parentTranslation / Vector2(UniversalParameters.aspectRatio, 1.0f) - center * scale
         } else {
             if (length() == 0) {
                 translation.x = (parentTranslation.x - parentScale.x) / UniversalParameters.aspectRatio + alignment.offset
-                translation.y = parentTranslation.y + (ySize() / 2.0f) * scale
+                translation.y = parentTranslation.y + (parentScale.y / 1.0f)
             } else {
-                val firstLetterStart = getCharacterXBounds(0).first
+                val firstLetterStart = (getCharacterXBounds(0).first - translation.x) / scale
                 translation.x = (parentTranslation.x - parentScale.x) / UniversalParameters.aspectRatio - firstLetterStart * 2
                 translation.y = parentTranslation.y + (ySize() / 2.0f) * scale
             }
@@ -223,7 +245,7 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
         var texCoords = FloatArray(0)
         
         for (line in lines) {
-            for (word in line.words) {
+            for ((i, word) in line.words.withIndex()) {
                 for (character in word.characters) {
                     val x = xCursor + character.xOffset * fontSize
                     val y = yCursor + character.yOffset * fontSize
@@ -267,10 +289,12 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
                     
                     characterVertices.add(CharacterData(character.id, charVertices))
                     characterTextureCoordinates.add(charTextureCoordinates)
-    
                     xCursor += character.advance * fontSize
                 }
-                characterVertices.add(CharacterData(' ', floatArrayOf(xCursor, xCursor + spaceWidth)))
+                
+                if (i != line.words.size - 1) {
+                    characterVertices.add(CharacterData(' ', floatArrayOf(xCursor, xCursor + spaceWidth)))
+                }
                 xCursor += spaceWidth
             }
 

@@ -34,5 +34,6 @@ void main() {
     vec3 overallColor = mix(outlineColor, color.rgb, alpha / overallAlpha);
 
     outColor = vec4(overallColor, overallAlpha);
+//    outColor = vec4(1, 0,0,1);
 
 }

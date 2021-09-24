@@ -213,11 +213,11 @@ fun main() {
     val checkBox = CheckBox("checkBox", checkBoxConstraints)
 
     val textInputBox = TextInputBox("input_box", ConstraintSet(
-        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.02f),
-        PixelConstraint(ConstraintDirection.TO_TOP),
-        RelativeConstraint(ConstraintDirection.VERTICAL, 0.15f),
-        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 3.0f)
-    ), "Preview", 6.0f)
+        CenterConstraint(ConstraintDirection.HORIZONTAL),
+        CenterConstraint(ConstraintDirection.VERTICAL),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 6.0f)
+    ), "d", 6.0f)
 
     val mainMenu = UIPage("main_menu")
     mainMenu += textInputBox
@@ -243,6 +243,7 @@ fun main() {
     val points = textInputBox.getPoints()
     val point = Point(points)
     glPointSize(6.0f)
+    
     val pointProgram = ShaderProgram.load("shaders/point.vert", "shaders/point.frag")
     while (!window.isClosed()) {
         window.poll()

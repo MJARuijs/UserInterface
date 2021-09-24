@@ -9,9 +9,10 @@ class Character(val id: Char, val x: Float, val y: Float, val width: Float, val 
     val yMaxTexCoord = y + height
 
     companion object {
-        private const val DESIRED_PADDING = 8.0f
+        
+        const val DESIRED_PADDING = 8.0f
         const val LINE_HEIGHT = 0.03f
-    
+        
         fun fromLine(line: String, metaData: MetaData, aspectRatio: Float): Character {
             val textureSize = metaData.scaleW
 
@@ -21,12 +22,7 @@ class Character(val id: Char, val x: Float, val y: Float, val width: Float, val 
             val values = line.split(" ")
 
             val id = values[0].toInt().toChar()
-//            val x = (values[1].toFloat() ) / textureSize
-//            val y = (values[2].toFloat() ) / textureSize
-//
-//            val width = values[3].toFloat()
-//            val height = values[4].toFloat()
-    
+
             val x = (values[1].toFloat() + metaData.paddingLeft - DESIRED_PADDING) / textureSize
             val y = (values[2].toFloat() + metaData.paddingTop - DESIRED_PADDING) / textureSize
 
