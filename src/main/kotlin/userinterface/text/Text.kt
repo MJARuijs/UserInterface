@@ -27,10 +27,11 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
     private var minY = Float.MAX_VALUE
     private var maxY = -Float.MAX_VALUE
     
-    private var characterVertices = arrayListOf<FloatArray>()
+    private var characterVertices = arrayListOf<CharacterData>()
     private var characterTextureCoordinates = arrayListOf<FloatArray>()
 
     init {
+        println("CREATING $text")
         val lines = createLines()
         textMesh = createTextMesh(lines)
     }
@@ -47,9 +48,9 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
         var points = FloatArray(0)
         
         for (arr in characterVertices) {
-            for (i in arr.indices step 2) {
-                val x = arr[i]
-                val y = arr[i + 1]
+            for (i in arr.vertices.indices step 2) {
+                val x = arr.vertices[i]
+                val y = arr.vertices[i + 1]
         
                 val point = Vector2(x, y)
                 val scaledPoint = point * scale + translation
@@ -76,7 +77,6 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
         
         text = stringBuilder.toString()
         updateMesh()
-        println(text)
     }
     
     fun removeCharacter(i: Int) {
@@ -99,33 +99,33 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
     }
 
     fun getCharacterInFrontOfCursor(xPosition: Float, aspectRatio: Float): Int {
-        val lastCharacterDimensions = getCharacterXBounds(text.length - 1)
+        val firstCharacterDimensions = getCharacterXBounds(0)
+        if (xPosition <= firstCharacterDimensions.first * aspectRatio) {
+            return 0
+        }
+        
+        val lastCharacterDimensions = getCharacterXBounds(text.length -  1)
         if (xPosition >= lastCharacterDimensions.second * aspectRatio) {
-            return text.length
+            return length()
         }
-        
-        var smallestDistance = Float.MAX_VALUE
-        var smallestI = -1
-        
+
         for ((i, character) in characterVertices.withIndex()) {
-            val characterDimensions = getCharacterXBounds(character)
-            val minX = characterDimensions.first * aspectRatio
-            val maxX = characterDimensions.second * aspectRatio
-            
-            val minDistance = FloatUtils.roundToDecimal(abs(xPosition - minX), 5)
-            val maxDistance = FloatUtils.roundToDecimal(abs(xPosition - maxX), 5)
-            
-            if (minDistance <= smallestDistance) {
-                smallestDistance = minDistance
-                smallestI = i
-            }
-            
-            if (maxDistance <= smallestDistance) {
-                smallestDistance = maxDistance
-                smallestI = i
+            if (i != length() - 1) {
+                val characterDimensions = getCharacterXBounds(character)
+                val nextCharacterDimensions = getCharacterXBounds(characterVertices[i + 1])
+                
+                if (characterDimensions.second < nextCharacterDimensions.first) {
+                    if (xPosition > characterDimensions.second * aspectRatio && xPosition < nextCharacterDimensions.first * aspectRatio) {
+                        return i + 1
+                    }
+                } else if (characterDimensions.second > nextCharacterDimensions.first) {
+                    if (xPosition < characterDimensions.second * aspectRatio && xPosition > nextCharacterDimensions.first * aspectRatio) {
+                        return i + 1
+                    }
+                }
             }
         }
-        return smallestI
+        return -1
     }
     
     fun getSelectedCharacter(xPosition: Float): Int {
@@ -142,12 +142,16 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
         return getCharacterXBounds(characterVertices[i])
     }
     
-    private fun getCharacterXBounds(vertices: FloatArray): Pair<Float, Float> {
+    private fun getCharacterXBounds(characterData: CharacterData): Pair<Float, Float> {
         var minX = Float.MAX_VALUE
         var maxX = -Float.MAX_VALUE
         
-        for (i in vertices.indices step 2) {
-            val x = vertices[i] * scale + translation.x
+        if (characterData.character == ' ') {
+            return Pair(characterData.vertices[0] * scale + translation.x, characterData.vertices[1] * scale + translation.x)
+        }
+        
+        for (i in characterData.vertices.indices step 2) {
+            val x = characterData.vertices[i] * scale + translation.x
             
             if (x > maxX) {
                 maxX = x
@@ -261,11 +265,12 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
                     vertices += charVertices
                     texCoords += charTextureCoordinates
                     
-                    characterVertices.add(charVertices)
+                    characterVertices.add(CharacterData(character.id, charVertices))
                     characterTextureCoordinates.add(charTextureCoordinates)
     
                     xCursor += character.advance * fontSize
                 }
+                characterVertices.add(CharacterData(' ', floatArrayOf(xCursor, xCursor + spaceWidth)))
                 xCursor += spaceWidth
             }
 

@@ -82,6 +82,7 @@ class Mouse(private val window: Window) {
     internal fun post(button: Button, action: Action) = events.push(Event(button, action))
 
     fun capture() {
+        println("CAPTURED")
         captured = true
         glfwSetInputMode(window.handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
     }

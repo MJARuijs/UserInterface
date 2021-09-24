@@ -1,0 +1,1 @@
+package userinterface.textclass CharacterData(val character: Char, val vertices: FloatArray)

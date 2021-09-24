@@ -30,6 +30,7 @@ import userinterface.text.AlignmentType
 import userinterface.text.TextAlignment
 import userinterface.text.font.FontLoader
 import userinterface.window.ButtonAlignment
+import userinterface.window.TitleBarData
 import userinterface.window.UIWindow
 
 fun main() {
@@ -68,7 +69,7 @@ fun main() {
 //        ),
 //        windowBackground,
 //        false,
-//        TitleBarData(0.0f, titleBarBackground)
+//        TitleBarData(0.05f, titleBarBackground, ButtonAlignment.LEFT)
 //    )
 
     optionsWindow.addButtonHoverEffects("close_button", ColorEffect(UniversalParameters.CLOSE_BUTTON_HOVERED_COLOR(), ColorType.BACKGROUND_COLOR, ColorAnimationType.ADD_TO_COLOR))
@@ -137,50 +138,50 @@ fun main() {
     val progressBar = ProgressBar("bar", progressBarConstraints)
     
     val leftTextAlignment = TextAlignment(AlignmentType.LEFT_ALIGNED, 0.04f)
-    
-    val loadLevelButton = UIButton("load_level_button", loadLevelButtonConstraints)
-        .setText("Load Level", leftTextAlignment)
-        .addHoverEffects(buttonHoverEffects)
-        .addClickEffects(buttonClickEffects)
-        .setOnClick {
-            if (progressBar.isPaused()) {
-                progressBar.resume()
-            } else {
-                progressBar.pause()
-            }
-        }
-    
-    val newLevelButton = UIButton("new_level_button", newLevelButtonConstraints)
-        .setText("New Level", leftTextAlignment)
-        .addHoverEffects(buttonHoverEffects)
-        .addClickEffects(buttonClickEffects)
-        .setOnClick {
-            println("Go to New-Level Menu")
-        }
-
-    val optionsButton = UIButton("options_button", optionsButtonConstraints)
-        .setText("Options", leftTextAlignment)
-        .addHoverEffects(buttonHoverEffects)
-        .addClickEffects(buttonClickEffects)
-        .setOnClick {
-            println("Go to options menu")
-        }
-
-    val creditsButton = UIButton("credits_button", creditsButtonConstraints)
-        .setText("Credits", leftTextAlignment)
-        .addHoverEffects(buttonHoverEffects)
-        .addClickEffects(buttonClickEffects)
-        .setOnClick {
-            println("Go to credits menu")
-        }
-
-    val quitButton = UIButton("quit_button", quitButtonConstraints)
-        .setText("Quit", leftTextAlignment)
-        .addHoverEffects(buttonHoverEffects)
-        .addClickEffects(buttonClickEffects)
-        .setOnClick {
-            window.close()
-        }
+//
+//    val loadLevelButton = UIButton("load_level_button", loadLevelButtonConstraints)
+//        .setText("Load Level", leftTextAlignment)
+//        .addHoverEffects(buttonHoverEffects)
+//        .addClickEffects(buttonClickEffects)
+//        .setOnClick {
+//            if (progressBar.isPaused()) {
+//                progressBar.resume()
+//            } else {
+//                progressBar.pause()
+//            }
+//        }
+//
+//    val newLevelButton = UIButton("new_level_button", newLevelButtonConstraints)
+//        .setText("New Level", leftTextAlignment)
+//        .addHoverEffects(buttonHoverEffects)
+//        .addClickEffects(buttonClickEffects)
+//        .setOnClick {
+//            println("Go to New-Level Menu")
+//        }
+//
+//    val optionsButton = UIButton("options_button", optionsButtonConstraints)
+//        .setText("Options", leftTextAlignment)
+//        .addHoverEffects(buttonHoverEffects)
+//        .addClickEffects(buttonClickEffects)
+//        .setOnClick {
+//            println("Go to options menu")
+//        }
+//
+//    val creditsButton = UIButton("credits_button", creditsButtonConstraints)
+//        .setText("Credits", leftTextAlignment)
+//        .addHoverEffects(buttonHoverEffects)
+//        .addClickEffects(buttonClickEffects)
+//        .setOnClick {
+//            println("Go to credits menu")
+//        }
+//
+//    val quitButton = UIButton("quit_button", quitButtonConstraints)
+//        .setText("Quit", leftTextAlignment)
+//        .addHoverEffects(buttonHoverEffects)
+//        .addClickEffects(buttonClickEffects)
+//        .setOnClick {
+//            window.close()
+//        }
 
     val switchConstraints = ConstraintSet(
         CenterConstraint(ConstraintDirection.HORIZONTAL),
@@ -212,7 +213,7 @@ fun main() {
     val checkBox = CheckBox("checkBox", checkBoxConstraints)
 
     val textInputBox = TextInputBox("input_box", ConstraintSet(
-        PixelConstraint(ConstraintDirection.TO_LEFT, 0.02f),
+        PixelConstraint(ConstraintDirection.TO_RIGHT, 0.02f),
         PixelConstraint(ConstraintDirection.TO_TOP),
         RelativeConstraint(ConstraintDirection.VERTICAL, 0.15f),
         AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 3.0f)

@@ -103,7 +103,6 @@ class UserInterface(private val aspectRatio: Float) {
             windows.forEach { window ->
                 if (window.id == showingId && !window.shouldShow) {
                     showingId = ""
-                    mouse.capture()
                 }
             }
         }
