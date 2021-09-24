@@ -183,10 +183,12 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
         this.parentScale = parentScale
         this.alignment = alignment
         realign()
+        println("Aligning $parentTranslation $parentScale, $translation $center $scale")
     }
     
     private fun realign() {
         if (alignment.type == AlignmentType.CENTER) {
+//            translation = parentTranslation / Vector2(UniversalParameters.aspectRatio, 1.0f) - Vector2(maxX, 0.0f) / 2.0f
             translation = parentTranslation / Vector2(UniversalParameters.aspectRatio, 1.0f) - center * scale
         } else {
             if (length() == 0) {
@@ -246,9 +248,18 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
         
         for (line in lines) {
             for ((i, word) in line.words.withIndex()) {
-                for (character in word.characters) {
-                    val x = xCursor + character.xOffset * fontSize
-                    val y = yCursor + character.yOffset * fontSize
+                for ((j, character) in word.characters.withIndex()) {
+                    val x = if (j == 0) {
+                        0.0f
+                    } else {
+                        xCursor + character.xOffset * fontSize
+                    }
+                    
+                    val y = if (j == 0) {
+                        0.0f
+                    } else {
+                        yCursor + character.yOffset * fontSize
+                    }
     
                     val letterMaxX = x + (character.quadWidth * fontSize)
                     val letterMaxY = y + (character.quadHeight * fontSize)
@@ -265,6 +276,8 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
                     if (letterMaxY > maxY) {
                         maxY = letterMaxY
                     }
+                    
+                    println("$x, $letterMaxX, ${-y} ${-letterMaxY}")
                     
                     val charVertices = floatArrayOf(
                         x, -y,
@@ -290,6 +303,10 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
                     characterVertices.add(CharacterData(character.id, charVertices))
                     characterTextureCoordinates.add(charTextureCoordinates)
                     xCursor += character.advance * fontSize
+                    if (j == 0) {
+                        xCursor -= character.xOffset * fontSize
+                        yCursor -= character.yOffset * fontSize
+                    }
                 }
                 
                 if (i != line.words.size - 1) {
@@ -302,6 +319,7 @@ class Text(var text: String, private val fontSize: Float, private val maxLineWid
             yCursor += LINE_HEIGHT * fontSize
         }
         
+        println("$maxX $minX $minY $maxY")
         center = Vector2((maxX - minX) / 2.0f, (minY - maxY) / 2.0f)
 
         return TextMesh(vertices, texCoords)

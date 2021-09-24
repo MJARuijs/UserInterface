@@ -211,16 +211,24 @@ fun main() {
 
     val switch = Switch("switch", switchConstraints)
     val checkBox = CheckBox("checkBox", checkBoxConstraints)
-
-    val textInputBox = TextInputBox("input_box", ConstraintSet(
+//
+//    val textInputBox = TextInputBox("input_box", ConstraintSet(
+//        CenterConstraint(ConstraintDirection.HORIZONTAL),
+//        CenterConstraint(ConstraintDirection.VERTICAL),
+//        RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
+//        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 6.0f)
+//    ), "d", 6.0f)
+//
+    val textLabel = TextLabel("label", ConstraintSet(
         CenterConstraint(ConstraintDirection.HORIZONTAL),
         CenterConstraint(ConstraintDirection.VERTICAL),
         RelativeConstraint(ConstraintDirection.VERTICAL, 0.1f),
-        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 6.0f)
-    ), "d", 6.0f)
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 3.0f)
+    ), "test", 6.0f, TextAlignment(AlignmentType.CENTER))
 
     val mainMenu = UIPage("main_menu")
-    mainMenu += textInputBox
+    mainMenu += textLabel
+//    mainMenu += textInputBox
 //    mainMenu += mainMenuTitle
 //    mainMenu += switch
 //    mainMenu += progressBar
@@ -240,9 +248,10 @@ fun main() {
     timer.reset()
     mouse.release()
     
-    val points = textInputBox.getPoints()
+    val points = textLabel.getPoints()
     val point = Point(points)
-    glPointSize(6.0f)
+    val centerPoint = Point(floatArrayOf(0.0f, 0.0f))
+    glPointSize(3.0f)
     
     val pointProgram = ShaderProgram.load("shaders/point.vert", "shaders/point.frag")
     while (!window.isClosed()) {
@@ -275,6 +284,9 @@ fun main() {
         
         pointProgram.start()
         pointProgram.set("color", Vector3(1,0,0))
+//        point.render()
+        centerPoint.render()
+        pointProgram.set("color", Vector3(1, 1, 0))
 //        point.render()
         pointProgram.stop()
         

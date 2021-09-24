@@ -50,7 +50,6 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
             textLabel.setScale(scale)
         }
         textLabel.alignWith(getTranslation(), getScale(), alignment)
-
         
         return this
     }

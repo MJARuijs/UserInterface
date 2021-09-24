@@ -17,7 +17,6 @@ uniform vec4 color;
 
 out vec4 outColor;
 
-
 void main() {
 //    float distance = 1.0 - texture(textureAtlas, passTexCoords).a;
 //    float alpha = 1.0f - smoothstep(characterWidth, characterWidth + edgeWidth, distance);
@@ -34,6 +33,4 @@ void main() {
     vec3 overallColor = mix(outlineColor, color.rgb, alpha / overallAlpha);
 
     outColor = vec4(overallColor, overallAlpha);
-//    outColor = vec4(1, 0,0,1);
-
 }
