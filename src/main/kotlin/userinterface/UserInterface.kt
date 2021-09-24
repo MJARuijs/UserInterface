@@ -1,5 +1,6 @@
 package userinterface
 
+import devices.Keyboard
 import devices.Mouse
 import graphics.GraphicsContext
 import graphics.GraphicsOption
@@ -85,16 +86,16 @@ class UserInterface(private val aspectRatio: Float) {
         GraphicsContext.disable(GraphicsOption.ALPHA_BLENDING)
     }
 
-    fun update(mouse: Mouse, deltaTime: Float) {
+    fun update(mouse: Mouse, keyboard: Keyboard, deltaTime: Float) {
         windows.forEach { window ->
             if (window.shouldShow) {
-                window.update(mouse, aspectRatio, deltaTime)
+                window.update(mouse, keyboard, aspectRatio, deltaTime)
             }
         }
         
         pages.forEach { page ->
             if (page.shouldShow) {
-                page.update(mouse, aspectRatio, deltaTime)
+                page.update(mouse, keyboard, aspectRatio, deltaTime)
             }
         }
 

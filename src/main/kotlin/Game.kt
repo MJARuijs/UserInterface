@@ -27,11 +27,9 @@ import userinterface.layout.constraints.constrainttypes.CenterConstraint
 import userinterface.layout.constraints.constrainttypes.PixelConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
 import userinterface.text.AlignmentType
-import userinterface.text.Text
 import userinterface.text.TextAlignment
 import userinterface.text.font.FontLoader
 import userinterface.window.ButtonAlignment
-import userinterface.window.TitleBarData
 import userinterface.window.UIWindow
 
 fun main() {
@@ -124,7 +122,7 @@ fun main() {
         AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 14.0f)
     )
 
-    val mainMenuTitle = TextBox("main_menu_title", mainMenuTitleConstraints, "Main Menu", 6f, TextAlignment(AlignmentType.CENTER), background = ColoredBackground(UIColor.TRANSPARENT))
+    val mainMenuTitle = TextLabel("main_menu_title", mainMenuTitleConstraints, "Main Menu", 6f, TextAlignment(AlignmentType.CENTER), background = ColoredBackground(UIColor.TRANSPARENT))
 
     val buttonHoverEffects = arrayListOf(
         TranslationEffect(0.05f, 0.0f, 0.2f),
@@ -213,62 +211,48 @@ fun main() {
     val switch = Switch("switch", switchConstraints)
     val checkBox = CheckBox("checkBox", checkBoxConstraints)
 
+    val textInputBox = TextInputBox("input_box", ConstraintSet(
+        PixelConstraint(ConstraintDirection.TO_LEFT, 0.02f),
+        PixelConstraint(ConstraintDirection.TO_TOP),
+        RelativeConstraint(ConstraintDirection.VERTICAL, 0.15f),
+        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 3.0f)
+    ), "Preview", 6.0f)
+
     val mainMenu = UIPage("main_menu")
-    mainMenu += mainMenuTitle
-    mainMenu += switch
-    mainMenu += progressBar
-    mainMenu += loadLevelButton
-    mainMenu += newLevelButton
-    mainMenu += optionsButton
-    mainMenu += creditsButton
-    mainMenu += quitButton
-    mainMenu += scrollPane
-    mainMenu += checkBox
+    mainMenu += textInputBox
+//    mainMenu += mainMenuTitle
+//    mainMenu += switch
+//    mainMenu += progressBar
+//    mainMenu += loadLevelButton
+//    mainMenu += newLevelButton
+//    mainMenu += optionsButton
+//    mainMenu += creditsButton
+//    mainMenu += quitButton
+//    mainMenu += scrollPane
+//    mainMenu += checkBox
     
     userInterface += optionsWindow
     userInterface += mainMenu
-//    loadLevelButton.setText("Load Level", TextAlignment.CENTER)
 
-//    newLevelButton.setText("New Level", TextAlignment.CENTER)
-//    optionsButton.setText("Options", TextAlignment.CENTER)
-//    loadLevelButton.setText("Load Level", TextAlignment.CENTER)
-//    creditsButton.setText("Credits", TextAlignment.CENTER)
-//    quitButton.setText("Quit", TextAlignment.CENTER)
-    
-//    userInterface.showWindow("options_menu")
-    val textProgram = ShaderProgram.load("shaders/text.vert", "shaders/text.frag")
-    
-//    val createNewListButton = UIButton("create_new_list", ConstraintSet(
-//        CenterConstraint(ConstraintDirection.HORIZONTAL),
-//        CenterConstraint(ConstraintDirection.VERTICAL),
-//        RelativeConstraint(ConstraintDirection.VERTICAL, 0.2f),
-//        AspectRatioConstraint(ConstraintDirection.HORIZONTAL, 2.0f)
-//    ), {
-//        println("Go to create_new_list page")
-//    })
-//
-//    mainMenu += createNewListButton
-    
     userInterface.showPage("main_menu")
     
     timer.reset()
     mouse.release()
     
+    val points = textInputBox.getPoints()
+    val point = Point(points)
     glPointSize(6.0f)
-
-    val point = Point(floatArrayOf(0.0f, 0.0f))
     val pointProgram = ShaderProgram.load("shaders/point.vert", "shaders/point.frag")
-    
     while (!window.isClosed()) {
         window.poll()
     
         if (keyboard.isPressed(Key.ESCAPE)) {
-            mouse.toggle()
-            if (userInterface.isShowing()) {
-                userInterface.hideWindows()
-            } else {
+//            mouse.toggle()
+//            if (userInterface.isShowing()) {
+//                userInterface.hideWindows()
+//            } else {
                 userInterface.showWindow("options_menu")
-            }
+//            }
         }
         
         if (keyboard.isPressed(Key.F1) || keyboard.isPressed(Key.KP1)) {
@@ -283,28 +267,13 @@ fun main() {
         }
         
         if (userInterface.isShowing()) {
-            userInterface.update(mouse, timer.getDelta())
+            userInterface.update(mouse, keyboard, timer.getDelta())
             userInterface.draw(window.width, window.height)
         }
-    
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        GraphicsContext.disable(GraphicsOption.DEPTH_TESTING)
-        GraphicsContext.enable(GraphicsOption.ALPHA_BLENDING)
         
-        textProgram.start()
-//        text.translation = Vector2(0.0f, 0.8f)
-//        text.draw(textProgram, window.aspectRatio)
-        textProgram.stop()
-    
-        GraphicsContext.enable(GraphicsOption.DEPTH_TESTING)
-        GraphicsContext.disable(GraphicsOption.ALPHA_BLENDING)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
-    
         pointProgram.start()
-        pointProgram.set("color", Vector3(1, 0, 0))
-        point.render()
-//        pointProgram.set("color", Vector3(0, 1, 0))
-//        textPoints.render()
+        pointProgram.set("color", Vector3(1,0,0))
+//        point.render()
         pointProgram.stop()
         
         window.synchronize()

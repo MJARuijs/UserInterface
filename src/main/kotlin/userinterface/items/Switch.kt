@@ -1,5 +1,6 @@
 package userinterface.items
 
+import devices.Keyboard
 import devices.Mouse
 import userinterface.UniversalParameters
 import userinterface.UniversalParameters.SWITCH_THUMB_OFF_BACKGROUND
@@ -75,12 +76,12 @@ class Switch(id: String, constraints: ConstraintSet, private var switchOn: Boole
         }
     }
     
-    override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
+    override fun update(mouse: Mouse, keyboard: Keyboard, aspectRatio: Float, deltaTime: Float): Boolean {
         if (previousState != switchOn) {
             onStateChanged(switchOn)
         }
         previousState = switchOn
-        return super.update(mouse, aspectRatio, deltaTime)
+        return super.update(mouse, keyboard, aspectRatio, deltaTime)
     }
     
     private fun animateTrack(duration: Float) {

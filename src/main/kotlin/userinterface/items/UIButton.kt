@@ -1,6 +1,7 @@
 package userinterface.items
 
 import devices.Button
+import devices.Keyboard
 import devices.Mouse
 import math.Color
 import userinterface.UIColor
@@ -13,7 +14,6 @@ import userinterface.layout.constraints.ConstraintDirection
 import userinterface.layout.constraints.ConstraintSet
 import userinterface.layout.constraints.constrainttypes.CenterConstraint
 import userinterface.layout.constraints.constrainttypes.RelativeConstraint
-import userinterface.text.Text
 import userinterface.text.TextAlignment
 import userinterface.text.font.Font
 
@@ -31,7 +31,7 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
     }
     
     private fun setText(textString: String, alignment: TextAlignment, scale: Float = 1.0f, background: Background, color: Color, font: Font = UniversalParameters.defaultFont): UIButton {
-        add(TextBox(
+        add(TextLabel(
             "${id}_text", ConstraintSet(
                 CenterConstraint(ConstraintDirection.HORIZONTAL),
                 CenterConstraint(ConstraintDirection.VERTICAL),
@@ -40,17 +40,16 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
             ), textString, 1f, alignment, background, color, font
         ))
     
-        val textBox = (findById("${id}_text")!! as TextBox)
+        val textLabel = (findById("${id}_text")!! as TextLabel)
         if (scale == 0.0f) {
-            val xRatio = textBox.xSize() / getScale().x
-            val yRatio = textBox.ySize() / getScale().y
-//            println("$xRatio, ${textBox.xSize()} ${getScale().x} :: $yRatio ${textBox.ySize()} ${getScale().y}")
+            val xRatio = textLabel.xSize() / getScale().x
+            val yRatio = textLabel.ySize() / getScale().y
         
-            textBox.setScale(3.0f)
+            textLabel.setScale(3.0f)
         } else {
-            textBox.setScale(scale)
+            textLabel.setScale(scale)
         }
-        textBox.alignWith(getTranslation(), getScale(), alignment)
+        textLabel.alignWith(getTranslation(), getScale(), alignment)
 
         
         return this
@@ -78,8 +77,8 @@ open class UIButton(id: String, constraints: ConstraintSet, private var onClick:
         return this
     }
     
-    override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
-        if (super.update(mouse, aspectRatio, deltaTime)) {
+    override fun update(mouse: Mouse, keyboard: Keyboard, aspectRatio: Float, deltaTime: Float): Boolean {
+        if (super.update(mouse, keyboard, aspectRatio, deltaTime)) {
             return true
         }
 

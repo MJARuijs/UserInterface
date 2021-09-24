@@ -1,5 +1,6 @@
 package userinterface.window
 
+import devices.Keyboard
 import devices.Mouse
 import graphics.shaders.ShaderProgram
 import math.vectors.Vector2
@@ -68,10 +69,10 @@ class UIWindow(id: String, constraints: ConstraintSet, background: Background, v
 //        (closeButton as UIButton).addClickEffects(animation)
 //    }
 
-    override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
+    override fun update(mouse: Mouse, keyboard: Keyboard, aspectRatio: Float, deltaTime: Float): Boolean {
         if (hasTitleBar()) {
-            titleBar!!.update(mouse, aspectRatio, deltaTime)
+            titleBar!!.update(mouse, keyboard, aspectRatio, deltaTime)
         }
-        return super.update(mouse, aspectRatio, deltaTime)
+        return super.update(mouse, keyboard, aspectRatio, deltaTime)
     }
 }

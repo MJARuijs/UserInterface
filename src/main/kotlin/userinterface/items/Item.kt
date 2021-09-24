@@ -12,6 +12,8 @@ import userinterface.items.backgrounds.TexturedBackground
 
 open class Item(id: String, constraints: ConstraintSet, background: Background = UniversalParameters.ITEM_BACKGROUND()) : MovableUIContainer(id, constraints, background) {
     
+    var visible = true
+    
     val baseBackgroundColor = when (background) {
         is ColoredBackground -> background.color
         is TexturedBackground -> background.overlayColor
@@ -25,6 +27,10 @@ open class Item(id: String, constraints: ConstraintSet, background: Background =
     }
     
     open fun draw(shaderProgram: ShaderProgram, iconProgram: ShaderProgram, textProgram: ShaderProgram, aspectRatio: Float, parent: MovableUIContainer?) {
+        if (!visible) {
+            return
+        }
+        
         shaderProgram.set("translation", getTranslation())
         shaderProgram.set("scale", getScale())
         

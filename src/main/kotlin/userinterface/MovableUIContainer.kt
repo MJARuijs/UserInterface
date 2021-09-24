@@ -1,5 +1,6 @@
 package userinterface
 
+import devices.Keyboard
 import devices.Mouse
 import math.vectors.Vector2
 import userinterface.animation.*
@@ -89,8 +90,8 @@ abstract class MovableUIContainer(id: String, var constraints: ConstraintSet, va
         animator.apply(children, layout, duration)
     }
 
-    override fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
+    override fun update(mouse: Mouse, keyboard: Keyboard, aspectRatio: Float, deltaTime: Float): Boolean {
         animator.update(deltaTime)
-        return super.update(mouse, aspectRatio, deltaTime)
+        return super.update(mouse, keyboard, aspectRatio, deltaTime)
     }
 }

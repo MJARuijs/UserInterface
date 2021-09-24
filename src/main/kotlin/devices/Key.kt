@@ -3,7 +3,7 @@ package devices
 import org.lwjgl.glfw.GLFW.*
 
 enum class Key(private val int: Int) {
-
+    
     F1(GLFW_KEY_F1),
     F2(GLFW_KEY_F2),
     F3(GLFW_KEY_F3),
@@ -87,7 +87,7 @@ enum class Key(private val int: Int) {
     X(GLFW_KEY_X),
     Y(GLFW_KEY_Y),
     Z(GLFW_KEY_Z),
-
+    
     ZERO(GLFW_KEY_0),
     ONE(GLFW_KEY_1),
     TWO(GLFW_KEY_2),
@@ -102,7 +102,56 @@ enum class Key(private val int: Int) {
     KP1(GLFW_KEY_KP_1),
 
     UNKNOWN(GLFW_KEY_UNKNOWN);
-
+    
+    private fun getAlphabetKeys() = arrayListOf(
+        A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+    )
+    
+    private fun getNumericalKeys() = arrayListOf(
+        ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE
+    )
+    
+    private fun getPunctuationKeys() = arrayListOf(
+        GRAVE_ACCENT, SEMICOLON, PERIOD, COMMA, APOSTROPHE
+    )
+    
+    fun isAlphabetKey(): Boolean {
+        if (getAlphabetKeys().contains(this)) {
+            return true
+        }
+        return false
+    }
+    
+    fun isNumericalKey(): Boolean {
+        if (getNumericalKeys().contains(this)) {
+            return true
+        }
+        return false
+    }
+    
+    fun isPunctuationMark(): Boolean {
+        if (getPunctuationKeys().contains(this)) {
+            return true
+        }
+        return false
+    }
+    
+    fun isTextKey(): Boolean {
+        if (getAlphabetKeys().contains(this)) {
+            return true
+        }
+        if (getNumericalKeys().contains(this)) {
+            return true
+        }
+        if (getPunctuationKeys().contains(this)) {
+            return true
+        }
+        if (this == SPACE) {
+            return true
+        }
+        return false
+    }
+    
     companion object {
 
         internal fun fromInt(int: Int) = values().firstOrNull() {

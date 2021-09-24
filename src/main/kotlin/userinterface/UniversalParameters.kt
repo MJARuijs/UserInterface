@@ -25,7 +25,7 @@ object UniversalParameters {
     
     fun TEXT_COLOR() = UIColor.WHITE
     
-    fun ITEM_BACKGROUND() = ColoredBackground(UIColor.BLUE)
+    fun ITEM_BACKGROUND() = ColoredBackground(UIColor.GREY_DARK)
     
     fun SWITCH_THUMB_OFF_BACKGROUND() = ColoredBackground(Color(185, 185, 185), 90f)
     fun SWITCH_THUMB_ON_BACKGROUND() = ColoredBackground(Color(65, 162, 239), 90f)
@@ -49,7 +49,7 @@ object UniversalParameters {
     
     fun SCROLL_PANE_BACKGROUND() = ColoredBackground(PRIMARY_BACKGROUND_COLOR)
     
-    fun TEXTBOX_BACKGROUND() = ColoredBackground(UIColor.TRANSPARENT)
+    fun TEXTBOX_BACKGROUND() = ColoredBackground(UIColor.GREY)
     
     fun MENU_BACKGROUND() = ColoredBackground(UIColor.TRANSPARENT)
     

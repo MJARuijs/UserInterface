@@ -14,7 +14,5 @@ void main() {
     float distance = 1.0 - texture(textureAtlas, passTexCoords).a;
     float alpha = 1.0f - smoothstep(characterWidth, characterWidth + edgeWidth, distance);
 
-//    outColor = vec4(color.rgb, 1-distance);
     outColor = vec4(color.rgb, alpha);
-//    outColor = vec4(color.rgb, 1);
 }

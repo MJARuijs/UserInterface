@@ -21,17 +21,17 @@ class Character(val id: Char, val x: Float, val y: Float, val width: Float, val 
             val values = line.split(" ")
 
             val id = values[0].toInt().toChar()
-            val x = (values[1].toFloat() ) / textureSize
-            val y = (values[2].toFloat() ) / textureSize
-
-            val width = values[3].toFloat()
-            val height = values[4].toFloat()
+//            val x = (values[1].toFloat() ) / textureSize
+//            val y = (values[2].toFloat() ) / textureSize
+//
+//            val width = values[3].toFloat()
+//            val height = values[4].toFloat()
     
-//            val x = (values[1].toFloat() + metaData.paddingLeft - DESIRED_PADDING) / textureSize
-//            val y = (values[2].toFloat() + metaData.paddingTop - DESIRED_PADDING) / textureSize
+            val x = (values[1].toFloat() + metaData.paddingLeft - DESIRED_PADDING) / textureSize
+            val y = (values[2].toFloat() + metaData.paddingTop - DESIRED_PADDING) / textureSize
 
-//            val width = values[3].toFloat() - (metaData.paddingWidth - 2.0f * DESIRED_PADDING)
-//            val height = values[4].toFloat() - (metaData.paddingHeight - 2.0f * DESIRED_PADDING)
+            val width = values[3].toFloat() - (metaData.paddingWidth - 2.0f * DESIRED_PADDING)
+            val height = values[4].toFloat() - (metaData.paddingHeight - 2.0f * DESIRED_PADDING)
             
             val quadWidth = width * horizontalSize
             val quadHeight = height * verticalSize
@@ -42,11 +42,7 @@ class Character(val id: Char, val x: Float, val y: Float, val width: Float, val 
             val xOffset = (values[5].toInt()) * horizontalSize
             val yOffset = (values[6].toInt()) * verticalSize
             val advance = (values[7].toInt() - metaData.paddingWidth) * horizontalSize
-            
-//            if (id == 'M') {
-//                println("$quadWidth, $verticalSize")
-//            }
-//            println("id=${id.toInt()}, x=$x, y=$y, xTex=$xTextureSize, yTex=$yTextureSize, xOff=$xOffset, yOff=$yOffset, quadWidth=$quadWidth, quadHeight=$quadHeight, advance=$advance")
+
             return Character(id, x, y, xTextureSize, yTextureSize, xOffset, yOffset, quadWidth, quadHeight, advance)
         }
     }

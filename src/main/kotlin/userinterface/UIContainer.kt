@@ -1,5 +1,6 @@
 package userinterface
 
+import devices.Keyboard
 import devices.Mouse
 import graphics.Quad
 import userinterface.items.Item
@@ -73,9 +74,9 @@ abstract class UIContainer(val id: String, private val layouts: ArrayList<UILayo
         children += item
     }
 
-    open fun update(mouse: Mouse, aspectRatio: Float, deltaTime: Float): Boolean {
+    open fun update(mouse: Mouse, keyboard: Keyboard, aspectRatio: Float, deltaTime: Float): Boolean {
         children.forEach { child ->
-            child.update(mouse, aspectRatio, deltaTime)
+            child.update(mouse, keyboard, aspectRatio, deltaTime)
 //            if (child.update(mouse, aspectRatio, deltaTime)) {
 //                return true
 //            }

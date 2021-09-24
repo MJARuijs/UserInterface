@@ -36,6 +36,10 @@ class Keyboard(window: Window) {
     fun isRepeated(key: Key) = repeated.contains(key)
 
     fun isDown(key: Key) = down.contains(key)
+    
+    fun getPressedKeys() = pressed
+    
+    fun getHeldKeys() = down
 
     fun update() {
 
